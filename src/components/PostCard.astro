@@ -1,0 +1,116 @@
+---
+import { tagDisplay, type Lang } from '../i18n/ui';
+
+interface Props {
+  date: string;
+  readingTime: number;
+  title: string;
+  tag: string;
+  href: string;
+  lang: Lang;
+  variant?: 'card' | 'row';
+}
+const { date, readingTime, title, tag, href, lang, variant = 'card' } = Astro.props;
+const tagLabel = tagDisplay[lang][tag] ?? tag;
+const minLabel = lang === 'pt' ? 'min' : 'min';
+---
+
+{variant === 'card' ? (
+  <article class="post-card">
+    <a href={href}>
+      <div class="post-card-meta">
+        <span class="hf-mono date">{date} · {readingTime} {minLabel}</span>
+        <span class="hf-mono tag">{tagLabel}</span>
+      </div>
+      <h4 class="hf-display title">{title}</h4>
+    </a>
+  </article>
+) : (
+  <a class="post-row" href={href}>
+    <span class="hf-mono row-date">{date}</span>
+    <h3 class="hf-display row-title">{title}</h3>
+    <span class="hf-mono row-tag">#{tagLabel}</span>
+    <span class="hf-mono row-mins">{readingTime} {minLabel}</span>
+  </a>
+)}
+
+<style>
+  .post-card {
+    border-top: 1px solid var(--rule-soft);
+    padding-top: 14px;
+  }
+  .post-card a {
+    display: block;
+  }
+  .post-card-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .post-card-meta .date {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--fg-3);
+  }
+  .post-card-meta .tag {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .post-card .title {
+    font-size: 20px;
+    margin: 0;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .post-card a:hover .title {
+    color: var(--accent);
+  }
+
+  .post-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 100px 60px;
+    gap: 18px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    align-items: baseline;
+  }
+  .post-row:hover .row-title {
+    color: var(--accent);
+  }
+  .row-date {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+  }
+  .row-title {
+    font-size: 22px;
+    margin: 0;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .row-tag {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-transform: uppercase;
+    text-align: right;
+  }
+  .row-mins {
+    font-size: 11px;
+    color: var(--fg-3);
+    text-align: right;
+  }
+  @media (max-width: 720px) {
+    .post-row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+    .row-tag,
+    .row-mins {
+      text-align: left;
+    }
+  }
+</style>

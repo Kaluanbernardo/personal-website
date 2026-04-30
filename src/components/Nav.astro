@@ -1,0 +1,76 @@
+---
+import { ui, type Lang } from '../i18n/ui';
+import Monogram from './Monogram.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import LangToggle from './LangToggle.astro';
+
+interface Props {
+  lang: Lang;
+  active?: 'home' | 'sobre' | 'cv' | 'academico' | 'blog' | 'projetos' | 'contato';
+  variant?: 'full' | 'back';
+  backLabel?: string;
+  backHref?: string;
+  pathname: string;
+}
+const { lang, active = 'home', variant = 'full', backLabel, backHref, pathname } = Astro.props;
+const t = ui[lang];
+const prefix = lang === 'en' ? '/en' : '';
+const link = (key: keyof typeof t.nav) => {
+  if (key === 'home') return `${prefix}/` || '/';
+  if (key === 'menu') return '#';
+  const slugs: Record<string, string> = {
+    sobre: 'sobre',
+    cv: 'cv',
+    academico: 'academico',
+    blog: 'blog',
+    projetos: 'projetos',
+    contato: 'contato',
+  };
+  return `${prefix}/${slugs[key]}`;
+};
+---
+
+<header class="site-header">
+  {variant === 'full' ? (
+    <div class="brand">
+      <Monogram />
+      <span class="brand-label">{t.brand}</span>
+    </div>
+  ) : (
+    <a class="hf-mono brand-back" href={backHref ?? `${prefix}/blog`}>
+      {backLabel ?? t.post.backToList}
+    </a>
+  )}
+  <button class="menu-toggle" type="button" aria-label="Toggle navigation">{t.nav.menu}</button>
+  <nav>
+    <a class={`hf-chip ${active === 'home' ? 'active' : ''}`} href={link('home')}>{t.nav.home}</a>
+    <a class={`hf-chip ${active === 'sobre' ? 'active' : ''}`} href={link('sobre')}>{t.nav.sobre}</a>
+    <a class={`hf-chip ${active === 'cv' ? 'active' : ''}`} href={link('cv')}>{t.nav.cv}</a>
+    <a class={`hf-chip ${active === 'academico' ? 'active' : ''}`} href={link('academico')}>{t.nav.academico}</a>
+    <a class={`hf-chip ${active === 'blog' ? 'active' : ''}`} href={link('blog')}>{t.nav.blog}</a>
+    <a class={`hf-chip ${active === 'projetos' ? 'active' : ''}`} href={link('projetos')}>{t.nav.projetos}</a>
+    <a class={`hf-chip ${active === 'contato' ? 'active' : ''}`} href={link('contato')}>{t.nav.contato}</a>
+    <span class="nav-aux">
+      <LangToggle lang={lang} pathname={pathname} />
+      <ThemeToggle />
+    </span>
+  </nav>
+</header>
+<hr class="hf-rule" style="margin: 0 0 40px;" />
+
+<style>
+  .brand-back {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--fg-2);
+    text-transform: uppercase;
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('.site-header');
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  if (header && toggle) {
+    toggle.addEventListener('click', () => header.classList.toggle('is-open'));
+  }
+</script>

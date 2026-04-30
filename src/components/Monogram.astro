@@ -1,0 +1,8 @@
+---
+interface Props {
+  letter?: string;
+}
+const { letter = 'N' } = Astro.props;
+---
+
+<span class="hf-monogram">{letter}</span>

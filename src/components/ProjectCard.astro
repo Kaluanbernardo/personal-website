@@ -1,0 +1,57 @@
+---
+import { tagDisplay, type Lang } from '../i18n/ui';
+
+interface Props {
+  title: string;
+  kind: string;
+  place: string;
+  href?: string;
+  lang: Lang;
+}
+const { title, kind, place, href, lang } = Astro.props;
+const kindLabel = tagDisplay[lang][kind] ?? kind;
+---
+
+<article class="project-card">
+  <a href={href ?? '#'} target={href ? '_blank' : undefined} rel={href ? 'noreferrer noopener' : undefined}>
+    <div class="img-frame thumb">
+      <div class="ph">thumb · 4×3</div>
+    </div>
+    <div class="kind hf-mono">{kindLabel}</div>
+    <h3 class="hf-display title">{title}</h3>
+    <div class="place hf-mono">{place} →</div>
+  </a>
+</article>
+
+<style>
+  .project-card a {
+    display: block;
+    cursor: pointer;
+  }
+  .thumb {
+    aspect-ratio: 4/3;
+    margin-bottom: 14px;
+  }
+  .kind {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .title {
+    font-size: 22px;
+    margin: 0 0 6px;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .project-card a:hover .title {
+    color: var(--accent);
+  }
+  .place {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+  }
+</style>

@@ -1,0 +1,150 @@
+---
+import { ui, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+---
+
+<div class="sobre grid-1-2">
+  <aside>
+    <div class="img-frame photo">
+      <div class="ph">retrato</div>
+    </div>
+    <div class="photo-credit hf-mono">{t.sobre.photoCredit}</div>
+    <div class="kicker hf-mono">{t.sobre.socialsHeading}</div>
+    {t.sobre.socials.map((s) => (
+      <div class="social-row hf-mono">
+        <span>{s}</span>
+        <span class="arrow">↗</span>
+      </div>
+    ))}
+  </aside>
+
+  <article>
+    <div class="eyebrow hf-mono">{t.sobre.eyebrow}</div>
+    <h1 class="hf-display headline display-lg">
+      {t.sobre.title.line1}<span class="ital">{t.sobre.title.emph}</span><br />{t.sobre.title.line2}
+    </h1>
+    <p class="lead hf-serif">
+      <span class="dropcap hf-display">{t.sobre.p1Lead}</span>
+      {t.sobre.p1}
+    </p>
+    <p class="body hf-serif">{t.sobre.p2}</p>
+
+    <hr class="hf-rule-soft sep" />
+
+    <div class="kicker hf-mono">{t.sobre.nowHeading}</div>
+    <div class="now-grid">
+      {t.sobre.nowRows.map((row) => (
+        <>
+          <span class="now-key hf-mono">{row[0]}</span>
+          <span class="now-val hf-serif">{row[1]}</span>
+        </>
+      ))}
+    </div>
+  </article>
+</div>
+
+<style>
+  .sobre {
+    padding-top: 8px;
+  }
+  .photo {
+    aspect-ratio: 4/5;
+    margin-bottom: 14px;
+  }
+  .photo-credit {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    text-align: right;
+    margin-bottom: 14px;
+  }
+  .kicker {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .social-row {
+    font-size: 13px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    display: flex;
+    justify-content: space-between;
+    color: var(--fg);
+  }
+  .social-row .arrow {
+    color: var(--fg-3);
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .headline {
+    font-size: 72px;
+    margin: 0 0 18px;
+    line-height: 0.95;
+  }
+  .ital {
+    font-style: italic;
+  }
+  .lead {
+    font-size: 19px;
+    color: var(--fg-2);
+    line-height: 1.55;
+    margin: 0 0 18px;
+    max-width: 580px;
+  }
+  .dropcap {
+    font-size: 48px;
+    float: left;
+    line-height: 0.85;
+    margin-right: 10px;
+    margin-top: 6px;
+    color: var(--accent);
+  }
+  .body {
+    font-size: 17px;
+    color: var(--fg-2);
+    line-height: 1.6;
+    margin: 0 0 18px;
+    max-width: 580px;
+  }
+  .sep {
+    margin: 32px 0 20px;
+  }
+  .now-grid {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 18px;
+    font-size: 15px;
+  }
+  .now-key {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-transform: uppercase;
+    border-top: 1px solid var(--rule-soft);
+    padding-top: 12px;
+  }
+  .now-val {
+    color: var(--fg-2);
+    border-top: 1px solid var(--rule-soft);
+    padding-top: 12px;
+  }
+  @media (max-width: 720px) {
+    .now-grid {
+      grid-template-columns: 100px 1fr;
+      gap: 12px;
+    }
+  }
+</style>

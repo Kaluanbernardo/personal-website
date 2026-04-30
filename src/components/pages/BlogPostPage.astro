@@ -1,0 +1,161 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { ui, formatLongDate, tagDisplay, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  post: CollectionEntry<'posts'>;
+}
+const { lang, post } = Astro.props;
+const t = ui[lang];
+const prefix = lang === 'en' ? '/en' : '';
+
+const all = (await getCollection('posts', ({ data }) => !data.draft && data.lang === lang))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const idx = all.findIndex((p) => p.slug === post.slug);
+const prev = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : undefined;
+const next = idx > 0 ? all[idx - 1] : undefined;
+
+const { Content } = await post.render();
+const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
+---
+
+<article class="post">
+  <div class="kicker hf-mono">ensaio · #{tagLabel}</div>
+  <h1 class="hf-display title display-md">{post.data.title}</h1>
+  <div class="meta hf-mono">
+    {t.post.metaJoin(formatLongDate(post.data.pubDate, lang), post.data.readingTime)}
+  </div>
+
+  <p class="lead hf-serif">{post.data.description}</p>
+
+  <div class="prose hf-serif">
+    <Content />
+  </div>
+
+  <hr class="hf-rule-soft sep" />
+  <nav class="post-nav row-flex">
+    {prev ? <a class="hf-mono nav-link" href={`${prefix}/blog/${prev.slug}`}>{t.post.prev}</a> : <span></span>}
+    <a class="hf-mono nav-link accent" href="https://example.substack.com" target="_blank" rel="noreferrer noopener">{t.post.subscribe}</a>
+    {next ? <a class="hf-mono nav-link" href={`${prefix}/blog/${next.slug}`}>{t.post.next}</a> : <span></span>}
+  </nav>
+</article>
+
+<style>
+  .post {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .kicker {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .title {
+    font-size: 56px;
+    margin: 0 0 16px;
+    line-height: 1;
+    text-align: center;
+  }
+  .meta {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .lead {
+    font-size: 20px;
+    color: var(--fg-2);
+    line-height: 1.6;
+    margin: 0 0 24px;
+    font-style: italic;
+  }
+  .prose {
+    font-size: 18px;
+    line-height: 1.7;
+  }
+  .prose :global(h2) {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    margin: 40px 0 18px;
+  }
+  .prose :global(h3) {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 24px;
+    margin: 32px 0 14px;
+  }
+  .prose :global(p) {
+    margin: 0 0 18px;
+  }
+  .prose :global(blockquote) {
+    border-left: 3px solid var(--accent);
+    padding-left: 20px;
+    margin: 32px 0;
+    font-family: var(--display);
+    font-size: 24px;
+    font-style: italic;
+    color: var(--fg-2);
+    line-height: 1.4;
+  }
+  .prose :global(blockquote p) {
+    margin: 0;
+  }
+  .prose :global(a) {
+    color: var(--accent);
+    border-bottom: 1px solid var(--accent);
+  }
+  .prose :global(code) {
+    font-family: var(--mono);
+    font-size: 0.9em;
+    background: var(--bg-2);
+    padding: 2px 5px;
+    border-radius: 2px;
+  }
+  .prose :global(pre) {
+    background: var(--bg-2);
+    padding: 16px 20px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .sep {
+    margin: 48px 0 24px;
+  }
+  .post-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .nav-link {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--fg-2);
+    text-transform: uppercase;
+  }
+  .nav-link.accent {
+    color: var(--accent);
+  }
+  .nav-link:hover {
+    color: var(--accent);
+  }
+  @media (max-width: 720px) {
+    .title {
+      font-size: 36px;
+    }
+    .lead {
+      font-size: 17px;
+    }
+    .prose {
+      font-size: 16px;
+    }
+  }
+</style>

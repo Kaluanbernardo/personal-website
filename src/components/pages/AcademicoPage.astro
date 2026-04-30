@@ -1,0 +1,199 @@
+---
+import { getCollection } from 'astro:content';
+import { ui, type Lang, tagDisplay } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+
+const allPubs = await getCollection('pubs', ({ data }) => data.lang === lang);
+const publications = allPubs
+  .map((p) => p.data)
+  .sort((a, b) => b.year - a.year);
+---
+
+<div class="eyebrow hf-mono">{t.academico.eyebrow}</div>
+<h1 class="hf-display headline display-lg">
+  {t.academico.title.line1}<span class="ital">{t.academico.title.emph}</span>
+</h1>
+<p class="ids hf-mono">{t.academico.ids}</p>
+
+<div class="grid grid-1-2">
+  <aside>
+    <div class="kicker hf-mono">{t.academico.linesHeading}</div>
+    {t.academico.lines.map((l) => <div class="line hf-serif">{l}</div>)}
+
+    <div class="kicker hf-mono kicker-spaced">{t.academico.advisingHeading}</div>
+    <p class="advising hf-serif">{t.academico.advising}</p>
+  </aside>
+
+  <main>
+    <div class="kicker hf-mono">{t.academico.formationHeading}</div>
+    {t.academico.formation.map((e) => (
+      <div class="formation-row">
+        <span class="period hf-mono">{e.p}</span>
+        <div>
+          <div class="hf-display role">{e.r}</div>
+          <div class="org hf-mono">{e.o}</div>
+          <p class="desc hf-serif">{e.d}</p>
+        </div>
+      </div>
+    ))}
+
+    <div class="kicker hf-mono kicker-spaced">{t.academico.publicationsHeading}</div>
+    {publications.map((p) => (
+      <div class="pub-row">
+        <span class="pub-year hf-mono">{p.year}</span>
+        <div>
+          <div class="hf-display pub-title">{p.title}</div>
+          <div class="hf-serif pub-venue">{p.venue}</div>
+        </div>
+        <span class="pub-tag hf-mono">#{tagDisplay[lang][p.kind] ?? p.kind}</span>
+        {p.url ? <a class="pub-link hf-mono" href={p.url} target="_blank" rel="noreferrer noopener">↗</a> : <span class="pub-link hf-mono dim">↗</span>}
+      </div>
+    ))}
+  </main>
+</div>
+
+<style>
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .headline {
+    font-size: 72px;
+    margin: 0 0 8px;
+    line-height: 0.95;
+  }
+  .ital {
+    font-style: italic;
+  }
+  .ids {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    margin: 0 0 32px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 48px;
+    align-items: start;
+  }
+  .kicker {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .kicker-spaced {
+    margin-top: 32px;
+    margin-bottom: 14px;
+  }
+  .line {
+    font-size: 15px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    color: var(--fg-2);
+    font-style: italic;
+  }
+  .advising {
+    font-size: 14px;
+    color: var(--fg-2);
+    margin: 0;
+    line-height: 1.55;
+  }
+  .formation-row {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 24px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .period {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+  }
+  .role {
+    font-size: 22px;
+    font-weight: 500;
+  }
+  .org {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--fg-2);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .desc {
+    font-size: 15px;
+    color: var(--fg-2);
+    margin: 0;
+    line-height: 1.55;
+  }
+  .pub-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 100px 24px;
+    gap: 18px;
+    padding: 14px 0;
+    border-bottom: 1px dashed var(--rule-soft);
+    align-items: baseline;
+  }
+  .pub-year {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--fg-3);
+  }
+  .pub-title {
+    font-size: 18px;
+    font-weight: 500;
+  }
+  .pub-venue {
+    font-size: 13px;
+    font-style: italic;
+    color: var(--fg-2);
+  }
+  .pub-tag {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .pub-link {
+    font-size: 13px;
+    color: var(--fg-3);
+  }
+  .pub-link.dim {
+    opacity: 0.4;
+  }
+  @media (max-width: 720px) {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .formation-row {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .pub-row {
+      grid-template-columns: 60px 1fr;
+      row-gap: 4px;
+    }
+    .pub-tag,
+    .pub-link {
+      grid-column: 2;
+    }
+    .headline {
+      font-size: 48px;
+    }
+  }
+</style>

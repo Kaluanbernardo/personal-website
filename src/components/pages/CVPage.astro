@@ -17,7 +17,6 @@ const pdfHref = lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf';
   </div>
   <a class="hf-btn solid" href={pdfHref} download>{t.cv.download}</a>
 </div>
-<p class="updated hf-mono">{t.cv.updated}</p>
 
 <div class="kicker hf-mono">{t.cv.experienceHeading}</div>
 <div class="exp-list">
@@ -36,7 +35,15 @@ const pdfHref = lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf';
 
 <div class="kicker hf-mono skills-kicker">{t.cv.skillsHeading}</div>
 <div class="skills">
-  {t.cv.skills.map((s) => <span class="hf-tag">{s}</span>)}
+  {t.cv.skills.map((s) => (
+    <div class="skill-row">
+      <span class="skill-name">{s.name}</span>
+      <div class="skill-bar" style={`--level: ${s.level}%`}>
+        <span class="skill-fill"></span>
+      </div>
+      <span class="skill-level hf-mono">{s.level}%</span>
+    </div>
+  ))}
 </div>
 
 <style>
@@ -44,7 +51,7 @@ const pdfHref = lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf';
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 16px;
+    margin-bottom: 56px;
     gap: 24px;
   }
   .eyebrow {
@@ -60,20 +67,13 @@ const pdfHref = lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf';
     margin: 0;
     line-height: 1.05;
   }
-  .updated {
-    font-size: 12px;
-    letter-spacing: 0.06em;
-    color: var(--fg-3);
-    text-transform: uppercase;
-    margin: 0 0 48px;
-  }
   .kicker {
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.16em;
     color: var(--fg-3);
     text-transform: uppercase;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
   .exp-list {
     margin-bottom: 12px;
@@ -82,12 +82,22 @@ const pdfHref = lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf';
     display: grid;
     grid-template-columns: 180px 1fr 100px;
     gap: 32px;
-    padding: 32px 0;
+    padding: 32px 24px;
+    margin: 0 -24px;
     border-bottom: 1px solid var(--rule-soft);
     align-items: start;
+    border-left: 2px solid transparent;
+    transition: background 0.18s ease, border-left-color 0.18s ease;
   }
   .exp-row:first-child {
     border-top: 1px solid var(--rule-soft);
+  }
+  .exp-row:hover {
+    background: var(--bg-2);
+    border-left-color: var(--accent);
+  }
+  .exp-row:hover .exp-role {
+    color: var(--accent);
   }
   .exp-period {
     font-size: 12px;
@@ -106,6 +116,7 @@ const pdfHref = lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf';
     font-size: 22px;
     font-weight: 600;
     line-height: 1.2;
+    transition: color 0.18s ease;
   }
   .exp-org {
     font-size: 14px;
@@ -137,9 +148,57 @@ const pdfHref = lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf';
     margin-top: 56px;
   }
   .skills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 56px;
+    row-gap: 14px;
+    max-width: 920px;
+  }
+  .skill-row {
+    display: grid;
+    grid-template-columns: 160px 1fr 44px;
+    gap: 16px;
+    align-items: center;
+  }
+  .skill-name {
+    font-size: 14px;
+    color: var(--fg);
+    font-weight: 500;
+  }
+  .skill-bar {
+    height: 6px;
+    background: var(--rule-soft);
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+  }
+  .skill-fill {
+    display: block;
+    height: 100%;
+    width: var(--level);
+    background: var(--accent);
+    border-radius: 999px;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: grow 0.9s 0.1s ease-out forwards;
+  }
+  @keyframes grow {
+    to {
+      transform: scaleX(1);
+    }
+  }
+  .skill-level {
+    font-size: 12px;
+    color: var(--fg-3);
+    text-align: right;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .skill-row:hover .skill-fill {
+    background: var(--fg);
+  }
+  .skill-row:hover .skill-name {
+    color: var(--accent);
   }
   @media (max-width: 720px) {
     .head {
@@ -148,13 +207,21 @@ const pdfHref = lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf';
     .exp-row {
       grid-template-columns: 1fr;
       gap: 12px;
-      padding: 24px 0;
+      padding: 24px 16px;
+      margin: 0 -16px;
     }
     .exp-cta {
       text-align: left;
     }
     .headline {
       font-size: 40px;
+    }
+    .skills {
+      grid-template-columns: 1fr;
+      column-gap: 0;
+    }
+    .skill-row {
+      grid-template-columns: 110px 1fr 40px;
     }
   }
 </style>

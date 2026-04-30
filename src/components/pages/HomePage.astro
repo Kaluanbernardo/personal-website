@@ -21,11 +21,11 @@ const postHref = (slug: string) => `${prefix}/blog/${slug}`;
 <section class="hero">
   <div>
     <div class="eyebrow hf-mono">{t.home.eyebrow}</div>
-    <h1 class="hf-display headline display-xl">
+    <h1 class="hf-display headline">
       {t.home.title.line1}<br />
-      <span class="ital">{t.home.title.line2}</span>
+      {t.home.title.line2}
     </h1>
-    <p class="intro hf-serif">{t.home.intro}</p>
+    <p class="intro">{t.home.intro}</p>
     <div class="cta-row">
       <a class="hf-btn solid" href={`${prefix}/blog`}>{t.home.ctaBlog}</a>
       <a class="hf-btn" href="/cv-pt.pdf" download>{t.home.ctaCV}</a>
@@ -43,12 +43,12 @@ const postHref = (slug: string) => `${prefix}/blog/${slug}`;
 
 <section class="cards grid-3">
   {t.home.cards.map((c) => (
-    <div>
+    <a class="card" href={`${prefix}/projetos`}>
       <div class="card-num hf-mono">{c.n}</div>
       <h3 class="hf-display card-title">{c.t}</h3>
-      <p class="hf-serif card-sub">{c.sub}</p>
-      <a class="hf-mono card-cta" href={`${prefix}/projetos`}>{c.cta}</a>
-    </div>
+      <p class="card-sub">{c.sub}</p>
+      <span class="hf-mono card-cta">{c.cta}</span>
+    </a>
   ))}
 </section>
 
@@ -75,36 +75,34 @@ const postHref = (slug: string) => `${prefix}/blog/${slug}`;
 <style>
   .hero {
     display: grid;
-    grid-template-columns: 1.5fr 1fr;
-    gap: 56px;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 64px;
     align-items: start;
-    padding: 16px 0 56px;
+    padding: 16px 0 64px;
   }
   .eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.2em;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: 18px;
+    margin-bottom: 22px;
   }
   .headline {
-    font-size: 96px;
-    margin: 0 0 18px;
-  }
-  .ital {
-    font-style: italic;
-    font-weight: 400;
+    font-size: 72px;
+    margin: 0 0 22px;
+    line-height: 1.0;
   }
   .intro {
-    font-size: 19px;
-    line-height: 1.45;
+    font-size: 18px;
+    line-height: 1.6;
     color: var(--fg-2);
-    max-width: 440px;
-    margin: 0 0 28px;
+    max-width: 480px;
+    margin: 0 0 32px;
   }
   .cta-row {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: wrap;
   }
   .photo {
@@ -112,63 +110,75 @@ const postHref = (slug: string) => `${prefix}/blog/${slug}`;
     width: 100%;
   }
   .photo-credit {
-    font-size: 10px;
-    letter-spacing: 0.1em;
+    font-size: 11px;
+    letter-spacing: 0.08em;
     color: var(--fg-3);
     text-align: right;
-    margin-top: 6px;
+    margin-top: 8px;
     text-transform: uppercase;
   }
   .cards {
-    margin: 28px 0 48px;
+    margin: 36px 0 56px;
+  }
+  .card {
+    display: block;
+    padding: 24px 0;
+    border-top: 1px solid var(--rule-soft);
+    transition: border-color 0.18s ease, padding-left 0.25s ease;
+    cursor: pointer;
+  }
+  .card:hover {
+    border-color: var(--accent);
+    padding-left: 12px;
   }
   .card-num {
-    font-size: 11px;
+    font-size: 12px;
+    font-weight: 500;
     color: var(--accent);
-    letter-spacing: 0.15em;
-    margin-bottom: 10px;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
   }
   .card-title {
-    font-size: 28px;
-    margin: 0 0 10px;
-    font-style: italic;
-    font-weight: 400;
+    font-size: 26px;
+    margin: 0 0 12px;
+    font-weight: 600;
+  }
+  .card:hover .card-title {
+    color: var(--accent);
   }
   .card-sub {
     font-size: 15px;
     color: var(--fg-2);
-    margin: 0;
-    line-height: 1.5;
+    margin: 0 0 14px;
+    line-height: 1.55;
   }
   .card-cta {
-    font-size: 11px;
-    letter-spacing: 0.1em;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--fg);
-    margin-top: 10px;
-    display: inline-block;
-    border-bottom: 1px solid var(--accent);
-    padding-bottom: 1px;
+    color: var(--fg-2);
   }
-  .card-cta:hover {
+  .card:hover .card-cta {
     color: var(--accent);
   }
   .from-blog {
-    padding-top: 32px;
+    padding-top: 16px;
   }
   .from-blog-head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 18px;
+    margin-bottom: 24px;
   }
   .from-blog-title {
     font-size: 24px;
     margin: 0;
   }
   .from-blog-all {
-    font-size: 11px;
-    letter-spacing: 0.1em;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--fg-2);
   }
@@ -181,7 +191,10 @@ const postHref = (slug: string) => `${prefix}/blog/${slug}`;
       gap: 32px;
     }
     .headline {
-      font-size: 54px;
+      font-size: 48px;
+    }
+    .intro {
+      font-size: 16px;
     }
   }
 </style>

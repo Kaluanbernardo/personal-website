@@ -10,10 +10,10 @@ const t = ui[lang];
 <div class="grid">
   <div>
     <div class="eyebrow hf-mono">{t.contato.eyebrow}</div>
-    <h1 class="hf-display headline display-xl">
-      {t.contato.title.line1}<br /><span class="ital">{t.contato.title.emph}</span>
+    <h1 class="hf-display headline">
+      {t.contato.title.line1}<br />{t.contato.title.emph}
     </h1>
-    <p class="intro hf-serif">{t.contato.intro}</p>
+    <p class="intro">{t.contato.intro}</p>
     <a class="email hf-display" href={`mailto:${t.contato.email}`}>{t.contato.email}</a>
   </div>
 
@@ -21,11 +21,11 @@ const t = ui[lang];
     <div class="kicker hf-mono">{t.contato.socialsHeading}</div>
     {t.contato.socials.map((s) => (
       <a class="social-row">
-        <div>
+        <div class="social-main">
           <div class="hf-display name">{s.n}</div>
           <div class="hf-mono handle">{s.h}</div>
         </div>
-        <span class="hf-serif desc">{s.d}</span>
+        <span class="desc">{s.d}</span>
         <span class="hf-mono arrow">↗</span>
       </a>
     ))}
@@ -36,75 +36,95 @@ const t = ui[lang];
   .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 56px;
+    gap: 64px;
     align-items: start;
   }
   .eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.15em;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
     color: var(--accent);
     text-transform: uppercase;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   }
   .headline {
-    font-size: 80px;
-    margin: 0 0 24px;
-    line-height: 0.92;
-  }
-  .ital {
-    font-style: italic;
+    font-size: 64px;
+    margin: 0 0 28px;
+    line-height: 1.0;
   }
   .intro {
     font-size: 18px;
     color: var(--fg-2);
-    line-height: 1.55;
-    margin: 0 0 32px;
-    max-width: 440px;
+    line-height: 1.6;
+    margin: 0 0 36px;
+    max-width: 480px;
   }
   .email {
-    font-size: 32px;
-    font-style: italic;
+    font-size: 28px;
+    font-weight: 500;
     color: var(--fg);
     border-bottom: 2px solid var(--accent);
     padding-bottom: 4px;
     display: inline-block;
+    transition: color 0.18s ease;
   }
   .email:hover {
     color: var(--accent);
   }
   .kicker {
-    font-size: 10px;
-    letter-spacing: 0.2em;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
     color: var(--fg-3);
     text-transform: uppercase;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
   }
   .social-row {
     display: grid;
     grid-template-columns: 1fr auto 24px;
-    gap: 14px;
-    padding: 14px 0;
+    gap: 16px;
+    padding: 18px 0;
     border-bottom: 1px solid var(--rule-soft);
-    align-items: baseline;
+    align-items: center;
     cursor: pointer;
+    transition: padding-left 0.25s ease, border-color 0.18s ease;
+  }
+  .social-row:first-of-type {
+    border-top: 1px solid var(--rule-soft);
+  }
+  .social-row:hover {
+    border-color: var(--accent);
+    padding-left: 8px;
+  }
+  .social-row:hover .name {
+    color: var(--accent);
+  }
+  .social-row:hover .arrow {
+    color: var(--accent);
+  }
+  .social-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
   }
   .name {
-    font-size: 22px;
-    font-weight: 500;
+    font-size: 20px;
+    font-weight: 600;
+    transition: color 0.18s ease;
   }
   .handle {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--fg-3);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
   }
   .desc {
-    font-size: 13px;
-    font-style: italic;
+    font-size: 14px;
     color: var(--fg-2);
   }
   .arrow {
     font-size: 14px;
-    color: var(--accent);
+    color: var(--fg-3);
+    transition: color 0.18s ease;
   }
   @media (max-width: 720px) {
     .grid {
@@ -112,10 +132,10 @@ const t = ui[lang];
       gap: 40px;
     }
     .headline {
-      font-size: 54px;
+      font-size: 48px;
     }
     .email {
-      font-size: 24px;
+      font-size: 22px;
     }
   }
 </style>

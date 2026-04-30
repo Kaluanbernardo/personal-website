@@ -49,11 +49,9 @@ type Dict = {
   academico: {
     eyebrow: string;
     title: { line1: string; emph: string };
-    ids: string;
+    scholarIds: { label: string; href: string }[];
     linesHeading: string;
     lines: string[];
-    advisingHeading: string;
-    advising: string;
     formationHeading: string;
     formation: { p: string; r: string; o: string; d: string }[];
     publicationsHeading: string;
@@ -210,8 +208,13 @@ export const ui: Record<Lang, Dict> = {
     },
     academico: {
       eyebrow: '03 · currículo acadêmico',
-      title: { line1: 'Pesquisa & ', emph: 'publicações.' },
-      ids: 'lattes · orcid · academia.edu · google scholar',
+      title: { line1: 'Pesquisa & ', emph: 'publicações' },
+      scholarIds: [
+        { label: 'Lattes', href: 'https://lattes.cnpq.br/' },
+        { label: 'ORCID', href: 'https://orcid.org/' },
+        { label: 'academia.edu', href: 'https://academia.edu/' },
+        { label: 'Google Scholar', href: 'https://scholar.google.com/' },
+      ],
       linesHeading: 'linhas de pesquisa',
       lines: [
         'Economia da atenção',
@@ -219,9 +222,6 @@ export const ui: Record<Lang, Dict> = {
         'Jornalismo digital',
         'Métricas e mídia',
       ],
-      advisingHeading: 'orientações',
-      advising:
-        'Disponível para co-orientações em comunicação digital e produto educacional.',
       formationHeading: 'formação',
       formation: [
         {
@@ -404,8 +404,13 @@ export const ui: Record<Lang, Dict> = {
     },
     academico: {
       eyebrow: '03 · academic cv',
-      title: { line1: 'Research & ', emph: 'publications.' },
-      ids: 'lattes · orcid · academia.edu · google scholar',
+      title: { line1: 'Research & ', emph: 'publications' },
+      scholarIds: [
+        { label: 'Lattes', href: 'https://lattes.cnpq.br/' },
+        { label: 'ORCID', href: 'https://orcid.org/' },
+        { label: 'academia.edu', href: 'https://academia.edu/' },
+        { label: 'Google Scholar', href: 'https://scholar.google.com/' },
+      ],
       linesHeading: 'research lines',
       lines: [
         'Attention economy',
@@ -413,8 +418,6 @@ export const ui: Record<Lang, Dict> = {
         'Digital journalism',
         'Metrics and media',
       ],
-      advisingHeading: 'advising',
-      advising: 'Open to co-advising in digital communication and education product.',
       formationHeading: 'training',
       formation: [
         {

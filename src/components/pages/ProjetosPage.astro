@@ -13,21 +13,18 @@ const projects = (await getCollection('projects', ({ data }) => data.lang === la
   .map((p) => p.data)
   .sort((a, b) => b.year - a.year);
 
-// Map filter labels (localized) back to canonical kind
+const kindOrder: string[] = ['jornalismo', 'produto', 'academia', 'palestra', 'pessoal'];
 const kindByFilter: Record<string, string | null> = {};
 t.projetos.filters.forEach((label, i) => {
-  if (i === 0) {
-    kindByFilter[label] = null;
-  } else {
-    const order: string[] = ['jornalismo', 'produto', 'academia', 'palestra', 'pessoal'];
-    kindByFilter[label] = order[i - 1];
-  }
+  kindByFilter[label] = i === 0 ? null : kindOrder[i - 1] ?? null;
 });
 ---
 
-<div class="eyebrow hf-mono">{t.projetos.eyebrow}</div>
-<h1 class="hf-display headline display-lg">{t.projetos.title}<span class="ital">.</span></h1>
-<p class="sub hf-mono">{t.projetos.sub}</p>
+<header class="head">
+  <div class="eyebrow hf-mono">{t.projetos.eyebrow}</div>
+  <h1 class="hf-display headline">{t.projetos.title}</h1>
+  <p class="sub hf-mono">{t.projetos.sub}</p>
+</header>
 
 <div class="filters">
   {t.projetos.filters.map((label, i) => (
@@ -60,60 +57,54 @@ t.projetos.filters.forEach((label, i) => {
       btn.classList.add('accent', 'active');
       const kind = btn.dataset.kind ?? '';
       cells.forEach((cell) => {
-        if (!kind || cell.dataset.kind === kind) {
-          cell.style.display = '';
-        } else {
-          cell.style.display = 'none';
-        }
+        cell.style.display = !kind || cell.dataset.kind === kind ? '' : 'none';
       });
     });
   });
 </script>
 
 <style>
+  .head {
+    margin-bottom: 32px;
+  }
   .eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.15em;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
     color: var(--accent);
     text-transform: uppercase;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   }
   .headline {
-    font-size: 72px;
-    margin: 0 0 8px;
-    line-height: 0.95;
-  }
-  .ital {
-    font-style: italic;
+    font-size: 56px;
+    margin: 0 0 12px;
+    line-height: 1.05;
   }
   .sub {
-    font-size: 11px;
-    letter-spacing: 0.1em;
+    font-size: 12px;
+    letter-spacing: 0.06em;
     color: var(--fg-3);
     text-transform: uppercase;
-    margin: 0 0 28px;
+    margin: 0;
   }
   .filters {
     display: flex;
-    gap: 6px;
-    margin-bottom: 28px;
+    gap: 8px;
+    margin-bottom: 36px;
     flex-wrap: wrap;
-  }
-  .filter-btn {
-    cursor: pointer;
   }
   .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 32px;
+    gap: 36px 32px;
   }
   @media (max-width: 720px) {
     .grid {
       grid-template-columns: 1fr;
-      gap: 24px;
+      gap: 28px;
     }
     .headline {
-      font-size: 48px;
+      font-size: 40px;
     }
   }
   @media (max-width: 1080px) and (min-width: 721px) {

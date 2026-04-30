@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import { ui, type Lang, formatDate } from '../../i18n/ui';
+import { link } from '../../lib/links';
 import PostCard from '../PostCard.astro';
 
 interface Props {
@@ -15,7 +16,10 @@ const recentPosts = allPosts
   .slice(0, 3);
 
 const prefix = lang === 'en' ? '/en' : '';
-const postHref = (slug: string) => `${prefix}/blog/${slug}`;
+const postHref = (slug: string) => link(`${prefix}/blog/${slug}`);
+const blogHref = link(`${prefix}/blog`);
+const projetosHref = link(`${prefix}/projetos`);
+const cvPdfHref = link(lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf');
 ---
 
 <section class="hero">
@@ -27,8 +31,8 @@ const postHref = (slug: string) => `${prefix}/blog/${slug}`;
     </h1>
     <p class="intro">{t.home.intro}</p>
     <div class="cta-row">
-      <a class="hf-btn solid" href={`${prefix}/blog`}>{t.home.ctaBlog}</a>
-      <a class="hf-btn" href="/cv-pt.pdf" download>{t.home.ctaCV}</a>
+      <a class="hf-btn solid" href={blogHref}>{t.home.ctaBlog}</a>
+      <a class="hf-btn" href={cvPdfHref} download>{t.home.ctaCV}</a>
     </div>
   </div>
   <div>
@@ -43,7 +47,7 @@ const postHref = (slug: string) => `${prefix}/blog/${slug}`;
 
 <section class="cards grid-3">
   {t.home.cards.map((c) => (
-    <a class="card" href={`${prefix}/projetos`}>
+    <a class="card" href={projetosHref}>
       <div class="card-num hf-mono">{c.n}</div>
       <h3 class="hf-display card-title">{c.t}</h3>
       <p class="card-sub">{c.sub}</p>
@@ -55,7 +59,7 @@ const postHref = (slug: string) => `${prefix}/blog/${slug}`;
 <section class="from-blog">
   <div class="row-flex from-blog-head">
     <h3 class="hf-display from-blog-title">{t.home.fromBlog}</h3>
-    <a class="hf-mono from-blog-all" href={`${prefix}/blog`}>{t.home.allPosts}</a>
+    <a class="hf-mono from-blog-all" href={blogHref}>{t.home.allPosts}</a>
   </div>
   <div class="grid-3 posts">
     {recentPosts.map((p) => (

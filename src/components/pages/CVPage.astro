@@ -1,11 +1,12 @@
 ---
 import { ui, type Lang } from '../../i18n/ui';
+import { link } from '../../lib/links';
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 const t = ui[lang];
-const pdfHref = lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf';
+const pdfHref = link(lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf');
 ---
 
 <div class="head row-flex">

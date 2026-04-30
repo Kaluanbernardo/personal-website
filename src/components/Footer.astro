@@ -1,0 +1,13 @@
+---
+import { ui, type Lang } from '../i18n/ui';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+---
+
+<footer class="site-footer">
+  <span>{t.footer.note}</span>
+  <a href="https://github.com/" target="_blank" rel="noreferrer noopener">{t.footer.sourceLabel}</a>
+</footer>

@@ -1,0 +1,115 @@
+---
+import { getCollection } from 'astro:content';
+import { ui, type Lang } from '../../i18n/ui';
+import ProjectCard from '../ProjectCard.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+
+const projects = (await getCollection('projects', ({ data }) => data.lang === lang))
+  .map((p) => p.data)
+  .sort((a, b) => b.year - a.year);
+
+const kindOrder: string[] = ['jornalismo', 'produto', 'academia', 'palestra', 'pessoal'];
+const kindByFilter: Record<string, string | null> = {};
+t.projetos.filters.forEach((label, i) => {
+  kindByFilter[label] = i === 0 ? null : kindOrder[i - 1] ?? null;
+});
+---
+
+<header class="head">
+  <div class="eyebrow hf-mono">{t.projetos.eyebrow}</div>
+  <h1 class="hf-display headline">{t.projetos.title}</h1>
+  <p class="sub hf-mono">{t.projetos.sub}</p>
+</header>
+
+<div class="filters">
+  {t.projetos.filters.map((label, i) => (
+    <button type="button" class={`hf-tag filter-btn ${i === 0 ? 'accent active' : ''}`} data-kind={kindByFilter[label] ?? ''}>
+      {label}
+    </button>
+  ))}
+</div>
+
+<div class="grid">
+  {projects.map((p) => (
+    <div class="cell" data-kind={p.kind}>
+      <ProjectCard
+        title={p.title}
+        kind={p.kind}
+        place={p.place}
+        href={p.url}
+        lang={lang}
+      />
+    </div>
+  ))}
+</div>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const cells = document.querySelectorAll<HTMLElement>('.cell');
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      buttons.forEach((b) => b.classList.remove('accent', 'active'));
+      btn.classList.add('accent', 'active');
+      const kind = btn.dataset.kind ?? '';
+      cells.forEach((cell) => {
+        cell.style.display = !kind || cell.dataset.kind === kind ? '' : 'none';
+      });
+    });
+  });
+</script>
+
+<style>
+  .head {
+    margin-bottom: 32px;
+  }
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .headline {
+    font-size: 56px;
+    margin: 0 0 12px;
+    line-height: 1.05;
+  }
+  .sub {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    margin: 0;
+  }
+  .filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 36px 32px;
+  }
+  @media (max-width: 720px) {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+    .headline {
+      font-size: 40px;
+    }
+  }
+  @media (max-width: 1080px) and (min-width: 721px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

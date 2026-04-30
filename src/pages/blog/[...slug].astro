@@ -1,0 +1,28 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Page from '../../layouts/Page.astro';
+import BlogPostPage from '../../components/pages/BlogPostPage.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft && data.lang === 'pt');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+}
+const { post } = Astro.props;
+---
+
+<Page
+  title={`${post.data.title} · Nome Sobrenome`}
+  description={post.data.description}
+  lang="pt"
+  active="blog"
+  navVariant="back"
+>
+  <BlogPostPage lang="pt" post={post} />
+</Page>

@@ -1,0 +1,227 @@
+---
+import { ui, type Lang } from '../../i18n/ui';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+const pdfHref = lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf';
+---
+
+<div class="head row-flex">
+  <div>
+    <div class="eyebrow hf-mono">{t.cv.eyebrow}</div>
+    <h1 class="hf-display headline">
+      {t.cv.title.line1}{t.cv.title.emph}
+    </h1>
+  </div>
+  <a class="hf-btn solid" href={pdfHref} download>{t.cv.download}</a>
+</div>
+
+<div class="kicker hf-mono">{t.cv.experienceHeading}</div>
+<div class="exp-list">
+  {t.cv.experience.map((e) => (
+    <div class="exp-row">
+      <span class="exp-period hf-mono">{e.p}</span>
+      <div class="exp-body">
+        <div class="hf-display exp-role">{e.r}</div>
+        <div class="exp-org">{e.o}</div>
+        <p class="exp-desc">{e.d}</p>
+      </div>
+      <a class="exp-cta hf-mono" href="#">{e.cta}</a>
+    </div>
+  ))}
+</div>
+
+<div class="kicker hf-mono skills-kicker">{t.cv.skillsHeading}</div>
+<div class="skills">
+  {t.cv.skills.map((s) => (
+    <div class="skill-row">
+      <span class="skill-name">{s.name}</span>
+      <div class="skill-bar" style={`--level: ${s.level}%`}>
+        <span class="skill-fill"></span>
+      </div>
+      <span class="skill-level hf-mono">{s.level}%</span>
+    </div>
+  ))}
+</div>
+
+<style>
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 56px;
+    gap: 24px;
+  }
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .headline {
+    font-size: 56px;
+    margin: 0;
+    line-height: 1.05;
+  }
+  .kicker {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .exp-list {
+    margin-bottom: 12px;
+  }
+  .exp-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 100px;
+    gap: 32px;
+    padding: 32px 24px;
+    margin: 0 -24px;
+    border-bottom: 1px solid var(--rule-soft);
+    align-items: start;
+    border-left: 2px solid transparent;
+    transition: background 0.18s ease, border-left-color 0.18s ease;
+  }
+  .exp-row:first-child {
+    border-top: 1px solid var(--rule-soft);
+  }
+  .exp-row:hover {
+    background: var(--bg-2);
+    border-left-color: var(--accent);
+  }
+  .exp-row:hover .exp-role {
+    color: var(--accent);
+  }
+  .exp-period {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    padding-top: 4px;
+  }
+  .exp-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .exp-role {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.2;
+    transition: color 0.18s ease;
+  }
+  .exp-org {
+    font-size: 14px;
+    color: var(--fg-2);
+    font-family: var(--mono);
+    letter-spacing: 0.04em;
+  }
+  .exp-desc {
+    font-size: 16px;
+    color: var(--fg-2);
+    margin: 4px 0 0;
+    line-height: 1.6;
+    max-width: 620px;
+  }
+  .exp-cta {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--fg-2);
+    text-transform: uppercase;
+    text-align: right;
+    padding-top: 6px;
+    transition: color 0.18s ease;
+  }
+  .exp-cta:hover {
+    color: var(--accent);
+  }
+  .skills-kicker {
+    margin-top: 56px;
+  }
+  .skills {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 56px;
+    row-gap: 14px;
+    max-width: 920px;
+  }
+  .skill-row {
+    display: grid;
+    grid-template-columns: 160px 1fr 44px;
+    gap: 16px;
+    align-items: center;
+  }
+  .skill-name {
+    font-size: 14px;
+    color: var(--fg);
+    font-weight: 500;
+  }
+  .skill-bar {
+    height: 6px;
+    background: var(--rule-soft);
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+  }
+  .skill-fill {
+    display: block;
+    height: 100%;
+    width: var(--level);
+    background: var(--accent);
+    border-radius: 999px;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: grow 0.9s 0.1s ease-out forwards;
+  }
+  @keyframes grow {
+    to {
+      transform: scaleX(1);
+    }
+  }
+  .skill-level {
+    font-size: 12px;
+    color: var(--fg-3);
+    text-align: right;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .skill-row:hover .skill-fill {
+    background: var(--fg);
+  }
+  .skill-row:hover .skill-name {
+    color: var(--accent);
+  }
+  @media (max-width: 720px) {
+    .head {
+      align-items: flex-start;
+    }
+    .exp-row {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      padding: 24px 16px;
+      margin: 0 -16px;
+    }
+    .exp-cta {
+      text-align: left;
+    }
+    .headline {
+      font-size: 40px;
+    }
+    .skills {
+      grid-template-columns: 1fr;
+      column-gap: 0;
+    }
+    .skill-row {
+      grid-template-columns: 110px 1fr 40px;
+    }
+  }
+</style>

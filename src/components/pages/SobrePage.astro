@@ -1,0 +1,158 @@
+---
+import { ui, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+---
+
+<div class="sobre grid-1-2">
+  <aside>
+    <div class="img-frame photo">
+      <div class="ph">retrato</div>
+    </div>
+    <div class="photo-credit hf-mono">{t.sobre.photoCredit}</div>
+
+    <div class="kicker hf-mono">{t.sobre.socialsHeading}</div>
+    {t.sobre.socials.map((s) => (
+      <a class="social-row hf-mono" href="#">
+        <span>{s}</span>
+        <span class="arrow">↗</span>
+      </a>
+    ))}
+  </aside>
+
+  <article>
+    <div class="eyebrow hf-mono">{t.sobre.eyebrow}</div>
+    <h1 class="hf-display headline">
+      {t.sobre.title.line1}{t.sobre.title.emph} {t.sobre.title.line2}
+    </h1>
+
+    <p class="body">{t.sobre.p1Lead}{t.sobre.p1}</p>
+    <p class="body">{t.sobre.p2}</p>
+
+    <hr class="hf-rule-soft sep" />
+
+    <div class="kicker hf-mono">{t.sobre.nowHeading}</div>
+    <div class="now-grid">
+      {t.sobre.nowRows.map((row) => (
+        <>
+          <span class="now-key hf-mono">{row[0]}</span>
+          <span class="now-val">{row[1]}</span>
+        </>
+      ))}
+    </div>
+  </article>
+</div>
+
+<style>
+  .sobre {
+    padding-top: 8px;
+  }
+  .photo {
+    aspect-ratio: 4/5;
+    margin-bottom: 14px;
+  }
+  .photo-credit {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    text-align: right;
+    margin-bottom: 24px;
+  }
+  .kicker {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .social-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    color: var(--fg);
+    transition: color 0.18s ease, padding-left 0.25s ease;
+  }
+  .social-row:hover {
+    color: var(--accent);
+    padding-left: 6px;
+  }
+  .social-row .arrow {
+    color: var(--fg-3);
+    transition: color 0.18s ease;
+  }
+  .social-row:hover .arrow {
+    color: var(--accent);
+  }
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .headline {
+    font-size: 56px;
+    margin: 0 0 28px;
+    line-height: 1.05;
+  }
+  .body {
+    font-size: 18px;
+    color: var(--fg-2);
+    line-height: 1.65;
+    margin: 0 0 18px;
+    max-width: 620px;
+  }
+  .body:first-of-type {
+    font-size: 20px;
+    color: var(--fg);
+  }
+  .sep {
+    margin: 36px 0 24px;
+  }
+  .now-grid {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    row-gap: 0;
+    column-gap: 24px;
+  }
+  .now-key {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    text-transform: uppercase;
+    border-top: 1px solid var(--rule-soft);
+    padding: 16px 0;
+    align-self: stretch;
+  }
+  .now-val {
+    font-size: 16px;
+    color: var(--fg-2);
+    border-top: 1px solid var(--rule-soft);
+    padding: 16px 0;
+    line-height: 1.55;
+  }
+  @media (max-width: 720px) {
+    .headline {
+      font-size: 40px;
+    }
+    .body,
+    .body:first-of-type {
+      font-size: 16px;
+    }
+    .now-grid {
+      grid-template-columns: 100px 1fr;
+      column-gap: 16px;
+    }
+  }
+</style>

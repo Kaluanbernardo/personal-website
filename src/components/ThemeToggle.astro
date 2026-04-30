@@ -1,0 +1,20 @@
+---
+// Renders the theme toggle button. The pre-paint theme bootstrap lives in Base.astro.
+---
+
+<button class="hf-chip theme-toggle" type="button" aria-label="Toggle theme">◐</button>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('.theme-toggle');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      try {
+        localStorage.setItem('theme', next);
+      } catch (e) {
+        // ignore
+      }
+    });
+  }
+</script>

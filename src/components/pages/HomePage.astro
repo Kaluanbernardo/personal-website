@@ -1,0 +1,187 @@
+---
+import { getCollection } from 'astro:content';
+import { ui, type Lang, formatDate } from '../../i18n/ui';
+import PostCard from '../PostCard.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+
+const allPosts = await getCollection('posts', ({ data }) => !data.draft && data.lang === lang);
+const recentPosts = allPosts
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const prefix = lang === 'en' ? '/en' : '';
+const postHref = (slug: string) => `${prefix}/blog/${slug}`;
+---
+
+<section class="hero">
+  <div>
+    <div class="eyebrow hf-mono">{t.home.eyebrow}</div>
+    <h1 class="hf-display headline display-xl">
+      {t.home.title.line1}<br />
+      <span class="ital">{t.home.title.line2}</span>
+    </h1>
+    <p class="intro hf-serif">{t.home.intro}</p>
+    <div class="cta-row">
+      <a class="hf-btn solid" href={`${prefix}/blog`}>{t.home.ctaBlog}</a>
+      <a class="hf-btn" href="/cv-pt.pdf" download>{t.home.ctaCV}</a>
+    </div>
+  </div>
+  <div>
+    <div class="img-frame photo">
+      <div class="ph">retrato · 4×5</div>
+    </div>
+    <div class="photo-credit hf-mono">{t.home.photoCredit}</div>
+  </div>
+</section>
+
+<hr class="hf-rule" />
+
+<section class="cards grid-3">
+  {t.home.cards.map((c) => (
+    <div>
+      <div class="card-num hf-mono">{c.n}</div>
+      <h3 class="hf-display card-title">{c.t}</h3>
+      <p class="hf-serif card-sub">{c.sub}</p>
+      <a class="hf-mono card-cta" href={`${prefix}/projetos`}>{c.cta}</a>
+    </div>
+  ))}
+</section>
+
+<section class="from-blog">
+  <div class="row-flex from-blog-head">
+    <h3 class="hf-display from-blog-title">{t.home.fromBlog}</h3>
+    <a class="hf-mono from-blog-all" href={`${prefix}/blog`}>{t.home.allPosts}</a>
+  </div>
+  <div class="grid-3 posts">
+    {recentPosts.map((p) => (
+      <PostCard
+        date={formatDate(p.data.pubDate, lang).toUpperCase()}
+        readingTime={p.data.readingTime}
+        title={p.data.title}
+        tag={p.data.tag}
+        href={postHref(p.slug)}
+        lang={lang}
+        variant="card"
+      />
+    ))}
+  </div>
+</section>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 56px;
+    align-items: start;
+    padding: 16px 0 56px;
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+  .headline {
+    font-size: 96px;
+    margin: 0 0 18px;
+  }
+  .ital {
+    font-style: italic;
+    font-weight: 400;
+  }
+  .intro {
+    font-size: 19px;
+    line-height: 1.45;
+    color: var(--fg-2);
+    max-width: 440px;
+    margin: 0 0 28px;
+  }
+  .cta-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .photo {
+    aspect-ratio: 4/5;
+    width: 100%;
+  }
+  .photo-credit {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--fg-3);
+    text-align: right;
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+  .cards {
+    margin: 28px 0 48px;
+  }
+  .card-num {
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    margin-bottom: 10px;
+  }
+  .card-title {
+    font-size: 28px;
+    margin: 0 0 10px;
+    font-style: italic;
+    font-weight: 400;
+  }
+  .card-sub {
+    font-size: 15px;
+    color: var(--fg-2);
+    margin: 0;
+    line-height: 1.5;
+  }
+  .card-cta {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg);
+    margin-top: 10px;
+    display: inline-block;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 1px;
+  }
+  .card-cta:hover {
+    color: var(--accent);
+  }
+  .from-blog {
+    padding-top: 32px;
+  }
+  .from-blog-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 18px;
+  }
+  .from-blog-title {
+    font-size: 24px;
+    margin: 0;
+  }
+  .from-blog-all {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-2);
+  }
+  .from-blog-all:hover {
+    color: var(--accent);
+  }
+  @media (max-width: 720px) {
+    .hero {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .headline {
+      font-size: 54px;
+    }
+  }
+</style>

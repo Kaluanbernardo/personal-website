@@ -1,0 +1,274 @@
+---
+import { getCollection } from 'astro:content';
+import { ui, type Lang, formatDate, tagDisplay } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft && data.lang === lang))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const featured = posts.find((p) => p.data.featured) ?? posts[0];
+const rest = posts.filter((p) => p !== featured);
+
+const prefix = lang === 'en' ? '/en' : '';
+
+// Build archive map: { 'mes ano': count }
+const months = lang === 'pt'
+  ? ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
+  : ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+
+const archiveMap = new Map<string, number>();
+posts.forEach((p) => {
+  const d = new Date(p.data.pubDate);
+  const key = `${months[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+  archiveMap.set(key, (archiveMap.get(key) ?? 0) + 1);
+});
+const archiveEntries = Array.from(archiveMap.entries()).slice(0, 5);
+
+const minLabel = lang === 'pt' ? 'min' : 'min';
+---
+
+<div class="grid">
+  <main>
+    <div class="eyebrow hf-mono">{t.blog.eyebrow}</div>
+    <h1 class="hf-display headline display-lg">
+      {t.blog.title.line1}<span class="ital">{t.blog.title.emph}</span>
+    </h1>
+    <p class="meta hf-mono">{t.blog.meta(posts.length)}</p>
+
+    <div class="filters">
+      {t.blog.filters.map((tag, i) => (
+        <button type="button" class={`hf-tag filter-btn ${i === 0 ? 'accent active' : ''}`} data-tag={tag}>{tag}</button>
+      ))}
+    </div>
+
+    {featured && (
+      <article class="featured" data-tag={featured.data.tag}>
+        <div class="kicker hf-mono">{t.blog.featuredKicker}</div>
+        <a href={`${prefix}/blog/${featured.slug}`}>
+          <h2 class="hf-display ftitle">{featured.data.title}</h2>
+        </a>
+        <p class="hf-serif fdesc">{featured.data.description}</p>
+        <div class="hf-mono fmeta">
+          {formatDate(featured.data.pubDate, lang)} · {featured.data.readingTime} {minLabel} · #{tagDisplay[lang][featured.data.tag] ?? featured.data.tag}
+        </div>
+      </article>
+    )}
+
+    <div class="rows">
+      {rest.map((p) => (
+        <a class="row" href={`${prefix}/blog/${p.slug}`} data-tag={p.data.tag}>
+          <span class="rdate hf-mono">{formatDate(p.data.pubDate, lang)}</span>
+          <h3 class="hf-display rtitle">{p.data.title}</h3>
+          <span class="rtag hf-mono">#{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
+          <span class="rmins hf-mono">{p.data.readingTime} {minLabel}</span>
+        </a>
+      ))}
+    </div>
+  </main>
+
+  <aside>
+    <div class="newsletter">
+      <div class="kicker hf-mono">{t.blog.newsletterKicker}</div>
+      <h3 class="hf-display nl-title">{t.blog.newsletterTitle}</h3>
+      <p class="hf-serif nl-copy">{t.blog.newsletterCopy}</p>
+      <form class="nl-form" action="https://example.substack.com/subscribe" method="post">
+        <input class="hf-mono nl-input" type="email" name="email" placeholder={t.blog.newsletterPlaceholder} required />
+        <button type="submit" class="hf-btn solid">→</button>
+      </form>
+    </div>
+
+    <div class="kicker hf-mono">{t.blog.archiveHeading}</div>
+    {archiveEntries.map(([m, count]) => (
+      <div class="archive-row hf-mono">{m} ({count})</div>
+    ))}
+  </aside>
+</div>
+
+<script>
+  const filters = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const items = document.querySelectorAll<HTMLElement>('[data-tag]');
+  const allLabel = filters[0]?.dataset.tag ?? '';
+  filters.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filters.forEach((b) => b.classList.remove('accent', 'active'));
+      btn.classList.add('accent', 'active');
+      const sel = btn.dataset.tag;
+      items.forEach((el) => {
+        const isAll = sel === allLabel;
+        const isMatch = isAll || el.dataset.tag === sel || el.dataset.tagAlias === sel;
+        (el as HTMLElement).style.display = isMatch ? '' : 'none';
+      });
+    });
+  });
+</script>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .headline {
+    font-size: 72px;
+    margin: 0 0 8px;
+    line-height: 0.95;
+  }
+  .ital {
+    font-style: italic;
+  }
+  .meta {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    margin: 0 0 28px;
+  }
+  .filters {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    cursor: pointer;
+  }
+  .featured {
+    background: var(--bg-2);
+    padding: 24px 28px;
+    margin-bottom: 28px;
+  }
+  .kicker {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .ftitle {
+    font-size: 36px;
+    margin: 0 0 10px;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .featured a:hover .ftitle {
+    color: var(--accent);
+  }
+  .fdesc {
+    font-size: 16px;
+    color: var(--fg-2);
+    margin: 0 0 14px;
+    line-height: 1.55;
+    max-width: 540px;
+    font-style: italic;
+  }
+  .fmeta {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+  }
+  .rows {
+    display: block;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 80px 1fr 100px 60px;
+    gap: 18px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    align-items: baseline;
+  }
+  .row:hover .rtitle {
+    color: var(--accent);
+  }
+  .rdate {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+  }
+  .rtitle {
+    font-size: 22px;
+    margin: 0;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .rtag {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-transform: uppercase;
+    text-align: right;
+  }
+  .rmins {
+    font-size: 11px;
+    color: var(--fg-3);
+    text-align: right;
+  }
+  .newsletter {
+    border: 1px solid var(--accent);
+    padding: 20px 22px;
+    margin-bottom: 28px;
+  }
+  .newsletter .kicker {
+    color: var(--accent);
+  }
+  .nl-title {
+    font-size: 22px;
+    margin: 0 0 10px;
+  }
+  .nl-copy {
+    font-size: 14px;
+    color: var(--fg-2);
+    margin: 0 0 14px;
+    line-height: 1.5;
+  }
+  .nl-form {
+    display: flex;
+  }
+  .nl-input {
+    flex: 1;
+    font-size: 12px;
+    padding: 8px 10px;
+    border: 1px solid var(--fg);
+    background: transparent;
+    color: var(--fg);
+    outline: none;
+  }
+  .archive-row {
+    font-size: 12px;
+    padding: 6px 0;
+    color: var(--fg-2);
+    border-bottom: 1px dashed var(--rule-soft);
+  }
+  @media (max-width: 720px) {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+    .rtag,
+    .rmins {
+      text-align: left;
+    }
+    .headline {
+      font-size: 48px;
+    }
+  }
+</style>

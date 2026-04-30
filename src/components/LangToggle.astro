@@ -1,0 +1,16 @@
+---
+import { ui, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  pathname: string;
+}
+const { lang, pathname } = Astro.props;
+
+// Compute href for both PT and EN regardless of current locale.
+const ptHref = ui.en.altLang.href(pathname); // ui.en.altLang strips the /en prefix → PT path
+const enHref = ui.pt.altLang.href(pathname); // ui.pt.altLang adds /en prefix → EN path
+---
+
+<a class={`hf-chip ${lang === 'pt' ? 'active' : ''}`} href={lang === 'pt' ? '#' : ptHref}>PT</a>
+<a class={`hf-chip ${lang === 'en' ? 'active' : ''}`} href={lang === 'en' ? '#' : enHref}>EN</a>

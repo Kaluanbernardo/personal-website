@@ -1,0 +1,41 @@
+---
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  title: string;
+  description?: string;
+  lang: Lang;
+  active?: 'home' | 'sobre' | 'cv' | 'academico' | 'blog' | 'projetos' | 'contato';
+  navVariant?: 'full' | 'back';
+  backLabel?: string;
+  backHref?: string;
+}
+const {
+  title,
+  description,
+  lang,
+  active = 'home',
+  navVariant = 'full',
+  backLabel,
+  backHref,
+} = Astro.props;
+const pathname = Astro.url.pathname;
+---
+
+<Base title={title} description={description} lang={lang}>
+  <main class="page">
+    <Nav
+      lang={lang}
+      active={active}
+      variant={navVariant}
+      backLabel={backLabel}
+      backHref={backHref}
+      pathname={pathname}
+    />
+    <slot />
+    <Footer lang={lang} />
+  </main>
+</Base>

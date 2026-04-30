@@ -1,5 +1,6 @@
 ---
 import { ui, type Lang } from '../i18n/ui';
+import { link, stripBase } from '../lib/links';
 
 interface Props {
   lang: Lang;
@@ -7,9 +8,11 @@ interface Props {
 }
 const { lang, pathname } = Astro.props;
 
-// Compute href for both PT and EN regardless of current locale.
-const ptHref = ui.en.altLang.href(pathname); // ui.en.altLang strips the /en prefix → PT path
-const enHref = ui.pt.altLang.href(pathname); // ui.pt.altLang adds /en prefix → EN path
+// Strip the deploy base from the pathname so the i18n helpers operate on
+// site-relative routes (/sobre, /en/sobre), then re-apply via link().
+const normalized = stripBase(pathname);
+const ptHref = link(ui.en.altLang.href(normalized));
+const enHref = link(ui.pt.altLang.href(normalized));
 ---
 
 <a class={`hf-chip ${lang === 'pt' ? 'active' : ''}`} href={lang === 'pt' ? '#' : ptHref}>PT</a>

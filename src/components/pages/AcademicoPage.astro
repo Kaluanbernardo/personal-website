@@ -35,42 +35,42 @@ const publications = allPubs
   </div>
 </section>
 
-<section class="block">
-  <div class="kicker hf-mono">{t.academico.formationHeading}</div>
-  <div class="formation-list">
-    {t.academico.formation.map((e) => (
-      <div class="formation-row">
-        <span class="period hf-mono">{e.p}</span>
-        <div class="formation-body">
-          <div class="hf-display role">{e.r}</div>
+<section class="main-grid">
+  <aside class="formation">
+    <div class="kicker hf-mono">{t.academico.formationHeading}</div>
+    <div class="formation-list">
+      {t.academico.formation.map((e) => (
+        <article class="formation-row">
+          <span class="period hf-mono">{e.p}</span>
+          <h3 class="hf-display role">{e.r}</h3>
           <div class="org">{e.o}</div>
           <p class="desc">{e.d}</p>
-        </div>
-      </div>
-    ))}
-  </div>
-</section>
+        </article>
+      ))}
+    </div>
+  </aside>
 
-<section class="block">
-  <div class="kicker hf-mono">{t.academico.publicationsHeading}</div>
-  <div class="pub-list">
-    {publications.map((p) => (
-      <a class="pub-row" href={p.url ?? '#'} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
-        <span class="pub-year hf-mono">{p.year}</span>
-        <div class="pub-body">
-          <div class="hf-display pub-title">{p.title}</div>
-          <div class="pub-venue">{p.venue}</div>
-        </div>
-        <span class="pub-tag hf-mono">#{tagDisplay[lang][p.kind] ?? p.kind}</span>
-        <span class="pub-arrow hf-mono">↗</span>
-      </a>
-    ))}
+  <div class="pubs">
+    <div class="kicker hf-mono">{t.academico.publicationsHeading}</div>
+    <div class="pub-list">
+      {publications.map((p) => (
+        <a class="pub-row" href={p.url ?? '#'} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
+          <span class="pub-year hf-mono">{p.year}</span>
+          <div class="pub-body">
+            <h3 class="hf-display pub-title">{p.title}</h3>
+            <div class="pub-venue">{p.venue}</div>
+          </div>
+          <span class="pub-tag hf-mono">#{tagDisplay[lang][p.kind] ?? p.kind}</span>
+          <span class="pub-arrow hf-mono">↗</span>
+        </a>
+      ))}
+    </div>
   </div>
 </section>
 
 <style>
   .head {
-    margin-bottom: 56px;
+    margin-bottom: 48px;
   }
   .eyebrow {
     font-size: 12px;
@@ -100,64 +100,64 @@ const publications = allPubs
     gap: 8px;
   }
 
-  .block {
-    margin-bottom: 56px;
-  }
   .kicker {
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.16em;
     color: var(--fg-3);
     text-transform: uppercase;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
 
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 2.4fr;
+    gap: 64px;
+    align-items: start;
+  }
+
+  .formation {
+    position: sticky;
+    top: 24px;
+  }
   .formation-list {
     display: flex;
     flex-direction: column;
   }
   .formation-row {
-    display: grid;
-    grid-template-columns: 180px 1fr;
-    gap: 32px;
-    padding: 28px 0;
-    border-bottom: 1px solid var(--rule-soft);
-    align-items: start;
-  }
-  .formation-row:first-child {
+    padding: 20px 0;
     border-top: 1px solid var(--rule-soft);
   }
+  .formation-row:last-child {
+    border-bottom: 1px solid var(--rule-soft);
+  }
   .period {
-    font-size: 12px;
+    display: block;
+    font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.08em;
     color: var(--fg-3);
     text-transform: uppercase;
-    padding-top: 4px;
-  }
-  .formation-body {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+    margin-bottom: 8px;
   }
   .role {
-    font-size: 22px;
+    font-size: 17px;
     font-weight: 600;
-    line-height: 1.2;
+    margin: 0 0 4px;
+    line-height: 1.25;
   }
   .org {
-    font-size: 14px;
+    font-size: 12px;
     font-family: var(--mono);
     color: var(--fg-2);
     letter-spacing: 0.04em;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
   }
   .desc {
-    font-size: 16px;
+    font-size: 13px;
     color: var(--fg-2);
     margin: 0;
-    line-height: 1.6;
-    max-width: 720px;
+    line-height: 1.55;
   }
 
   .pub-list {
@@ -200,9 +200,10 @@ const publications = allPubs
     min-width: 0;
   }
   .pub-title {
-    font-size: 18px;
+    font-size: 19px;
     font-weight: 600;
     line-height: 1.3;
+    margin: 0;
     transition: color 0.18s ease;
   }
   .pub-venue {
@@ -216,24 +217,29 @@ const publications = allPubs
     letter-spacing: 0.06em;
     color: var(--accent);
     text-transform: uppercase;
-    padding-top: 4px;
+    padding-top: 6px;
     text-align: right;
   }
   .pub-arrow {
     font-size: 14px;
     color: var(--fg-3);
     text-align: right;
-    padding-top: 4px;
+    padding-top: 6px;
     transition: color 0.18s ease;
   }
 
+  @media (max-width: 960px) {
+    .main-grid {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    .formation {
+      position: static;
+    }
+  }
   @media (max-width: 720px) {
     .headline {
       font-size: 40px;
-    }
-    .formation-row {
-      grid-template-columns: 1fr;
-      gap: 8px;
     }
     .pub-row {
       grid-template-columns: 60px 1fr 24px;

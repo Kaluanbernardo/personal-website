@@ -39,12 +39,11 @@ type Dict = {
   cv: {
     eyebrow: string;
     title: { line1: string; emph: string };
-    updated: string;
     download: string;
     experienceHeading: string;
     experience: { p: string; r: string; o: string; d: string; cta: string }[];
     skillsHeading: string;
-    skills: string[];
+    skills: { name: string; level: number }[];
   };
   academico: {
     eyebrow: string;
@@ -165,7 +164,6 @@ export const ui: Record<Lang, Dict> = {
     cv: {
       eyebrow: '02 · currículo profissional',
       title: { line1: 'Currículo ', emph: 'profissional.' },
-      updated: 'atualizado em abril/2026 · disponível também em inglês',
       download: 'baixar PDF ↓',
       experienceHeading: 'experiência',
       experience: [
@@ -193,17 +191,16 @@ export const ui: Record<Lang, Dict> = {
       ],
       skillsHeading: 'habilidades',
       skills: [
-        'descoberta',
-        'pesquisa qualitativa',
-        'métricas de produto',
-        'escrita',
-        'edição',
-        'SQL',
-        'Notion',
-        'Figma',
-        'entrevistas',
-        'redação',
-        'reportagem',
+        { name: 'escrita', level: 95 },
+        { name: 'reportagem', level: 90 },
+        { name: 'entrevistas', level: 90 },
+        { name: 'descoberta', level: 88 },
+        { name: 'edição', level: 88 },
+        { name: 'pesquisa qualitativa', level: 85 },
+        { name: 'métricas de produto', level: 78 },
+        { name: 'Notion', level: 85 },
+        { name: 'Figma', level: 70 },
+        { name: 'SQL', level: 60 },
       ],
     },
     academico: {
@@ -361,7 +358,6 @@ export const ui: Record<Lang, Dict> = {
     cv: {
       eyebrow: '02 · professional cv',
       title: { line1: 'Professional ', emph: 'CV.' },
-      updated: 'updated April/2026 · also available in Portuguese',
       download: 'download PDF ↓',
       experienceHeading: 'experience',
       experience: [
@@ -389,17 +385,16 @@ export const ui: Record<Lang, Dict> = {
       ],
       skillsHeading: 'skills',
       skills: [
-        'discovery',
-        'qualitative research',
-        'product metrics',
-        'writing',
-        'editing',
-        'SQL',
-        'Notion',
-        'Figma',
-        'interviewing',
-        'copywriting',
-        'reporting',
+        { name: 'writing', level: 95 },
+        { name: 'reporting', level: 90 },
+        { name: 'interviewing', level: 90 },
+        { name: 'discovery', level: 88 },
+        { name: 'editing', level: 88 },
+        { name: 'qualitative research', level: 85 },
+        { name: 'product metrics', level: 78 },
+        { name: 'Notion', level: 85 },
+        { name: 'Figma', level: 70 },
+        { name: 'SQL', level: 60 },
       ],
     },
     academico: {

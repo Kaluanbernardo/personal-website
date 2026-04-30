@@ -1,5 +1,6 @@
 ---
 import { ui, type Lang } from '../../i18n/ui';
+import { link } from '../../lib/links';
 
 interface Props {
   lang: Lang;
@@ -11,6 +12,7 @@ const t = ui[lang];
 <div class="sobre grid-1-2">
   <aside>
     <div class="img-frame photo">
+      <img src={link('/img/portrait.jpg')} alt="" onerror="this.remove()" />
       <div class="ph">retrato</div>
     </div>
     <div class="photo-credit hf-mono">{t.sobre.photoCredit}</div>

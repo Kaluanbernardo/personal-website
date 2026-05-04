@@ -3,9 +3,6 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  schedule:
-    # Daily rebuild at 06:00 UTC so Notion edits go live without a manual trigger.
-    - cron: '0 6 * * *'
 
 permissions:
   contents: read
@@ -24,10 +21,6 @@ jobs:
       - uses: withastro/action@v3
         env:
           PUBLIC_GA_ID: ${{ secrets.PUBLIC_GA_ID }}
-          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-          NOTION_DB_POSTS: ${{ secrets.NOTION_DB_POSTS }}
-          NOTION_DB_PROJECTS: ${{ secrets.NOTION_DB_PROJECTS }}
-          NOTION_DB_PUBS: ${{ secrets.NOTION_DB_PUBS }}
 
   deploy:
     needs: build

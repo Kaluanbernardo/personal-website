@@ -39,7 +39,7 @@ t.blog.filters.forEach((label, i) => {
 
 <div class="post-list">
   {posts.map((p) => (
-    <a class="post-row" href={postHref(p.slug)} data-tag={p.data.tag}>
+    <a class="post-row" href={postHref(p.data.slug)} data-tag={p.data.tag}>
       <span class="rdate hf-mono">{formatDate(p.data.pubDate, lang)}</span>
       <div class="rbody">
         <h3 class="hf-display rtitle">{p.data.title}</h3>

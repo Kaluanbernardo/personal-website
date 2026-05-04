@@ -14,7 +14,7 @@ const postHref = (slug: string) => link(`${prefix}/blog/${slug}`);
 
 const all = (await getCollection('posts', ({ data }) => !data.draft && data.lang === lang))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-const idx = all.findIndex((p) => p.data.slug === post.data.slug);
+const idx = all.findIndex((p) => p.id === post.id);
 const prev = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : undefined;
 const next = idx > 0 ? all[idx - 1] : undefined;
 
@@ -37,9 +37,9 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
 
   <hr class="hf-rule-soft sep" />
   <nav class="post-nav">
-    {prev ? <a class="hf-mono nav-link" href={postHref(prev.data.slug)}>{t.post.prev}</a> : <span></span>}
+    {prev ? <a class="hf-mono nav-link" href={postHref(prev.id)}>{t.post.prev}</a> : <span></span>}
     <a class="hf-mono nav-link accent" href="https://example.substack.com" target="_blank" rel="noreferrer noopener">{t.post.subscribe}</a>
-    {next ? <a class="hf-mono nav-link" href={postHref(next.data.slug)}>{t.post.next}</a> : <span></span>}
+    {next ? <a class="hf-mono nav-link" href={postHref(next.id)}>{t.post.next}</a> : <span></span>}
   </nav>
 </article>
 

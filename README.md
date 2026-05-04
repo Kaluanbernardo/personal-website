@@ -21,6 +21,21 @@ npm run build
 npm run preview
 ```
 
+## Editing guide
+
+A complete editing manual (in PT-BR) covering Keystatic, the i18n strings, public assets, and the GitHub Pages deploy lives at:
+
+- **`docs/MANUAL.md`** — source (Markdown)
+- **`docs/manual.pdf`** — printable version
+
+To regenerate the PDF after edits to `MANUAL.md`:
+
+```bash
+bash scripts/build-manual-pdf.sh
+```
+
+(Requires `pandoc` and `weasyprint` installed on the system.)
+
 ## Editing content (Keystatic)
 
 With the dev server running, the admin UI is at:

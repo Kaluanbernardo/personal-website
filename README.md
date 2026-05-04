@@ -1,12 +1,12 @@
 # personal-website
 
-Personal site — Editorial direction (B&W minimal + ochre accent), built with Astro 5, content fetched from Notion at build time, deployed to GitHub Pages.
+Personal site — Editorial direction (B&W minimal + ochre accent), built with Astro 5 + Markdoc content collections, edited locally via Keystatic, deployed to GitHub Pages.
 
 ## Stack
 
 - Astro 5 (static)
-- Content fetched from Notion via the Astro Content Layer API (`notion-astro-loader`)
-- Three Notion databases: posts, projects, publications
+- Markdoc content collections (posts, projects, pubs) with Zod schemas
+- Keystatic local admin for editing content via UI (dev-only)
 - i18n PT (default) + EN
 - Newsreader + JetBrains Mono, self-hosted via `@fontsource`
 - Light/dark theme toggle (localStorage, no flash)
@@ -16,77 +16,65 @@ Personal site — Editorial direction (B&W minimal + ochre accent), built with A
 
 ```bash
 npm install
-cp .env.example .env   # then fill NOTION_TOKEN + the three NOTION_DB_* IDs
-npm run dev            # http://localhost:4321
+npm run dev          # http://localhost:4321
 npm run build
 npm run preview
 ```
 
-`npm run dev` and `npm run build` both fetch from Notion at boot, so the env vars must be set or the build errors out.
+## Editing content (Keystatic)
 
-## Notion setup
+With the dev server running, the admin UI is at:
 
-1. Create a Notion integration at <https://www.notion.so/profile/integrations>. Copy the **Internal Integration Token** into `NOTION_TOKEN`.
-2. Create three databases in your workspace and **share each one with the integration** (the … menu on the database → *Connections* → add your integration). Required properties:
+```
+http://localhost:4321/personal-website/keystatic
+```
 
-   **Posts**
-   - `Title` (title)
-   - `Slug` (text) — used in URLs, e.g. `metodologias-de-descoberta`
-   - `Description` (text)
-   - `Pub date` (date)
-   - `Reading time` (number, minutes)
-   - `Tag` (select: `ensaio`, `produto`, `jornalismo`, `leitura`, `notas`, `academia`)
-   - `Featured` (checkbox)
-   - `Draft` (checkbox)
-   - `Lang` (select: `pt`, `en`)
+It edits the `.mdoc` files in `src/content/{posts,projects,pubs}` directly. After editing, commit and push as usual — the GitHub Action rebuilds and deploys.
 
-   **Projects**
-   - `Title` (title)
-   - `Kind` (select: `jornalismo`, `produto`, `academia`, `palestra`, `pessoal`)
-   - `Place` (text)
-   - `Year` (number)
-   - `URL` (url, optional)
-   - `Thumb` (text, optional — path under `/public`, e.g. `img/projetos/foo.jpg`)
-   - `Lang` (select: `pt`, `en`)
+The Keystatic integration only loads in development (`NODE_ENV !== 'production'`), so the admin route is **not** included in the production build and `/keystatic` will 404 on the deployed site. Schema lives at `keystatic.config.ts` and must stay in sync with the Zod schemas at `src/content/config.ts`.
 
-   **Publications**
-   - `Title` (title)
-   - `Venue` (text)
-   - `Year` (number)
-   - `Kind` (select: `artigo`, `capítulo`, `livro`, `tese`, `dissertação`)
-   - `URL` (url, optional)
-   - `Lang` (select: `pt`, `en`)
+## One-time migration from Notion
 
-3. Copy each database's ID (the 32-char hex in its URL) into `NOTION_DB_POSTS`, `NOTION_DB_PROJECTS`, `NOTION_DB_PUBS`.
-4. Body content for posts (and optional descriptions for projects/pubs) lives in the **page content** of each Notion entry — write whatever Notion blocks you like; `notion-astro-loader` renders them to HTML at build time.
+This branch supersedes a previous Notion-as-CMS setup. If you had content in the three Notion databases and want to bring it into the new `.mdoc`-based flow:
 
-Property and field names are matched **exactly** (case-sensitive) — see `src/content/config.ts`.
+```bash
+# 1. Make sure .env still has NOTION_TOKEN + the three NOTION_DB_* IDs.
+cp .env.example .env
+
+# 2. Run the migration script.
+npm run migrate:notion
+
+# 3. Review the generated files under src/content/, then commit.
+git add src/content
+git commit -m "Migrate Notion content to .mdoc"
+
+# 4. Once you're happy with the result, you can clean up:
+#    - delete scripts/migrate-notion-to-mdoc.mjs
+#    - npm uninstall @notionhq/client notion-to-md
+#    - remove the NOTION_* lines from .env and .env.example
+```
+
+If you don't have meaningful Notion content (only test entries), skip this section — the repo already includes placeholder `.mdoc` files you can edit via Keystatic.
 
 ## Other configuration
 
 1. Edit `astro.config.mjs` and set `site` / `base` for your repo:
    - User/org page (`<user>.github.io`): `site: 'https://<user>.github.io'`, `base: '/'`
    - Project page (any other repo): `site: 'https://<user>.github.io'`, `base: '/<repo>/'`
-2. Set `PUBLIC_GA_ID` in `.env` if you want GA4 enabled.
+2. Copy `.env.example` to `.env` and set `PUBLIC_GA_ID` if you want GA4 enabled.
 3. Replace placeholder `public/cv-pt.pdf` and `public/cv-en.pdf` with real files.
 4. Drop your portrait at `public/img/portrait.jpg` and replace `<div class="img-frame">` placeholders in the page components.
 
+## Content
+
+- `src/content/posts/*.mdoc` — blog posts (one file per post). Set `lang: pt` or `lang: en`.
+- `src/content/projects/*.mdoc` — projects grid entries.
+- `src/content/pubs/*.mdoc` — academic publications shown on `/academico`.
+
+Files are Markdoc (a Markdown superset). Plain Markdown works as-is; Markdoc tags are available if needed.
+
+Astro schemas live at `src/content/config.ts`. Keystatic schemas live at `keystatic.config.ts` and must mirror them.
+
 ## Deploy
 
-`.github/workflows/deploy.yml` builds with `withastro/action@v3` and publishes to GitHub Pages on three triggers:
-
-- Push to `main`
-- Manual `workflow_dispatch` (the **Run workflow** button on the Actions tab) — use this to publish a Notion edit immediately
-- Daily cron at 06:00 UTC
-
-Required repository secrets (Settings → Secrets and variables → Actions):
-
-- `NOTION_TOKEN`
-- `NOTION_DB_POSTS`
-- `NOTION_DB_PROJECTS`
-- `NOTION_DB_PUBS`
-- `PUBLIC_GA_ID` (optional)
-
-## Design source
-
-The visual direction comes from the Claude Design handoff (HF1 Editorial). See `/tmp/design-extract/site-pessoal/project/hifi/*.jsx` for the original prototypes; CSS tokens were ported into `src/styles/global.css`.
+`.github/workflows/deploy.yml` builds with `withastro/action@v3` and publishes to GitHub Pages on every push to `main` (and on manual `workflow_dispatch`). Add a `PUBLIC_GA_ID` repository secret if you want GA enabled in production.

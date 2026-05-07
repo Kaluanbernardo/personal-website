@@ -2,7 +2,6 @@
 import { ui, type Lang } from '../i18n/ui';
 import { link } from '../lib/links';
 import Monogram from './Monogram.astro';
-import ThemeToggle from './ThemeToggle.astro';
 import LangToggle from './LangToggle.astro';
 
 interface Props {
@@ -74,7 +73,6 @@ const username = (t.brand || '').replace(/\s+/g, '_');
 
   <span class="nav-aux">
     <LangToggle lang={lang} pathname={pathname} />
-    <ThemeToggle />
   </span>
 </header>
 

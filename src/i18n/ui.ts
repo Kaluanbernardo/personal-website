@@ -147,9 +147,9 @@ export const ui: Record<Lang, Dict> = {
     sobre: {
       eyebrow: '01 · sobre',
       title: { line1: 'Em ', emph: 'poucas', line2: 'palavras.' },
-      p1Lead: 'S',
-      p1: 'ou Kaluan Bernardo. Trabalho com produto digital em educação, escrevo sobre tecnologia e mídia, e investigo comunicação como doutorando. Este site é onde essas três conversas se encontram.',
-      p2: 'Comecei na redação. Migrei pra produto sem deixar de escrever. Voltei à academia porque algumas perguntas exigem mais do que um deadline.',
+      p1Lead: 'H',
+      p1: 'á mais de 15 anos, trabalho na interseção entre jornalismo, conteúdo, educação, produto e estratégia. Embora pareçam muitas frentes para atuar, todas elas conversam entre si o tempo todo. Pode chamar de interdisciplinaridade, mas eu chamo de curiosidade mesmo. Aqui, tento mostrar como esses interesses se cruzam.',
+      p2: '',
       nowHeading: 'agora',
       nowRows: [
         ['produto', 'Liderando descoberta de uma feature de avaliação na empresa'],
@@ -341,9 +341,9 @@ export const ui: Record<Lang, Dict> = {
     sobre: {
       eyebrow: '01 · about',
       title: { line1: 'In a ', emph: 'few', line2: 'words.' },
-      p1Lead: 'I',
-      p1: " am Kaluan Bernardo. I work in digital product for education, write about technology and media, and study communication as a doctoral candidate. This site is where those three conversations meet.",
-      p2: 'I started in the newsroom. Moved into product without giving up writing. Came back to academia because some questions ask for more than a deadline.',
+      p1Lead: 'F',
+      p1: "or over 15 years, I've been working at the intersection of journalism, content, education, product, and strategy. They might seem like a lot of different fields to work in, but they're all in conversation with each other all the time. You can call it interdisciplinarity — I just call it curiosity. Here, I try to show how these interests cross paths.",
+      p2: '',
       nowHeading: 'now',
       nowRows: [
         ['product', 'Leading discovery for an assessment feature'],

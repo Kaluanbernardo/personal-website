@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import { ui, type Lang, formatDate, tagDisplay } from '../../i18n/ui';
+import { ui, type Lang, formatDate, formatLongDate, tagDisplay } from '../../i18n/ui';
 import { link } from '../../lib/links';
 
 interface Props {
@@ -77,10 +77,14 @@ const indexEntries = [
 ];
 
 const heroTags = lang === 'en'
-  ? ['anti-design', 'product', 'journalism', 'academia', 'digital culture', 'tech', 'punk', 'são paulo']
-  : ['anti-design', 'product', 'jornalismo', 'academia', 'cultura digital', 'tech', 'punk', 'são paulo'];
+  ? ['Product', 'Journalism', 'Content', 'Technology', 'Games', 'Culture', 'Strategy', 'AI', 'Anything_You_Want_Just_Dream']
+  : ['Produto', 'Jornalismo', 'Conteúdo', 'Tecnologia', 'Games', 'Cultura', 'Estratégia', 'IA', 'Tudo_O_Que_Você_Quiser_Basta_Sonhar'];
 
-const editionLabel = lang === 'en' ? 'EDITION 04 · 2026 · SÃO PAULO' : 'EDIÇÃO 04 · 2026 · SÃO PAULO';
+const now = new Date();
+const [dateDay, dateMon, dateYr] = formatLongDate(now, lang).split(' ');
+const locationLabel = lang === 'en'
+  ? 'SÃO PAULO, BRAZIL, SOUTH AMERICA, EARTH'
+  : 'SÃO PAULO, BRASIL, AMÉRICA DO SUL, TERRA';
 const indexHeading = lang === 'en' ? 'INDEX / RAW NAVIGATION' : 'ÍNDICE / NAVEGAÇÃO RAW';
 const entriesLabel = lang === 'en' ? `0${indexEntries.length}_ENTRIES` : `0${indexEntries.length}_ENTRADAS`;
 
@@ -99,7 +103,9 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
 
   <div class="hero-main">
     <div class="hero-eyebrow">
-      <span class="hf-mono kicker">{editionLabel}</span>
+      <span class="hf-mono kicker" data-live-date data-lang={lang}>
+        <span class="d-day">{dateDay}</span> · <span class="d-mon">{dateMon.toUpperCase()}</span> · <span class="d-yr">{dateYr}</span> · {locationLabel}
+      </span>
       <span class="rec ad-blink">● REC</span>
     </div>
 
@@ -111,19 +117,11 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
     <p class="hero-intro ad-mono">
       {lang === 'en' ? (
         <>
-          <span class="ad-mark-hot">PRODUCT MANAGER</span> in education,
-          <span class="ad-mark-cyan">FREELANCE JOURNALIST</span> and a
-          <span class="ad-mark-acid">PHD CANDIDATE</span> in communication.
-          <br /><br />
-          I write on the blog. I send a newsletter. I take pitches. Nothing else.
+          I create <span class="ad-mark-hot">products</span>, develop <span class="ad-mark-cyan">strategies</span>, do research and <span class="ad-mark-acid">analysis</span>, think up and execute <span class="ad-mark-ylw">ideas</span> — all with a touch of <span class="ad-mark-orng">groove</span>. I like technology, culture, games music and journalism. I also like potatoes and <span class="ad-mark-blue">studying</span>.
         </>
       ) : (
         <>
-          <span class="ad-mark-hot">PRODUCT MANAGER</span> em educação,
-          <span class="ad-mark-cyan">JORNALISTA FREELANCER</span> e
-          <span class="ad-mark-acid">DOUTORANDO</span> em comunicação.
-          <br /><br />
-          Escrevo no blog. Mando newsletter. Aceito propostas. Nada mais.
+          Crio <span class="ad-mark-hot">produtos</span>, desenvolvo <span class="ad-mark-cyan">estratégias</span>, faço pesquisas e <span class="ad-mark-acid">análises</span>, penso e executo <span class="ad-mark-ylw">ideias</span> — tudo com um tiquinho de <span class="ad-mark-orng">molho</span>. Gosto de tecnologia, cultura, games música e jornalismo. Também gosto de batata e de <span class="ad-mark-blue">estudar</span>.
         </>
       )}
     </p>
@@ -133,17 +131,6 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
       <a class="ad-btn ylw" href={cvPdfHref} download>↓ {t.home.ctaCV}</a>
     </div>
   </div>
-
-  <aside class="hero-aside">
-    <div class="ad-sticker stamp">★ EST. 2026 ★</div>
-    <div class="now-playing ad-box">
-      <div class="np-kicker">{'> '}{lang === 'en' ? 'NOW PLAYING' : 'NOW PLAYING'}</div>
-      <div class="np-track">TIM MAIA — IMUNIZAÇÃO RACIONAL</div>
-      <div class="np-time">03:42 / 06:18</div>
-      <div class="np-bar"><span></span></div>
-    </div>
-    <div class="visits ad-tiny">VISITS: 0001337</div>
-  </aside>
 
   <div class="hero-tags">
     {heroTags.map((tag, i) => (
@@ -195,7 +182,7 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
     position: relative;
     padding: 30px 0 36px;
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr;
     gap: 24px;
     align-items: flex-start;
   }
@@ -215,7 +202,7 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
       linear-gradient(to right, rgba(0,0,0,0.08) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(0,0,0,0.08) 1px, transparent 1px);
   }
-  .hero-main, .hero-aside, .hero-tags { position: relative; z-index: 1; }
+  .hero-main, .hero-tags { position: relative; z-index: 1; }
 
   .hero-eyebrow {
     display: flex;
@@ -253,7 +240,7 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
 
   .hero-intro {
     font-size: 16px;
-    max-width: 540px;
+    max-width: 760px;
     margin-top: 24px;
     line-height: 1.4;
   }
@@ -263,55 +250,6 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-  }
-
-  .hero-aside {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-end;
-    min-width: 260px;
-  }
-  .stamp {
-    background: transparent;
-    color: var(--ylw);
-    border-color: var(--ylw);
-    transform: rotate(6deg);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    align-self: flex-end;
-  }
-  .now-playing {
-    border: 2px solid var(--fg);
-    padding: 8px 14px;
-    background: var(--bg);
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    width: 240px;
-  }
-  .np-kicker { color: var(--acid); margin-bottom: 4px; }
-  .np-track { letter-spacing: 0.04em; }
-  .np-time { opacity: 0.5; margin-top: 4px; }
-  .np-bar {
-    height: 4px;
-    background: #222;
-    margin-top: 6px;
-    position: relative;
-  }
-  :global([data-theme='light']) .np-bar { background: #cfc9b6; }
-  .np-bar > span {
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: 58%;
-    background: var(--hot);
-  }
-  .visits {
-    border: 1.5px solid var(--cyan);
-    color: var(--cyan);
-    padding: 6px 8px;
-    font-family: var(--tiny);
-    font-size: 9px;
   }
 
   .hero-tags {
@@ -441,11 +379,6 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
   }
 
   @media (max-width: 960px) {
-    .hero {
-      grid-template-columns: 1fr;
-    }
-    .hero-aside { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
-    .now-playing { width: auto; flex: 1 1 240px; }
     .bi-row {
       grid-template-columns: 40px 1fr 60px 24px;
       gap: 10px;
@@ -460,3 +393,23 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
     .fb-title { font-size: 28px; }
   }
 </style>
+
+<script>
+  const monthsByLang: Record<string, string[]> = {
+    pt: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
+    en: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
+  };
+  const update = () => {
+    const now = new Date();
+    document.querySelectorAll<HTMLElement>('[data-live-date]').forEach((el) => {
+      const lang = el.dataset.lang === 'en' ? 'en' : 'pt';
+      const day = el.querySelector<HTMLElement>('.d-day');
+      const mon = el.querySelector<HTMLElement>('.d-mon');
+      const yr = el.querySelector<HTMLElement>('.d-yr');
+      if (day) day.textContent = String(now.getDate()).padStart(2, '0');
+      if (mon) mon.textContent = monthsByLang[lang][now.getMonth()].toUpperCase();
+      if (yr) yr.textContent = String(now.getFullYear());
+    });
+  };
+  update();
+</script>

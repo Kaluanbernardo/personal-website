@@ -76,7 +76,7 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
 
     <div class="serif body">
       <p>{t.sobre.p1Lead}{t.sobre.p1}</p>
-      <p>{t.sobre.p2}</p>
+      {t.sobre.p2 && <p>{t.sobre.p2}</p>}
     </div>
 
     <div class="cta-row">

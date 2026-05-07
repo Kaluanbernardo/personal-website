@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Manual do site · Site pessoal</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bungee&family=Departure+Mono&family=Space+Mono:wght@400;700&display=swap');
+  :root {
+    --bg: #fbfbf9;
+    --fg: #0a0a0a;
+    --fg-2: #2a2a26;
+    --fg-3: #6e6c66;
+    --hot: #ff2d55;
+    --cyan: #00f0ff;
+    --acid: #c4ff00;
+    --ylw: #ffe600;
+    --vio: #b400ff;
+    --orng: #ff6a00;
+    --mono: 'Departure Mono', 'Space Mono', ui-monospace, monospace;
+    --bungee: 'Bungee', sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--mono);
+    color: var(--fg);
+    background: var(--bg);
+    font-size: 11pt;
+    line-height: 1.55;
+  }
+  .page {
+    padding: 22mm 22mm;
+    page-break-after: always;
+    break-after: page;
+  }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+
+  h1 {
+    font-family: var(--bungee);
+    font-weight: 400;
+    font-size: 32pt;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    line-height: 0.95;
+    margin: 0 0 8pt;
+  }
+  h1 .hot { background: var(--hot); color: #000; padding: 0 6pt; }
+  h1 .acid { background: var(--acid); color: #000; padding: 0 6pt; }
+  h1 .cyan { background: var(--cyan); color: #000; padding: 0 6pt; }
+  h1 .ylw { background: var(--ylw); color: #000; padding: 0 6pt; }
+  h1 .vio { background: var(--vio); color: #fff; padding: 0 6pt; }
+
+  h2 {
+    font-family: var(--bungee);
+    font-weight: 400;
+    font-size: 18pt;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    margin: 22pt 0 8pt;
+    padding-bottom: 4pt;
+    border-bottom: 2pt solid var(--fg);
+    line-height: 1.05;
+  }
+  h3 {
+    font-family: var(--bungee);
+    font-weight: 400;
+    font-size: 13pt;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    margin: 18pt 0 6pt;
+  }
+
+  .kicker {
+    font-size: 8pt;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--hot);
+    margin-bottom: 6pt;
+  }
+  .lead {
+    font-size: 12pt;
+    line-height: 1.5;
+    margin: 0 0 14pt;
+    max-width: 80%;
+  }
+  p { margin: 0 0 9pt; }
+  ul, ol { margin: 0 0 10pt; padding-left: 18pt; }
+  li { margin-bottom: 4pt; }
+  strong { font-weight: 700; }
+  em { font-style: normal; background: var(--ylw); padding: 0 4pt; }
+
+  code {
+    font-family: var(--mono);
+    background: #efece2;
+    padding: 1pt 4pt;
+    font-size: 9.5pt;
+    border: 1pt solid #cfc9b6;
+  }
+  pre {
+    font-family: var(--mono);
+    background: #0a0a0a;
+    color: #f5f5f0;
+    padding: 10pt 12pt;
+    font-size: 9pt;
+    line-height: 1.5;
+    border-left: 4pt solid var(--acid);
+    overflow-x: auto;
+    margin: 8pt 0 14pt;
+    white-space: pre-wrap;
+  }
+  pre .c { color: #8a8884; }
+  pre .k { color: var(--acid); }
+  pre .s { color: var(--ylw); }
+  pre .h { color: var(--hot); }
+
+  .box {
+    border: 2pt solid var(--fg);
+    padding: 10pt 12pt;
+    margin: 10pt 0 14pt;
+  }
+  .box-acid { border-color: var(--acid); }
+  .box-hot { border-color: var(--hot); }
+  .box-cyan { border-color: var(--cyan); }
+  .box-ylw { border-color: var(--ylw); }
+  .box-vio { border-color: var(--vio); }
+  .box-title {
+    font-size: 9pt;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4pt;
+  }
+  .box-acid .box-title { color: var(--acid); }
+  .box-hot  .box-title { color: var(--hot); }
+  .box-cyan .box-title { color: var(--cyan); }
+  .box-ylw  .box-title { color: var(--orng); }
+  .box-vio  .box-title { color: var(--vio); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8pt 0 14pt;
+    font-size: 9.5pt;
+  }
+  th, td {
+    border: 1.2pt solid var(--fg);
+    padding: 5pt 7pt;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: var(--fg);
+    color: var(--bg);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 8.5pt;
+  }
+  td code { background: transparent; border: none; padding: 0; font-size: 9pt; }
+
+  .tag {
+    display: inline-block;
+    font-size: 8pt;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1.5pt solid currentColor;
+    padding: 2pt 6pt;
+    margin-right: 4pt;
+  }
+  .tag.hot { background: var(--hot); color: #000; border-color: #000; }
+  .tag.cyan { background: var(--cyan); color: #000; border-color: #000; }
+  .tag.acid { background: var(--acid); color: #000; border-color: #000; }
+  .tag.ylw { background: var(--ylw); color: #000; border-color: #000; }
+  .tag.vio { background: var(--vio); color: #fff; border-color: #000; }
+
+  .cover {
+    height: 250mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 22mm 22mm;
+    page-break-after: always;
+    break-after: page;
+  }
+  .cover .top { font-size: 9pt; letter-spacing: 0.2em; text-transform: uppercase; }
+  .cover .top .ns { background: var(--hot); color: #000; padding: 2pt 6pt; font-family: var(--bungee); font-size: 14pt; letter-spacing: -0.04em; }
+  .cover h1 { font-size: 56pt; line-height: 0.9; }
+  .cover .sub { font-size: 11pt; max-width: 100%; }
+  .cover .meta { font-size: 9pt; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3); border-top: 2pt solid var(--fg); padding-top: 8pt; }
+  .cover .rule {
+    height: 6pt;
+    background: repeating-linear-gradient(90deg,
+      var(--hot) 0 12px,
+      var(--ylw) 12px 24px,
+      var(--cyan) 24px 36px,
+      var(--acid) 36px 48px);
+    margin: 6pt 0;
+  }
+
+  .toc { list-style: none; padding: 0; }
+  .toc li {
+    display: grid;
+    grid-template-columns: 30pt 1fr 40pt;
+    gap: 8pt;
+    border-bottom: 1pt dashed var(--fg);
+    padding: 5pt 0;
+    font-size: 11pt;
+  }
+  .toc li .num { font-family: var(--mono); color: var(--hot); }
+  .toc li .ttl { font-family: var(--bungee); text-transform: uppercase; font-size: 13pt; letter-spacing: -0.02em; }
+  .toc li .pg { font-family: var(--mono); text-align: right; color: var(--fg-3); }
+
+  .footnote {
+    font-size: 9pt;
+    color: var(--fg-3);
+    border-top: 1pt solid var(--fg);
+    padding-top: 4pt;
+    margin-top: 10pt;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12pt; }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== CAPA ========== -->
+<section class="cover">
+  <div>
+    <div class="top">
+      <span class="ns">NS//26</span>
+      &nbsp;&nbsp; manual_do_site <span style="color:var(--hot)">/</span> v1
+    </div>
+    <div class="rule"></div>
+  </div>
+  <div>
+    <h1>
+      MANUAL <br>
+      <span class="acid">DO</span> <br>
+      <span class="hot">SITE.</span>
+    </h1>
+    <p class="sub" style="margin-top:18pt; max-width:90%;">
+      Como editar cada texto, cada cor, cada elemento.<br>
+      Como ver o site rodando. Como conectar um domínio próprio.<br>
+      Como publicar.
+    </p>
+  </div>
+  <div class="meta">
+    <div class="rule"></div>
+    Site pessoal · anti-design / brutalist / punk · edição 2026 · feito com astro + keystatic
+  </div>
+</section>
+
+<!-- ========== ÍNDICE ========== -->
+<section class="page">
+  <div class="kicker">índice / navegação</div>
+  <h1>ÍNDICE.</h1>
+  <ol class="toc">
+    <li><span class="num">01</span><span class="ttl">Como ver o site</span><span class="pg">p. 03</span></li>
+    <li><span class="num">02</span><span class="ttl">Conectar um domínio próprio</span><span class="pg">p. 04</span></li>
+    <li><span class="num">03</span><span class="ttl">Estrutura do projeto</span><span class="pg">p. 06</span></li>
+    <li><span class="num">04</span><span class="ttl">Editar via CMS (Keystatic)</span><span class="pg">p. 07</span></li>
+    <li><span class="num">05</span><span class="ttl">Editar textos da interface (PT/EN)</span><span class="pg">p. 09</span></li>
+    <li><span class="num">06</span><span class="ttl">Editar posts, projetos, publicações</span><span class="pg">p. 10</span></li>
+    <li><span class="num">07</span><span class="ttl">Trocar cores, fontes, identidade</span><span class="pg">p. 12</span></li>
+    <li><span class="num">08</span><span class="ttl">Trocar a marca (NS//26) e o nome</span><span class="pg">p. 13</span></li>
+    <li><span class="num">09</span><span class="ttl">Adicionar foto/retrato e PDF do CV</span><span class="pg">p. 14</span></li>
+    <li><span class="num">10</span><span class="ttl">Publicar mudanças</span><span class="pg">p. 15</span></li>
+    <li><span class="num">11</span><span class="ttl">Resolução de problemas</span><span class="pg">p. 16</span></li>
+  </ol>
+</section>
+
+<!-- ========== 01 — VER O SITE ========== -->
+<section class="page">
+  <div class="kicker">01 / como ver o site</div>
+  <h1>VER O <span class="acid">SITE</span>.</h1>
+  <p class="lead">Tem três formas. Da menor pra maior fricção.</p>
+
+  <h2>A. Direto no GitHub Pages (já está no ar)</h2>
+  <p>O repositório está configurado pra publicar automaticamente em todo push pra <code>main</code>. URL pública:</p>
+  <pre>https://kaluanbernardo.github.io/personal-website/</pre>
+  <p>Pra acompanhar o status do deploy, abre <strong>Actions</strong> no repo do GitHub e procura a última run "Deploy". Se for primeira execução, garanta em <strong>Settings → Pages → Source: GitHub Actions</strong>.</p>
+
+  <h2>B. Local em modo dev (com hot-reload)</h2>
+  <p>No terminal, dentro da pasta do projeto:</p>
+  <pre><span class="c"># instala dependências (só na primeira vez)</span>
+npm install
+
+<span class="c"># sobe o servidor de desenvolvimento</span>
+npm run dev</pre>
+  <p>Abre no navegador: <code>http://localhost:4321/</code></p>
+  <p>Esse modo recarrega sozinho a cada arquivo salvo. <em>Ideal pra editar conteúdo.</em></p>
+
+  <h2>C. Local imitando produção</h2>
+  <pre>npm run build
+npm run preview</pre>
+  <p>Abre <code>http://localhost:4321/personal-website/</code>. Esse usa exatamente a mesma base de URL do GitHub Pages — útil pra testar links antes de subir.</p>
+
+  <div class="box box-acid">
+    <div class="box-title">▶ Atalho diário</div>
+    <p style="margin:0">Pra editar conteúdo, o fluxo é: roda <code>npm run dev</code>, edita o arquivo, salva, vê no navegador. Quando estiver bom, comita e dá push — o deploy é automático.</p>
+  </div>
+</section>
+
+<!-- ========== 02 — DOMÍNIO PRÓPRIO ========== -->
+<section class="page">
+  <div class="kicker">02 / domínio próprio</div>
+  <h1>DOMÍNIO <span class="hot">PRÓPRIO</span>.</h1>
+  <p class="lead">5 passos. Demora ~1h ativa + até 24h de propagação DNS.</p>
+
+  <h2>1. Comprar o domínio</h2>
+  <ul>
+    <li><strong>.com.br</strong>: <a>registro.br</a> (mais barato, ~R$ 40/ano).</li>
+    <li><strong>.com / .me / .dev</strong>: Cloudflare Registrar, Namecheap, Porkbun (preço de custo, sem upsell).</li>
+  </ul>
+
+  <h2>2. Configurar o DNS</h2>
+  <p>No painel da onde você comprou (ou no Cloudflare DNS, se levar pra lá), aponte para o GitHub Pages:</p>
+
+  <p><strong>Para o domínio raiz</strong> (<code>seudominio.com</code>) — adicione 4 registros A:</p>
+  <pre>A   @   185.199.108.153
+A   @   185.199.109.153
+A   @   185.199.110.153
+A   @   185.199.111.153</pre>
+
+  <p><strong>Para o www</strong> (<code>www.seudominio.com</code>) — um CNAME:</p>
+  <pre>CNAME   www   kaluanbernardo.github.io.</pre>
+
+  <h2>3. Adicionar arquivo CNAME no repo</h2>
+  <p>Crie o arquivo <code>public/CNAME</code> com uma única linha — o seu domínio:</p>
+  <pre>seudominio.com</pre>
+  <p>Isso garante que o GitHub Pages saiba qual domínio responder.</p>
+
+  <h2>4. Ajustar a config do Astro</h2>
+  <p>Em <code>astro.config.mjs</code>, troque o bloco <code>base</code> pra ficar na raiz:</p>
+  <pre><span class="c">// antes:</span>
+base: isDev ? '/' : '/personal-website/',
+
+<span class="c">// depois:</span>
+base: '/',
+site: 'https://seudominio.com',</pre>
+  <p>Sem isso, os links continuariam apontando pra <code>/personal-website/...</code>.</p>
+
+  <h2>5. Configurar nas Settings do GitHub</h2>
+  <p>No GitHub: <strong>Settings → Pages → Custom domain</strong> → digite <code>seudominio.com</code> → salvar.<br>
+  Aguarde alguns minutos e marque <strong>Enforce HTTPS</strong>.</p>
+
+  <div class="box box-cyan">
+    <div class="box-title">★ Recomendação</div>
+    <p style="margin:0">Se possível, mude o DNS pra Cloudflare (gratuito) — fica mais rápido, ganha proteção contra ataques e os relatórios de tráfego. Você só muda os <em>nameservers</em> no registrador e configura tudo no painel deles.</p>
+  </div>
+
+  <p class="footnote">DNS pode demorar até 24h pra propagar mundialmente. Pra testar, use <code>dig seudominio.com</code> ou <a>dnschecker.org</a>.</p>
+</section>
+
+<!-- ========== 03 — ESTRUTURA ========== -->
+<section class="page">
+  <div class="kicker">03 / mapa do projeto</div>
+  <h1>ESTRUTURA<span class="acid">.</span></h1>
+  <p class="lead">Os arquivos que importam, do mais editável pro mais técnico.</p>
+
+  <pre>personal-website/
+├── <span class="k">src/content/</span>           <span class="c">★ conteúdo do blog/projetos/publicações</span>
+│   ├── posts/             <span class="c">→ um arquivo .mdoc por post</span>
+│   ├── projects/          <span class="c">→ um arquivo .mdoc por projeto</span>
+│   └── pubs/              <span class="c">→ publicações acadêmicas</span>
+│
+├── <span class="k">src/i18n/ui.ts</span>          <span class="c">★ TODOS os textos da interface (PT + EN)</span>
+│
+├── <span class="k">src/styles/global.css</span>   <span class="c">★ cores, fontes, look-and-feel</span>
+│
+├── <span class="k">src/components/</span>          <span class="c">peças reutilizáveis</span>
+│   ├── Nav.astro          <span class="c">→ menu de navegação</span>
+│   ├── Footer.astro       <span class="c">→ rodapé</span>
+│   ├── Marquee.astro      <span class="c">→ a faixa rolando no topo</span>
+│   ├── StatusBar.astro    <span class="c">→ barra do rodapé com relógio</span>
+│   └── pages/             <span class="c">→ corpo de cada página</span>
+│       ├── HomePage.astro
+│       ├── SobrePage.astro
+│       ├── CVPage.astro
+│       ├── AcademicoPage.astro
+│       ├── BlogIndexPage.astro
+│       ├── BlogPostPage.astro
+│       ├── ProjetosPage.astro
+│       └── ContatoPage.astro
+│
+├── <span class="k">src/pages/</span>               <span class="c">rotas (URLs)</span>
+│   ├── index.astro        <span class="c">→ /</span>
+│   ├── sobre.astro        <span class="c">→ /sobre</span>
+│   ├── cv.astro           <span class="c">→ /cv</span>
+│   ├── ...
+│   └── en/                <span class="c">→ versão em inglês: /en/sobre, /en/cv...</span>
+│
+├── <span class="k">public/</span>                  <span class="c">arquivos servidos como estão</span>
+│   ├── img/portrait.jpg   <span class="c">→ sua foto (opcional)</span>
+│   ├── cv-pt.pdf          <span class="c">→ PDF do CV em PT</span>
+│   ├── cv-en.pdf          <span class="c">→ PDF do CV em EN</span>
+│   └── CNAME              <span class="c">→ domínio próprio (se for usar)</span>
+│
+└── <span class="k">keystatic.config.ts</span>     <span class="c">painel admin do CMS</span></pre>
+</section>
+
+<!-- ========== 04 — KEYSTATIC ========== -->
+<section class="page">
+  <div class="kicker">04 / cms keystatic</div>
+  <h1>EDITAR <span class="ylw">VIA CMS</span>.</h1>
+  <p class="lead">O modo mais fácil. Não precisa abrir nenhum arquivo de texto.</p>
+
+  <h2>Acessar o painel</h2>
+  <p>Com o servidor de desenvolvimento rodando (<code>npm run dev</code>), abre:</p>
+  <pre>http://localhost:4321/keystatic</pre>
+  <p>Vai aparecer a tela de login. Selecione "<em>Local</em>" — você está editando os arquivos diretamente.</p>
+
+  <div class="box box-ylw">
+    <div class="box-title">⚠ Importante</div>
+    <p style="margin:0">O Keystatic só está disponível em <strong>modo dev</strong> (não vai pro site público). É uma interface pra editar arquivos locais. Você ainda precisa <em>comitar</em> e <em>dar push</em> pra publicar.</p>
+  </div>
+
+  <h2>O que dá pra editar pelo painel</h2>
+  <ul>
+    <li><strong>Posts</strong> (do blog) — título, descrição, data, tag, idioma, marcar como rascunho/destaque, conteúdo em rich text.</li>
+    <li><strong>Projetos</strong> — título, tipo, ano, veículo/local, URL externa, descrição.</li>
+    <li><strong>Publicações acadêmicas</strong> — título, venue, ano, tipo (artigo/capítulo/livro/tese/dissertação), URL.</li>
+  </ul>
+
+  <h2>Fluxo: criar um novo post</h2>
+  <ol>
+    <li>No painel, clique em <em>Posts → "+ Add"</em>.</li>
+    <li>Preenche os campos (título, descrição, data, tag, tempo de leitura).</li>
+    <li>Marca o idioma (PT ou EN).</li>
+    <li>Escreve o corpo no editor.</li>
+    <li>Clica em <em>Save</em>.</li>
+    <li>O Keystatic gera o arquivo <code>.mdoc</code> em <code>src/content/posts/</code>.</li>
+    <li>Comita e dá push pra publicar:</li>
+  </ol>
+  <pre>git add src/content/posts/
+git commit -m "novo post: título"
+git push</pre>
+
+  <h2>Editar um post existente</h2>
+  <p>No painel, clica no post na lista, faz a edição, salva. Comita e push.</p>
+
+  <h2>Deletar</h2>
+  <p>No painel, abre o item e clica em <em>Delete</em>. O arquivo é removido. Comita e push.</p>
+</section>
+
+<!-- ========== 05 — TEXTOS DA UI ========== -->
+<section class="page">
+  <div class="kicker">05 / textos da interface</div>
+  <h1>TEXTOS <span class="cyan">UI</span>.</h1>
+  <p class="lead">O Keystatic gerencia conteúdo. Pros textos do menu, hero, botões, etc., tem um arquivo central.</p>
+
+  <p>Tudo está em <strong><code>src/i18n/ui.ts</code></strong>. É um único arquivo com dois objetos: <code>pt</code> e <code>en</code>. Tem mais ou menos 530 linhas, mas é só prosa.</p>
+
+  <h2>Exemplo: trocar a chamada da home</h2>
+  <pre><span class="c">// src/i18n/ui.ts — bloco "home" do português</span>
+home: {
+  eyebrow: <span class="s">'— site pessoal · ed. 2026'</span>,
+  title: { line1: <span class="s">'Nome'</span>, line2: <span class="s">'Sobrenome.'</span> },
+  intro:
+    <span class="s">'Product manager em educação, jornalista freelancer e ...'</span>,
+  ctaBlog: <span class="s">'Ler o blog →'</span>,
+  ctaCV: <span class="s">'Baixar CV'</span>,
+  ...
+}</pre>
+
+  <h2>Trocar o nome em todo lugar</h2>
+  <p>Procura por <code>'nome sobrenome'</code> (PT) e <code>'first last'</code> (EN) no arquivo e substitui. Esses entram automaticamente no header, no monograma, na tag <code>NS//26</code>, etc.</p>
+
+  <h2>Mensagens da newsletter, do blog, da contato</h2>
+  <p>Dentro de <code>ui.ts</code> tem um bloco por seção:</p>
+  <ul>
+    <li><code>home</code> — hero, cards, "do blog"</li>
+    <li><code>sobre</code> — eyebrow, título, parágrafos, "agora"</li>
+    <li><code>cv</code> — experiência, skills</li>
+    <li><code>academico</code> — linhas de pesquisa, formação</li>
+    <li><code>blog</code> — título, filtros, copy da newsletter</li>
+    <li><code>projetos</code> — título, subtítulo, filtros</li>
+    <li><code>contato</code> — texto, e-mail, redes sociais</li>
+    <li><code>footer</code> — texto do rodapé</li>
+  </ul>
+
+  <div class="box box-cyan">
+    <div class="box-title">▶ Como editar</div>
+    <p style="margin:0">Abre o arquivo num editor de texto, encontra o bloco da seção, troca a string entre aspas. Salva. Se o <code>npm run dev</code> estiver rodando, recarrega sozinho.</p>
+  </div>
+
+  <p class="footnote">Versão em inglês fica logo abaixo, dentro do mesmo arquivo, no objeto <code>en</code>. Mantém os dois sincronizados.</p>
+</section>
+
+<!-- ========== 06 — POSTS / PROJETOS / PUBS ========== -->
+<section class="page">
+  <div class="kicker">06 / conteúdo</div>
+  <h1>POSTS · PROJETOS · <span class="vio">PUBS</span>.</h1>
+  <p class="lead">Pode editar pelo Keystatic ou direto nos arquivos. Aqui o esquema dos arquivos.</p>
+
+  <h2>Posts do blog</h2>
+  <p>Pasta: <code>src/content/posts/</code> · um arquivo <code>.mdoc</code> por post. Nome do arquivo vira o slug da URL.</p>
+  <pre><span class="c">---</span>
+title: <span class="s">"Sobre escrever em três modos"</span>
+description: <span class="s">"Como manter especificação técnica..."</span>
+pubDate: 2026-04-28
+readingTime: 8
+tag: <span class="s">"ensaio"</span>            <span class="c"># ensaio | produto | jornalismo | leitura | notas | academia</span>
+featured: true                <span class="c"># aparece em destaque na lista</span>
+draft: false                  <span class="c"># true = não publica</span>
+lang: <span class="s">"pt"</span>                  <span class="c"># pt | en</span>
+<span class="c">---</span>
+
+<span class="c">## Subtítulo</span>
+
+Texto do post em markdown. Pode usar **negrito**, *itálico*,
+links em `[texto](url)`, listas, citações com `>`...</pre>
+
+  <h2>Projetos</h2>
+  <p>Pasta: <code>src/content/projects/</code></p>
+  <pre><span class="c">---</span>
+title: <span class="s">"Reportagem · plataforma X"</span>
+kind: <span class="s">"jornalismo"</span>          <span class="c"># jornalismo | produto | academia | palestra | pessoal</span>
+place: <span class="s">"Veículo"</span>
+year: 2025
+url: <span class="s">"https://link.externo"</span>  <span class="c"># opcional</span>
+thumb: <span class="s">"img/projetos/foo.jpg"</span> <span class="c"># opcional, dentro de public/</span>
+lang: <span class="s">"pt"</span>
+<span class="c">---</span>
+
+Descrição opcional do projeto.</pre>
+
+  <h2>Publicações acadêmicas</h2>
+  <p>Pasta: <code>src/content/pubs/</code></p>
+  <pre><span class="c">---</span>
+title: <span class="s">"Métricas de atenção em plataformas educacionais"</span>
+venue: <span class="s">"Revista Brasileira de Comunicação · v.42, n.2"</span>
+year: 2024
+kind: <span class="s">"artigo"</span>             <span class="c"># artigo | capítulo | livro | tese | dissertação</span>
+url: <span class="s">"https://doi.org/..."</span>
+lang: <span class="s">"pt"</span>
+<span class="c">---</span></pre>
+
+  <h2>Versão em inglês</h2>
+  <p>Pra cada post/projeto/pub em PT, crie outro arquivo com o mesmo conteúdo traduzido e <code>lang: "en"</code>. Sugestão: termine o nome do arquivo com <code>-en</code> pra ficar fácil de identificar.</p>
+</section>
+
+<!-- ========== 07 — CORES / FONTES ========== -->
+<section class="page">
+  <div class="kicker">07 / identidade visual</div>
+  <h1>CORES <span class="hot">·</span> FONTES.</h1>
+  <p class="lead">Tudo controlado por variáveis CSS. Trocar uma linha muda o site inteiro.</p>
+
+  <h2>Onde mexer</h2>
+  <p>Arquivo: <strong><code>src/styles/global.css</code></strong> — bloco <code>:root { ... }</code> no topo.</p>
+
+  <h2>Paleta neon (atual)</h2>
+  <pre>:root {
+  --bg:    <span class="h">#0a0a0a</span>;   <span class="c">/* fundo (modo escuro) */</span>
+  --fg:    <span class="h">#f5f5f0</span>;   <span class="c">/* texto */</span>
+  --paper: <span class="h">#ebe7d8</span>;   <span class="c">/* fundo modo claro/zine */</span>
+
+  --hot:   <span class="h">#ff2d55</span>;   <span class="c">/* magenta · usado na seção contato */</span>
+  --cyan:  <span class="h">#00f0ff</span>;   <span class="c">/* ciano · seção sobre */</span>
+  --acid:  <span class="h">#c4ff00</span>;   <span class="c">/* verde ácido · home + acadêmico */</span>
+  --ylw:   <span class="h">#ffe600</span>;   <span class="c">/* amarelo · cv */</span>
+  --orng:  <span class="h">#ff6a00</span>;   <span class="c">/* laranja · projetos */</span>
+  --vio:   <span class="h">#b400ff</span>;   <span class="c">/* roxo · blog */</span>
+}</pre>
+
+  <h2>Trocar a cor de uma seção</h2>
+  <p>Mais embaixo no mesmo arquivo, tem o mapa de tema por página:</p>
+  <pre>.theme-home    { --accent: var(--acid); }
+.theme-sobre   { --accent: var(--cyan); }
+.theme-cv      { --accent: var(--ylw); }
+.theme-academ  { --accent: var(--acid); }
+.theme-blog    { --accent: var(--vio); }
+.theme-projetos{ --accent: var(--orng); }
+.theme-contato { --accent: var(--hot); }</pre>
+  <p>Trocar <code>var(--cyan)</code> por <code>var(--orng)</code> em <code>.theme-sobre</code>, por exemplo, vai pintar a página Sobre toda em laranja.</p>
+
+  <h2>Fontes</h2>
+  <p>Carregadas do Google Fonts no topo do <code>global.css</code>. Os papéis:</p>
+  <table>
+    <tr><th>Variável</th><th>Fonte</th><th>Onde aparece</th></tr>
+    <tr><td><code>--bungee</code></td><td>Bungee</td><td>headlines gigantes</td></tr>
+    <tr><td><code>--bungee-s</code></td><td>Bungee Shade</td><td>variação com sombra</td></tr>
+    <tr><td><code>--mono</code></td><td>Departure Mono → Space Mono (fallback)</td><td>texto base, navegação, marquee</td></tr>
+    <tr><td><code>--pixel</code></td><td>VT323</td><td>números, terminal vibe</td></tr>
+    <tr><td><code>--tiny</code></td><td>Press Start 2P</td><td>etiquetas micro</td></tr>
+    <tr><td><code>--serif</code></td><td>Times New Roman</td><td>corpo de texto longo (sobre, post)</td></tr>
+  </table>
+</section>
+
+<!-- ========== 08 — MARCA ========== -->
+<section class="page">
+  <div class="kicker">08 / marca</div>
+  <h1>MARCA <span class="acid">NS//26</span>.</h1>
+  <p class="lead">A tag rosa do canto superior esquerdo. Onde mudar o texto e o nome.</p>
+
+  <h2>Trocar o texto da tag</h2>
+  <p>Arquivo: <code>src/components/Monogram.astro</code></p>
+  <pre>const { letter = <span class="s">'NS//26'</span> } = Astro.props;</pre>
+  <p>Troca <code>'NS//26'</code> pelo que quiser (ex.: <code>'KB//26'</code>, <code>'XX'</code>, suas iniciais...).</p>
+
+  <h2>Trocar o nome ao lado da tag</h2>
+  <p>Arquivo: <code>src/i18n/ui.ts</code> — campo <code>brand</code>:</p>
+  <pre>pt: { brand: <span class="s">'nome sobrenome'</span>, ... }
+en: { brand: <span class="s">'first last'</span>,    ... }</pre>
+  <p>Esse <code>brand</code> também alimenta o título do hero da home (que mostra <em>NOMESOBRENOME</em> em letras gigantes).</p>
+
+  <h2>Trocar o título do navegador</h2>
+  <p>Por página, abre o arquivo correspondente em <code>src/pages/</code> e ajuste o <code>title</code>:</p>
+  <pre>&lt;Page title=<span class="s">"Nome Sobrenome"</span> description=<span class="s">"Site pessoal..."</span> ...&gt;</pre>
+
+  <h2>Trocar o favicon</h2>
+  <p>O favicon é gerado inline em <code>src/layouts/Base.astro</code> (SVG com letras "NS"). Substitua o atributo <code>href</code> da tag <code>&lt;link rel="icon"&gt;</code> por:</p>
+  <ul>
+    <li>outro SVG inline (mesmo padrão), ou</li>
+    <li>um arquivo: salva em <code>public/favicon.png</code> e usa <code>href="/favicon.png"</code>.</li>
+  </ul>
+
+  <div class="box box-acid">
+    <div class="box-title">▶ Resumo</div>
+    <p style="margin:0">Tag colorida → <code>Monogram.astro</code>. Nome → <code>ui.ts</code> (campo <code>brand</code>). Título da aba → <code>src/pages/&lt;rota&gt;.astro</code>. Favicon → <code>Base.astro</code>.</p>
+  </div>
+</section>
+
+<!-- ========== 09 — IMAGENS ========== -->
+<section class="page">
+  <div class="kicker">09 / mídias</div>
+  <h1>FOTOS <span class="ylw">·</span> PDFs.</h1>
+  <p class="lead">Tudo que é binário (imagem, PDF, fonte) vive na pasta <code>public/</code>.</p>
+
+  <h2>Foto / retrato</h2>
+  <p>A página Sobre tenta carregar <code>public/img/portrait.jpg</code> automaticamente. Se o arquivo existir, aparece. Se não existir, mostra um placeholder.</p>
+  <pre><span class="c"># crie a pasta se ainda não existe</span>
+mkdir -p public/img
+
+<span class="c"># copie sua foto pra lá com o nome exato</span>
+cp ~/Downloads/minha-foto.jpg public/img/portrait.jpg</pre>
+  <p>Recomendado: 4×5 (vertical), pelo menos 800×1000px, <code>.jpg</code> ou <code>.png</code>.</p>
+
+  <h2>PDF do currículo</h2>
+  <p>O botão "Baixar CV" da home aponta pra:</p>
+  <ul>
+    <li><code>public/cv-pt.pdf</code> — versão portuguesa</li>
+    <li><code>public/cv-en.pdf</code> — versão inglesa</li>
+  </ul>
+  <pre>cp meu-cv.pdf public/cv-pt.pdf
+cp my-resume.pdf public/cv-en.pdf</pre>
+
+  <h2>Thumbnails de projetos</h2>
+  <p>Hoje os cards de projeto mostram um placeholder (linhas diagonais com texto "thumb · 4×3"). Pra usar fotos reais:</p>
+  <ol>
+    <li>Salve a imagem em <code>public/img/projetos/foo.jpg</code> (recomendado 4×3, 600×450px).</li>
+    <li>Edite o projeto correspondente e adicione <code>thumb: "img/projetos/foo.jpg"</code>.</li>
+    <li>Edite <code>src/components/pages/ProjetosPage.astro</code> dentro de <code>.thumb</code> pra renderizar <code>&lt;img src=...&gt;</code> quando <code>thumb</code> estiver presente. (Hoje é só placeholder — se quiser, peço pra eu adicionar.)</li>
+  </ol>
+
+  <h2>Outras imagens em posts</h2>
+  <p>Salve em <code>public/img/posts/foo.jpg</code> e referencie no post:</p>
+  <pre>![alt da imagem](/personal-website/img/posts/foo.jpg)</pre>
+  <p>Atenção: se mudar pra domínio próprio (sem <code>/personal-website/</code>), use só <code>/img/posts/foo.jpg</code>.</p>
+</section>
+
+<!-- ========== 10 — PUBLICAR ========== -->
+<section class="page">
+  <div class="kicker">10 / publicar</div>
+  <h1>PUBLICAR<span class="hot">.</span></h1>
+  <p class="lead">Tudo é git. Push pro <code>main</code> dispara deploy automático.</p>
+
+  <h2>Fluxo padrão</h2>
+  <pre><span class="c"># 1. ver o que mudou</span>
+git status
+
+<span class="c"># 2. adicionar os arquivos</span>
+git add src/content/posts/novo-post.mdoc
+<span class="c"># ou tudo de uma vez:</span>
+git add -A
+
+<span class="c"># 3. comitar com uma mensagem clara</span>
+git commit -m "Novo post: economia da atenção"
+
+<span class="c"># 4. push pro GitHub</span>
+git push</pre>
+  <p>Em ~1-2 minutos o GitHub Actions compila e publica. Acompanhe em <strong>Actions</strong> no repo.</p>
+
+  <h2>Trabalhando em uma branch</h2>
+  <p>Pra mudanças maiores (ex.: trocar paleta de cores, redesenhar uma página), use uma branch:</p>
+  <pre>git checkout -b experimento-cores
+<span class="c"># edita o que quiser</span>
+git add -A && git commit -m "experimento: paleta verde"
+git push -u origin experimento-cores</pre>
+  <p>Abra um Pull Request no GitHub. Quando estiver bom, clica em <em>Merge</em>. O deploy só roda no <code>main</code>.</p>
+
+  <div class="box box-hot">
+    <div class="box-title">⚠ Cuidado</div>
+    <p style="margin:0">Antes de comitar, rode <code>npm run build</code>. Se passar sem erros, está tudo certo. Se quebrar, o deploy também vai quebrar.</p>
+  </div>
+
+  <h2>Reverter uma mudança</h2>
+  <p>Se publicou algo que não queria:</p>
+  <pre>git revert HEAD       <span class="c"># gera um novo commit que desfaz o último</span>
+git push</pre>
+  <p>Não use <code>git reset --hard</code> em commits já publicados — você apaga histórico.</p>
+</section>
+
+<!-- ========== 11 — TROUBLESHOOTING ========== -->
+<section class="page">
+  <div class="kicker">11 / sos</div>
+  <h1>QUANDO <span class="ylw">QUEBRA</span>.</h1>
+  <p class="lead">Os problemas mais comuns e como resolver.</p>
+
+  <h3>"npm run dev" falha com 'astro: not found'</h3>
+  <p>As dependências não foram instaladas. Roda:</p>
+  <pre>npm install</pre>
+
+  <h3>Página em branco / 404 ao abrir local</h3>
+  <p>Em modo dev, o site roda em <code>http://localhost:4321/</code> (sem o <code>/personal-website/</code>). Se você abriu <code>http://localhost:4321/personal-website/</code>, vai dar 404. Tira o <code>/personal-website</code> da URL.</p>
+
+  <h3>Mudei o texto e nada apareceu</h3>
+  <ul>
+    <li>Confirme que salvou o arquivo.</li>
+    <li>Confirma que <code>npm run dev</code> ainda está rodando.</li>
+    <li>Recarrega a página com <em>Ctrl+Shift+R</em> (force reload).</li>
+  </ul>
+
+  <h3>Build falha no GitHub Actions</h3>
+  <p>Abre <strong>Actions</strong> no repo, clica na run com X vermelho, lê o erro.</p>
+  <ul>
+    <li><strong>Erro de tipo</strong>: rode <code>npx astro check</code> local pra ver onde.</li>
+    <li><strong>Erro de schema</strong>: provavelmente um campo obrigatório faltando num <code>.mdoc</code> (ex.: <code>readingTime</code>).</li>
+    <li><strong>Erro de import</strong>: provavelmente um arquivo deletado mas ainda referenciado.</li>
+  </ul>
+
+  <h3>HTTPS do domínio próprio não habilita</h3>
+  <p>Esperar 1-2h depois de configurar. Se persistir, em <strong>Settings → Pages</strong>, clica em <em>Remove</em> no domínio, espera 5min, adiciona de novo.</p>
+
+  <h3>Keystatic mostra "Cannot connect"</h3>
+  <p>Roda <code>npm run dev</code> antes de abrir <code>/keystatic</code>. O CMS é parte do servidor de dev.</p>
+
+  <h3>Quero mudar o ano "EDIÇÃO 04 · 2026"</h3>
+  <p>Arquivo: <code>src/components/pages/HomePage.astro</code> — procura por <code>EDIÇÃO 04</code> e edita.</p>
+
+  <h2 style="margin-top:30pt">Para tudo o resto</h2>
+  <p>Em qualquer dúvida específica ("como mudo X?"), me pergunte com a captura de tela ou o nome da seção. Posso aplicar a mudança e gerar um diff.</p>
+
+  <p class="footnote" style="margin-top:24pt">Manual gerado automaticamente · v1 · maio 2026 · NS//26</p>
+</section>
+
+</body>
+</html>

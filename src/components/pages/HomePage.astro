@@ -1,8 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
-import { ui, type Lang, formatDate } from '../../i18n/ui';
+import { ui, type Lang, formatDate, tagDisplay } from '../../i18n/ui';
 import { link } from '../../lib/links';
-import PostCard from '../PostCard.astro';
 
 interface Props {
   lang: Lang;
@@ -15,191 +14,449 @@ const recentPosts = allPosts
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
 
+const allProjects = await getCollection('projects', ({ data }) => data.lang === lang);
+
 const prefix = lang === 'en' ? '/en' : '';
 const postHref = (slug: string) => link(`${prefix}/blog/${slug}`);
 const blogHref = link(`${prefix}/blog`);
-const projetosHref = link(`${prefix}/projetos`);
 const cvPdfHref = link(lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf');
+
+const indexEntries = [
+  {
+    n: '01',
+    t: lang === 'en' ? 'ABOUT' : 'SOBRE',
+    sub: '> who_is_this.txt',
+    meta: lang === 'en' ? '2 min' : '2 min',
+    href: link(`${prefix}/sobre`),
+    color: 'var(--cyan)',
+  },
+  {
+    n: '02',
+    t: lang === 'en' ? 'PROFESSIONAL CV' : 'CV PROFISSIONAL',
+    sub: '> work_history.pdf',
+    meta: 'PDF',
+    href: link(`${prefix}/cv`),
+    color: 'var(--ylw)',
+  },
+  {
+    n: '03',
+    t: lang === 'en' ? 'ACADEMIC CV' : 'CV ACADÊMICO',
+    sub: '> lattes.cnpq.br',
+    meta: 'CV',
+    href: link(`${prefix}/academico`),
+    color: 'var(--acid)',
+  },
+  {
+    n: '04',
+    t: lang === 'en' ? 'PROJECTS' : 'PROJETOS',
+    sub: '> ./output/*',
+    meta: lang === 'en'
+      ? `${allProjects.length} ${allProjects.length === 1 ? 'item' : 'items'}`
+      : `${allProjects.length} ${allProjects.length === 1 ? 'item' : 'itens'}`,
+    href: link(`${prefix}/projetos`),
+    color: 'var(--orng)',
+  },
+  {
+    n: '05',
+    t: 'BLOG',
+    sub: '> cat *.md',
+    meta: lang === 'en'
+      ? `${allPosts.length} ${allPosts.length === 1 ? 'post' : 'posts'}`
+      : `${allPosts.length} posts`,
+    href: blogHref,
+    color: 'var(--vio)',
+  },
+  {
+    n: '06',
+    t: lang === 'en' ? 'CONTACT' : 'CONTATO',
+    sub: '> echo $EMAIL',
+    meta: '@',
+    href: link(`${prefix}/contato`),
+    color: 'var(--hot)',
+  },
+];
+
+const heroTags = lang === 'en'
+  ? ['anti-design', 'product', 'journalism', 'academia', 'digital culture', 'tech', 'punk', 'são paulo']
+  : ['anti-design', 'product', 'jornalismo', 'academia', 'cultura digital', 'tech', 'punk', 'são paulo'];
+
+const editionLabel = lang === 'en' ? 'EDITION 04 · 2026 · SÃO PAULO' : 'EDIÇÃO 04 · 2026 · SÃO PAULO';
+const indexHeading = lang === 'en' ? 'INDEX / RAW NAVIGATION' : 'ÍNDICE / NAVEGAÇÃO RAW';
+const entriesLabel = lang === 'en' ? `0${indexEntries.length}_ENTRIES` : `0${indexEntries.length}_ENTRADAS`;
+
+const fromBlogHeading = lang === 'en' ? 'FROM THE BLOG.' : 'DO BLOG.';
+const allPostsLabel = lang === 'en' ? 'ALL POSTS →' : 'TODOS OS POSTS →';
+
+const heroTitle = (t.brand || '').split(' ');
+const firstName = heroTitle[0] || 'NOME';
+const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
+const lastFirstHalf = lastName.slice(0, Math.ceil(lastName.length / 2)) || 'SOBRE';
+const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
 ---
 
 <section class="hero">
-  <div>
-    <div class="eyebrow hf-mono">{t.home.eyebrow}</div>
-    <h1 class="hf-display headline">
-      {t.home.title.line1}<br />
-      {t.home.title.line2}
+  <div class="hero-grid-bg" aria-hidden="true"></div>
+
+  <div class="hero-main">
+    <div class="hero-eyebrow">
+      <span class="hf-mono kicker">{editionLabel}</span>
+      <span class="rec ad-blink">● REC</span>
+    </div>
+
+    <h1 class="hero-title ad-bungee">
+      <span class="t-fg">{firstName.toUpperCase()}</span><br />
+      <span class="t-stroke ad-bungee-s">{lastFirstHalf.toUpperCase()}</span><span class="t-hot">{lastSecondHalf.toUpperCase()}</span><span class="ad-blink t-cyan">_</span>
     </h1>
-    <p class="intro">{t.home.intro}</p>
-    <div class="cta-row">
-      <a class="hf-btn solid" href={blogHref}>{t.home.ctaBlog}</a>
-      <a class="hf-btn" href={cvPdfHref} download>{t.home.ctaCV}</a>
+
+    <p class="hero-intro ad-mono">
+      {lang === 'en' ? (
+        <>
+          <span class="ad-mark-hot">PRODUCT MANAGER</span> in education,
+          <span class="ad-mark-cyan">FREELANCE JOURNALIST</span> and a
+          <span class="ad-mark-acid">PHD CANDIDATE</span> in communication.
+          <br /><br />
+          I write on the blog. I send a newsletter. I take pitches. Nothing else.
+        </>
+      ) : (
+        <>
+          <span class="ad-mark-hot">PRODUCT MANAGER</span> em educação,
+          <span class="ad-mark-cyan">JORNALISTA FREELANCER</span> e
+          <span class="ad-mark-acid">DOUTORANDO</span> em comunicação.
+          <br /><br />
+          Escrevo no blog. Mando newsletter. Aceito propostas. Nada mais.
+        </>
+      )}
+    </p>
+
+    <div class="hero-cta">
+      <a class="ad-btn acid" href={blogHref}>{t.home.ctaBlog}</a>
+      <a class="ad-btn ylw" href={cvPdfHref} download>↓ {t.home.ctaCV}</a>
     </div>
   </div>
-  <div>
-    <div class="img-frame photo">
-      <img src={link('/img/portrait.jpg')} alt="" onerror="this.remove()" />
-      <div class="ph">retrato · 4×5</div>
+
+  <aside class="hero-aside">
+    <div class="ad-sticker stamp">★ EST. 2026 ★</div>
+    <div class="now-playing ad-box">
+      <div class="np-kicker">{'> '}{lang === 'en' ? 'NOW PLAYING' : 'NOW PLAYING'}</div>
+      <div class="np-track">TIM MAIA — IMUNIZAÇÃO RACIONAL</div>
+      <div class="np-time">03:42 / 06:18</div>
+      <div class="np-bar"><span></span></div>
     </div>
-    <div class="photo-credit hf-mono">{t.home.photoCredit}</div>
-  </div>
-</section>
+    <div class="visits ad-tiny">VISITS: 0001337</div>
+  </aside>
 
-<hr class="hf-rule" />
-
-<section class="cards grid-3">
-  {t.home.cards.map((c) => (
-    <a class="card" href={projetosHref}>
-      <div class="card-num hf-mono">{c.n}</div>
-      <h3 class="hf-display card-title">{c.t}</h3>
-      <p class="card-sub">{c.sub}</p>
-      <span class="hf-mono card-cta">{c.cta}</span>
-    </a>
-  ))}
-</section>
-
-<section class="from-blog">
-  <div class="row-flex from-blog-head">
-    <h3 class="hf-display from-blog-title">{t.home.fromBlog}</h3>
-    <a class="hf-mono from-blog-all" href={blogHref}>{t.home.allPosts}</a>
-  </div>
-  <div class="grid-3 posts">
-    {recentPosts.map((p) => (
-      <PostCard
-        date={formatDate(p.data.pubDate, lang).toUpperCase()}
-        readingTime={p.data.readingTime}
-        title={p.data.title}
-        tag={p.data.tag}
-        href={postHref(p.id)}
-        lang={lang}
-        variant="card"
-      />
+  <div class="hero-tags">
+    {heroTags.map((tag, i) => (
+      <span class={`ad-tag t-${i % 3}`}>#{tag}</span>
     ))}
   </div>
 </section>
 
+<section class="brutal-index">
+  <div class="bi-head">
+    <div class="bi-kicker hf-mono">{'>>>'} {indexHeading}</div>
+    <div class="bi-counter ad-tiny">{entriesLabel}</div>
+  </div>
+  <hr class="ad-rule-rainbow" />
+
+  {indexEntries.map((s) => (
+    <a class="bi-row" href={s.href} style={`--row-c:${s.color}`}>
+      <span class="bi-num">[{s.n}]</span>
+      <span class="bi-title ad-bungee">{s.t}</span>
+      <span class="bi-sub">{s.sub}</span>
+      <span class="bi-meta">{s.meta}</span>
+      <span class="bi-arr">→</span>
+    </a>
+  ))}
+</section>
+
+{recentPosts.length > 0 && (
+  <section class="from-blog">
+    <div class="fb-head">
+      <h2 class="ad-bungee fb-title">{fromBlogHeading}</h2>
+      <a class="fb-all hf-mono" href={blogHref}>{allPostsLabel}</a>
+    </div>
+    <div class="fb-grid">
+      {recentPosts.map((p) => (
+        <a class="fb-card" href={postHref(p.id)}>
+          <span class="fb-tag">#{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
+          <h3 class="ad-bungee fb-card-title">{p.data.title}</h3>
+          <div class="fb-meta hf-mono">
+            {formatDate(p.data.pubDate, lang).toUpperCase()} · {p.data.readingTime} min
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+)}
+
 <style>
   .hero {
+    position: relative;
+    padding: 30px 0 36px;
     display: grid;
-    grid-template-columns: 1.4fr 1fr;
-    gap: 64px;
-    align-items: start;
-    padding: 16px 0 64px;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: flex-start;
   }
-  .eyebrow {
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 22px;
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
   }
-  .headline {
-    font-size: 72px;
-    margin: 0 0 22px;
-    line-height: 1.0;
+  :global([data-theme='light']) .hero-grid-bg {
+    background-image:
+      linear-gradient(to right, rgba(0,0,0,0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0,0,0,0.08) 1px, transparent 1px);
   }
-  .intro {
-    font-size: 18px;
-    line-height: 1.6;
-    color: var(--fg-2);
-    max-width: 480px;
-    margin: 0 0 32px;
-  }
-  .cta-row {
+  .hero-main, .hero-aside, .hero-tags { position: relative; z-index: 1; }
+
+  .hero-eyebrow {
     display: flex;
     gap: 12px;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .hero-eyebrow .kicker {
+    font-size: 11px;
+    color: var(--acid);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .rec {
+    color: var(--hot);
+    font-size: 11px;
+    font-family: var(--mono);
+    letter-spacing: 0.1em;
+  }
+
+  .hero-title {
+    font-size: clamp(56px, 12vw, 168px);
+    margin: 0;
+    line-height: 0.82;
+    letter-spacing: -0.06em;
+    text-transform: uppercase;
+  }
+  .t-fg { color: var(--fg); }
+  .t-hot { color: var(--hot); }
+  .t-cyan { color: var(--cyan); }
+  .t-stroke {
+    color: var(--bg);
+    -webkit-text-stroke: 2.5px var(--fg);
+  }
+
+  .hero-intro {
+    font-size: 16px;
+    max-width: 540px;
+    margin-top: 24px;
+    line-height: 1.4;
+  }
+
+  .hero-cta {
+    margin-top: 22px;
+    display: flex;
+    gap: 10px;
     flex-wrap: wrap;
   }
-  .photo {
-    aspect-ratio: 4/5;
-    width: 100%;
+
+  .hero-aside {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+    min-width: 260px;
   }
-  .photo-credit {
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    color: var(--fg-3);
-    text-align: right;
-    margin-top: 8px;
-    text-transform: uppercase;
-  }
-  .cards {
-    margin: 36px 0 56px;
-  }
-  .card {
-    display: block;
-    padding: 24px 0;
-    border-top: 1px solid var(--rule-soft);
-    transition: border-color 0.18s ease, padding-left 0.25s ease;
-    cursor: pointer;
-  }
-  .card:hover {
-    border-color: var(--accent);
-    padding-left: 12px;
-  }
-  .card-num {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--accent);
+  .stamp {
+    background: transparent;
+    color: var(--ylw);
+    border-color: var(--ylw);
+    transform: rotate(6deg);
+    font-size: 10px;
     letter-spacing: 0.12em;
-    margin-bottom: 12px;
+    align-self: flex-end;
   }
-  .card-title {
-    font-size: 26px;
-    margin: 0 0 12px;
-    font-weight: 600;
+  .now-playing {
+    border: 2px solid var(--fg);
+    padding: 8px 14px;
+    background: var(--bg);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    width: 240px;
   }
-  .card:hover .card-title {
-    color: var(--accent);
+  .np-kicker { color: var(--acid); margin-bottom: 4px; }
+  .np-track { letter-spacing: 0.04em; }
+  .np-time { opacity: 0.5; margin-top: 4px; }
+  .np-bar {
+    height: 4px;
+    background: #222;
+    margin-top: 6px;
+    position: relative;
   }
-  .card-sub {
-    font-size: 15px;
-    color: var(--fg-2);
-    margin: 0 0 14px;
-    line-height: 1.55;
+  :global([data-theme='light']) .np-bar { background: #cfc9b6; }
+  .np-bar > span {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 58%;
+    background: var(--hot);
   }
-  .card-cta {
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--fg-2);
+  .visits {
+    border: 1.5px solid var(--cyan);
+    color: var(--cyan);
+    padding: 6px 8px;
+    font-family: var(--tiny);
+    font-size: 9px;
   }
-  .card:hover .card-cta {
-    color: var(--accent);
+
+  .hero-tags {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 6px;
+    margin-top: 32px;
+    flex-wrap: wrap;
   }
-  .from-blog {
-    padding-top: 16px;
-  }
-  .from-blog-head {
+  .hero-tags .t-0 { background: var(--hot); color: #000; border-color: #000; }
+  .hero-tags .t-1 { background: transparent; color: var(--fg); border-color: var(--fg); }
+  .hero-tags .t-2 { background: var(--cyan); color: #000; border-color: #000; }
+
+  .brutal-index { margin: 30px 0 0; }
+  .bi-head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 24px;
+    margin-bottom: 6px;
   }
-  .from-blog-title {
-    font-size: 24px;
-    margin: 0;
-  }
-  .from-blog-all {
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
+  .bi-kicker {
+    font-size: 11px;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--fg-2);
+    color: var(--acid);
   }
-  .from-blog-all:hover {
-    color: var(--accent);
+  .bi-counter { color: var(--fg); font-size: 9px; }
+
+  .bi-row {
+    display: grid;
+    grid-template-columns: 50px 1fr 220px 90px 28px;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1.5px solid var(--fg);
+    gap: 14px;
+    color: var(--fg);
+    transition: padding-left 0.12s linear, background 0.05s linear;
   }
-  @media (max-width: 720px) {
+  .bi-row:hover {
+    background: transparent;
+    padding-left: 8px;
+  }
+  .bi-row:hover .bi-arr { color: var(--ylw); }
+  .bi-row .bi-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--row-c);
+  }
+  .bi-row .bi-title {
+    font-size: clamp(24px, 4vw, 42px);
+    letter-spacing: -0.03em;
+    color: var(--fg);
+  }
+  .bi-row:hover .bi-title { color: var(--row-c); }
+  .bi-row .bi-sub {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--fg);
+    opacity: 0.7;
+  }
+  .bi-row .bi-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--row-c);
+    text-align: right;
+    text-transform: uppercase;
+  }
+  .bi-row .bi-arr {
+    font-size: 22px;
+    color: var(--row-c);
+    text-align: right;
+  }
+
+  .from-blog { margin-top: 56px; }
+  .fb-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .fb-title {
+    font-size: 36px;
+    margin: 0;
+    letter-spacing: -0.03em;
+  }
+  .fb-all {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--vio);
+  }
+  .fb-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  .fb-card {
+    display: block;
+    padding: 18px;
+    border: 2px solid var(--fg);
+    border-left: none;
+    cursor: pointer;
+  }
+  .fb-card:first-child { border-left: 2px solid var(--fg); }
+  .fb-card:hover { background: var(--bg-2); color: inherit; }
+  .fb-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--vio);
+    text-transform: uppercase;
+  }
+  .fb-card-title {
+    font-size: 22px;
+    margin: 8px 0 12px;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    text-transform: uppercase;
+  }
+  .fb-meta {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--fg-3);
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 960px) {
     .hero {
       grid-template-columns: 1fr;
-      gap: 32px;
     }
-    .headline {
-      font-size: 48px;
+    .hero-aside { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
+    .now-playing { width: auto; flex: 1 1 240px; }
+    .bi-row {
+      grid-template-columns: 40px 1fr 60px 24px;
+      gap: 10px;
     }
-    .intro {
-      font-size: 16px;
-    }
+    .bi-row .bi-sub { display: none; }
+    .fb-grid { grid-template-columns: 1fr; }
+    .fb-card { border-left: 2px solid var(--fg); border-top: none; }
+    .fb-card:first-child { border-top: 2px solid var(--fg); }
+  }
+  @media (max-width: 720px) {
+    .hero-title { font-size: clamp(48px, 16vw, 96px); }
+    .fb-title { font-size: 28px; }
   }
 </style>

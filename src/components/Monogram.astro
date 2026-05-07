@@ -2,7 +2,7 @@
 interface Props {
   letter?: string;
 }
-const { letter = 'N' } = Astro.props;
+const { letter = 'NS//26' } = Astro.props;
 ---
 
-<span class="hf-monogram">{letter}</span>
+<span class="brand-tag" aria-hidden="true">{letter}</span>

@@ -5,137 +5,200 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = ui[lang];
+
+const eyebrow = '06 / ECHO $EMAIL';
+const fillEnviar = lang === 'en' ? '>> SEND' : '>> ENVIAR';
+const formKicker = lang === 'en' ? '> CONTACT_FORM.PHP' : '> FORM_DE_CONTATO.PHP';
+const motivos = lang === 'en'
+  ? ['// reason: freelance', '// reason: chat', '// reason: paper', '// reason: other']
+  : ['// motivo: freela', '// motivo: papo', '// motivo: paper', '// motivo: outro'];
+const placeholders = lang === 'en'
+  ? { name: '// name', email: '// email', msg: '// message (max 500 chars)' }
+  : { name: '// nome', email: '// e-mail', msg: '// mensagem (max 500 char)' };
+const botCheck = lang === 'en' ? 'not a bot · maybe' : 'não sou bot · talvez';
+const directLabel = lang === 'en' ? 'OR DIRECT:' : 'OU DIRETO:';
+
+const socialColors = ['var(--ylw)', 'var(--orng)', 'var(--cyan)', 'var(--blue)', 'var(--acid)', 'var(--vio)'];
+
+const helloLine1 = lang === 'en' ? "LET'S" : 'FALA';
+const helloLine2 = lang === 'en' ? 'TALK' : 'COMIGO';
 ---
 
-<div class="grid">
-  <div>
-    <div class="eyebrow hf-mono">{t.contato.eyebrow}</div>
-    <h1 class="hf-display headline">
-      {t.contato.title.line1}<br />{t.contato.title.emph}
+<div class="contato-grid">
+  <div class="left">
+    <div class="kicker">{eyebrow}</div>
+    <h1 class="ad-bungee headline">
+      <span class="t-hot">{helloLine1}</span><br />
+      <span class="ad-bungee-s">{helloLine2}</span><span class="ad-blink t-hot">.</span>
     </h1>
-    <p class="intro">{t.contato.intro}</p>
-    <a class="email hf-display" href={`mailto:${t.contato.email}`}>{t.contato.email}</a>
+    <p class="intro serif">{t.contato.intro}</p>
+
+    <div class="form-box">
+      <div class="form-kicker">{formKicker}</div>
+      <form class="form" onsubmit="return false">
+        <input class="ad-input" placeholder={placeholders.name} />
+        <input class="ad-input" type="email" placeholder={placeholders.email} />
+        <select class="ad-input">
+          {motivos.map((m) => <option>{m}</option>)}
+        </select>
+        <textarea class="ad-input" placeholder={placeholders.msg} rows={4}></textarea>
+        <div class="form-foot">
+          <label class="bot-check">
+            <input type="checkbox" /> {botCheck}
+          </label>
+          <button class="ad-btn hot">{fillEnviar}</button>
+        </div>
+      </form>
+    </div>
   </div>
 
-  <div>
-    <div class="kicker hf-mono">{t.contato.socialsHeading}</div>
-    {t.contato.socials.map((s) => (
-      <a class="social-row">
-        <div class="social-main">
-          <div class="hf-display name">{s.n}</div>
-          <div class="hf-mono handle">{s.h}</div>
-        </div>
-        <span class="desc">{s.d}</span>
-        <span class="hf-mono arrow">↗</span>
+  <aside class="right">
+    <div class="direct-kicker">{directLabel}</div>
+    <a class="email-row" href={`mailto:${t.contato.email}`}>
+      <span class="er-l">E-MAIL</span>
+      <span class="er-v">{t.contato.email}</span>
+      <span class="er-arr">↗</span>
+    </a>
+    {t.contato.socials.map((s, i) => (
+      <a class="email-row" href="#" style={`--er-c:${socialColors[i % socialColors.length]}`}>
+        <span class="er-l">{s.n.toUpperCase()}</span>
+        <span class="er-v">{s.h}</span>
+        <span class="er-arr">↗</span>
       </a>
     ))}
-  </div>
+
+    <div class="pgp">
+      <div class="pgp-kicker">★ ASSINATURA PGP</div>
+      <div class="pgp-key">FF42 9C8B 0D71 5E3A · 8B2C 4F1E 7D90 A3C5</div>
+    </div>
+  </aside>
 </div>
 
 <style>
-  .grid {
+  .contato-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 64px;
-    align-items: start;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 32px;
+    padding-top: 6px;
   }
-  .eyebrow {
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    color: var(--accent);
+
+  .kicker {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--hot);
     text-transform: uppercase;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
   .headline {
-    font-size: 64px;
-    margin: 0 0 28px;
-    line-height: 1.0;
+    font-size: clamp(48px, 11vw, 120px);
+    margin: 0 0 14px;
+    line-height: 0.82;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+  }
+  .headline .t-hot {
+    background: var(--hot);
+    color: #000;
+    padding: 0 8px;
   }
   .intro {
+    font-family: var(--serif);
     font-size: 18px;
-    color: var(--fg-2);
-    line-height: 1.6;
-    margin: 0 0 36px;
-    max-width: 480px;
+    line-height: 1.5;
+    max-width: 520px;
+    margin: 0 0 20px;
   }
-  .email {
-    font-size: 28px;
-    font-weight: 500;
-    color: var(--fg);
-    border-bottom: 2px solid var(--accent);
-    padding-bottom: 4px;
-    display: inline-block;
-    transition: color 0.18s ease;
+  .serif { font-family: var(--serif); }
+
+  .form-box {
+    border: 2.5px solid var(--fg);
+    padding: 18px 20px;
   }
-  .email:hover {
-    color: var(--accent);
-  }
-  .kicker {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    color: var(--fg-3);
+  .form-kicker {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    margin-bottom: 16px;
+    color: var(--hot);
+    margin-bottom: 10px;
   }
-  .social-row {
-    display: grid;
-    grid-template-columns: 1fr auto 24px;
-    gap: 16px;
-    padding: 18px 0;
-    border-bottom: 1px solid var(--rule-soft);
-    align-items: center;
-    cursor: pointer;
-    transition: padding-left 0.25s ease, border-color 0.18s ease;
-  }
-  .social-row:first-of-type {
-    border-top: 1px solid var(--rule-soft);
-  }
-  .social-row:hover {
-    border-color: var(--accent);
-    padding-left: 8px;
-  }
-  .social-row:hover .name {
-    color: var(--accent);
-  }
-  .social-row:hover .arrow {
-    color: var(--accent);
-  }
-  .social-main {
+  .form { display: grid; gap: 10px; }
+  .form-foot {
     display: flex;
-    flex-direction: column;
-    gap: 2px;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
   }
-  .name {
-    font-size: 20px;
-    font-weight: 600;
-    transition: color 0.18s ease;
+  .bot-check {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
-  .handle {
-    font-size: 12px;
-    color: var(--fg-3);
-    letter-spacing: 0.04em;
+  .bot-check input { accent-color: var(--hot); margin-right: 4px; }
+
+  .right { display: flex; flex-direction: column; gap: 10px; }
+  .direct-kicker {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--fg);
+    opacity: 0.6;
+    text-transform: uppercase;
   }
-  .desc {
-    font-size: 14px;
-    color: var(--fg-2);
+  .email-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 24px;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 12px;
+    border: 2px solid var(--fg);
+    color: var(--fg);
   }
-  .arrow {
-    font-size: 14px;
-    color: var(--fg-3);
-    transition: color 0.18s ease;
+  .email-row:hover {
+    background: var(--bg-2);
+    color: var(--fg);
   }
-  @media (max-width: 720px) {
-    .grid {
-      grid-template-columns: 1fr;
-      gap: 40px;
-    }
-    .headline {
-      font-size: 48px;
-    }
-    .email {
-      font-size: 22px;
-    }
+  .er-l {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--er-c, var(--hot));
+  }
+  .er-v {
+    font-family: var(--mono);
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .er-arr {
+    color: var(--er-c, var(--hot));
+    text-align: right;
+  }
+
+  .pgp {
+    margin-top: 8px;
+    padding: 10px 14px;
+    border: 2px solid var(--acid);
+    color: var(--acid);
+  }
+  .pgp-kicker {
+    font-family: var(--tiny);
+    font-size: 9px;
+    margin-bottom: 4px;
+  }
+  .pgp-key {
+    font-family: var(--mono);
+    font-size: 10px;
+    line-height: 1.5;
+    word-break: break-all;
+    opacity: 0.85;
+  }
+
+  @media (max-width: 900px) {
+    .contato-grid { grid-template-columns: 1fr; }
   }
 </style>

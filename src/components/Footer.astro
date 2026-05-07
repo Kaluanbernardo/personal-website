@@ -9,5 +9,16 @@ const t = ui[lang];
 
 <footer class="site-footer">
   <span>{t.footer.note}</span>
+  <span class="middle">no_cookies · no_tracking · no_bullshit</span>
   <a href="https://github.com/" target="_blank" rel="noreferrer noopener">{t.footer.sourceLabel}</a>
 </footer>
+
+<style>
+  .site-footer .middle {
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+  @media (max-width: 720px) {
+    .site-footer .middle { display: none; }
+  }
+</style>

@@ -1,0 +1,39 @@
+---
+interface Props {
+  extra?: string[];
+}
+const { extra = [] } = Astro.props;
+---
+
+<div class="statusbar" aria-hidden="true">
+  <div><span class="dot ad-blink">●</span> ONLINE</div>
+  <div>SP/BR · -23.55,-46.63</div>
+  <div class="clock"><span data-status-clock>--:--:--</span></div>
+  <div>FPS <span data-status-fps>60</span></div>
+  <div>CPU <span data-status-cpu>12</span>%</div>
+  {extra.map((e) => <div>{e}</div>)}
+  <div>v0.404 · NO_COOKIES</div>
+</div>
+
+<style>
+  .statusbar .dot { color: var(--acid); }
+  .statusbar .clock span { color: var(--fg); }
+  .statusbar .clock span :global(.s) { color: var(--hot); }
+</style>
+
+<script>
+  function pad(n: number) { return String(n).padStart(2, '0'); }
+  const clockEl = document.querySelector<HTMLElement>('[data-status-clock]');
+  const fpsEl = document.querySelector<HTMLElement>('[data-status-fps]');
+  const cpuEl = document.querySelector<HTMLElement>('[data-status-cpu]');
+  function tick() {
+    const t = new Date();
+    if (clockEl) {
+      clockEl.innerHTML = `${pad(t.getHours())}:${pad(t.getMinutes())}:<span class=\"s\" style=\"color:var(--hot)\">${pad(t.getSeconds())}</span>`;
+    }
+    if (fpsEl) fpsEl.textContent = String(60 - (t.getSeconds() % 5));
+    if (cpuEl) cpuEl.textContent = String(12 + (t.getSeconds() % 30));
+  }
+  tick();
+  setInterval(tick, 1000);
+</script>

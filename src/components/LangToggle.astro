@@ -8,12 +8,19 @@ interface Props {
 }
 const { lang, pathname } = Astro.props;
 
-// Strip the deploy base from the pathname so the i18n helpers operate on
-// site-relative routes (/sobre, /en/sobre), then re-apply via link().
 const normalized = stripBase(pathname);
 const ptHref = link(ui.en.altLang.href(normalized));
 const enHref = link(ui.pt.altLang.href(normalized));
 ---
 
-<a class={`hf-chip ${lang === 'pt' ? 'active' : ''}`} href={lang === 'pt' ? '#' : ptHref}>PT</a>
-<a class={`hf-chip ${lang === 'en' ? 'active' : ''}`} href={lang === 'en' ? '#' : enHref}>EN</a>
+<span class="lang-toggle">
+  <a class={`ad-tag lang ${lang === 'pt' ? 'on' : 'off'}`} href={lang === 'pt' ? '#' : ptHref} aria-current={lang === 'pt' ? 'true' : undefined}>PT</a>
+  <a class={`ad-tag lang ${lang === 'en' ? 'on' : 'off'}`} href={lang === 'en' ? '#' : enHref} aria-current={lang === 'en' ? 'true' : undefined}>EN</a>
+</span>
+
+<style>
+  .lang-toggle { display: inline-flex; gap: 4px; }
+  .lang.on { background: var(--accent); color: #000; border-color: #000; }
+  .lang.off { opacity: 0.5; }
+  .lang.off:hover { background: var(--ylw); color: #000; opacity: 1; }
+</style>

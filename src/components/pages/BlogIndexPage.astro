@@ -12,175 +12,334 @@ const t = ui[lang];
 const posts = (await getCollection('posts', ({ data }) => !data.draft && data.lang === lang))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
+const featured = posts.find((p) => p.data.featured) ?? posts[0];
+const rest = posts.filter((p) => p && p.id !== featured?.id);
+
 const prefix = lang === 'en' ? '/en' : '';
-const minLabel = lang === 'pt' ? 'min' : 'min';
+const minLabel = 'min';
 const postHref = (slug: string) => link(`${prefix}/blog/${slug}`);
 
-// Map filter labels to canonical tag values
 const tagOrder: string[] = ['produto', 'jornalismo', 'academia', 'leitura', 'notas'];
 const tagByFilter: Record<string, string | null> = {};
 t.blog.filters.forEach((label, i) => {
   tagByFilter[label] = i === 0 ? null : tagOrder[i - 1] ?? null;
 });
+
+const eyebrow = '05 / *.MD';
+const sidebarKickerNL = lang === 'en' ? '★ NEWSLETTER ★' : '★ NEWSLETTER ★';
+const archiveHeading = lang === 'en' ? './ARCHIVE' : './ARQUIVO';
+const archiveItems = lang === 'en'
+  ? ['apr/26 (4)', 'mar/26 (3)', 'feb/26 (5)', 'jan/26 (2)', 'dec/25 (4)', 'nov/25 (5)']
+  : ['abr/26 (4)', 'mar/26 (3)', 'fev/26 (5)', 'jan/26 (2)', 'dez/25 (4)', 'nov/25 (5)'];
+const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ POST EM DESTAQUE ★★';
 ---
 
 <header class="head">
-  <div class="eyebrow hf-mono">{t.blog.eyebrow}</div>
-  <h1 class="hf-display headline">
-    {t.blog.title.line1}{t.blog.title.emph}
+  <div class="kicker">{eyebrow}</div>
+  <h1 class="ad-bungee headline">
+    BLOG <span class="ad-blink t-vio">█</span>
   </h1>
+  <div class="meta">{t.blog.meta(posts.length)}</div>
 </header>
 
 <div class="filters">
   {t.blog.filters.map((label, i) => (
-    <button type="button" class={`hf-tag filter-btn ${i === 0 ? 'accent active' : ''}`} data-tag={tagByFilter[label] ?? ''}>{label}</button>
+    <button type="button" class={`ad-tag filter-btn ${i === 0 ? 'is-active' : ''}`} data-tag={tagByFilter[label] ?? ''}>
+      #{label}
+    </button>
   ))}
 </div>
 
-<div class="post-list">
-  {posts.map((p) => (
-    <a class="post-row" href={postHref(p.id)} data-tag={p.data.tag}>
-      <span class="rdate hf-mono">{formatDate(p.data.pubDate, lang)}</span>
-      <div class="rbody">
-        <h3 class="hf-display rtitle">{p.data.title}</h3>
-        <p class="rdesc">{p.data.description}</p>
+<div class="blog-grid">
+  <main class="posts">
+    {featured && (
+      <a class="featured" href={postHref(featured.id)} data-tag={featured.data.tag}>
+        <div class="ft-kicker">{featuredKicker}</div>
+        <h2 class="ad-bungee ft-title">{featured.data.title}</h2>
+        <p class="ft-desc serif">{featured.data.description}</p>
+        <div class="ft-meta">
+          {formatDate(featured.data.pubDate, lang).toUpperCase()} · {featured.data.readingTime} {minLabel} · #{tagDisplay[lang][featured.data.tag] ?? featured.data.tag}
+        </div>
+      </a>
+    )}
+
+    {rest.map((p) => (
+      <a class="post-row" href={postHref(p.id)} data-tag={p.data.tag}>
+        <span class="rdate">{formatDate(p.data.pubDate, lang).toUpperCase()}</span>
+        <h3 class="ad-bungee rtitle">{p.data.title}</h3>
+        <span class="rtag">#{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
+        <span class="rmins">{p.data.readingTime} {minLabel}</span>
+        <span class="rarr">→</span>
+      </a>
+    ))}
+  </main>
+
+  <aside class="aside">
+    <div class="newsletter">
+      <div class="nl-kicker">{sidebarKickerNL}</div>
+      <h3 class="ad-bungee nl-title">
+        {lang === 'en' ? <>IN YOUR<br />INBOX.</> : <>NO E-MAIL.<br />SEM SPAM.</>}
+      </h3>
+      <p class="nl-copy">{t.blog.newsletterCopy}</p>
+      <form class="nl-form" onsubmit="return false">
+        <input class="ad-input nl-input" placeholder={t.blog.newsletterPlaceholder} type="email" />
+        <button class="ad-btn ylw nl-submit">SUBSCRIBE →</button>
+      </form>
+    </div>
+
+    <div class="archive">
+      <div class="arch-kicker">{archiveHeading}</div>
+      {archiveItems.map((m) => (
+        <div class="arch-row">
+          <span>{m}</span><span class="arr">→</span>
+        </div>
+      ))}
+    </div>
+
+    <div class="webring">
+      <div class="wr-kicker">WEBRING ↗</div>
+      <div class="wr-list">
+        ← <a href="#">vizinho_a</a><br />
+        → <a href="#">vizinho_b</a>
       </div>
-      <span class="rtag hf-mono">#{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
-      <span class="rmins hf-mono">{p.data.readingTime} {minLabel}</span>
-    </a>
-  ))}
+    </div>
+  </aside>
 </div>
 
 <script>
   const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
-  const rows = document.querySelectorAll<HTMLElement>('.post-row[data-tag]');
+  const rows = document.querySelectorAll<HTMLElement>('[data-tag]');
   filterBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
-      filterBtns.forEach((b) => b.classList.remove('accent', 'active'));
-      btn.classList.add('accent', 'active');
+      filterBtns.forEach((b) => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
       const target = btn.dataset.tag ?? '';
       rows.forEach((row) => {
         const match = !target || row.dataset.tag === target;
-        row.style.display = match ? '' : 'none';
+        (row as HTMLElement).style.display = match ? '' : 'none';
       });
     });
   });
 </script>
 
 <style>
-  .head {
-    margin-bottom: 32px;
-  }
-  .eyebrow {
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    color: var(--accent);
+  .head { padding-top: 6px; margin-bottom: 18px; }
+  .kicker {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--vio);
     text-transform: uppercase;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
   .headline {
-    font-size: 56px;
-    margin: 0 0 12px;
-    line-height: 1.05;
-  }
-  .meta {
-    font-size: 12px;
-    letter-spacing: 0.06em;
-    color: var(--fg-3);
+    font-size: clamp(48px, 9vw, 88px);
+    margin: 0 0 4px;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
     text-transform: uppercase;
-    margin: 0;
+  }
+  .headline .t-vio { color: var(--vio); }
+  .meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 18px;
   }
 
   .filters {
     display: flex;
-    gap: 8px;
-    margin-bottom: 32px;
+    gap: 4px;
+    margin-bottom: 18px;
     flex-wrap: wrap;
   }
-
-  .post-list {
-    display: flex;
-    flex-direction: column;
+  .filter-btn { font-size: 11px; padding: 4px 10px; }
+  .filter-btn.is-active {
+    background: var(--vio);
+    color: #fff;
+    border-color: var(--vio);
   }
+
+  .blog-grid {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 28px;
+    align-items: flex-start;
+  }
+
+  .featured {
+    display: block;
+    background: var(--vio);
+    color: #fff;
+    padding: 18px 22px;
+    border: 2.5px solid var(--fg);
+    margin-bottom: 20px;
+    box-shadow: 6px 6px 0 var(--ylw);
+    cursor: pointer;
+  }
+  .featured:hover { background: var(--vio); color: #fff; }
+  .ft-kicker {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ylw);
+    margin-bottom: 8px;
+  }
+  .ft-title {
+    font-size: 36px;
+    margin: 0 0 8px;
+    line-height: 0.95;
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+  }
+  .ft-desc {
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0 0 12px;
+    max-width: 560px;
+  }
+  .ft-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
   .post-row {
     display: grid;
-    grid-template-columns: 100px 1fr 140px 80px;
-    gap: 28px;
-    padding: 28px 0;
-    border-bottom: 1px solid var(--rule-soft);
-    align-items: start;
-    transition: padding-left 0.25s ease, border-color 0.18s ease;
+    grid-template-columns: 80px 1fr 100px 60px 24px;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1.5px solid var(--fg);
+    align-items: baseline;
   }
-  .post-row:first-child {
-    border-top: 1px solid var(--rule-soft);
-  }
-  .post-row:hover {
-    border-color: var(--accent);
-    padding-left: 12px;
-  }
-  .post-row:hover .rtitle {
-    color: var(--accent);
-  }
+  .post-row:hover { background: transparent; padding-left: 8px; }
+  .post-row:hover .rtitle { color: var(--vio); }
+  .post-row:hover .rarr { color: var(--vio); }
   .rdate {
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    color: var(--fg-3);
-    text-transform: uppercase;
-    padding-top: 6px;
-  }
-  .rbody {
-    min-width: 0;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--fg);
+    opacity: 0.7;
   }
   .rtitle {
     font-size: 22px;
-    margin: 0 0 6px;
-    font-weight: 600;
-    line-height: 1.25;
-    transition: color 0.18s ease;
-  }
-  .rdesc {
-    font-size: 15px;
-    color: var(--fg-2);
     margin: 0;
-    line-height: 1.55;
-    max-width: 620px;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
   }
   .rtag {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--vio);
     text-transform: uppercase;
     text-align: right;
-    padding-top: 6px;
   }
   .rmins {
-    font-size: 12px;
-    color: var(--fg-3);
+    font-family: var(--mono);
+    font-size: 11px;
+    opacity: 0.6;
     text-align: right;
-    padding-top: 6px;
   }
-  @media (max-width: 720px) {
-    .headline {
-      font-size: 40px;
-    }
+  .rarr {
+    color: var(--vio);
+    font-size: 18px;
+    text-align: right;
+  }
+
+  .aside { display: flex; flex-direction: column; gap: 18px; }
+
+  .newsletter {
+    border: 3px solid var(--ylw);
+    padding: 16px 18px;
+    background: #000;
+    color: var(--ylw);
+    position: relative;
+  }
+  .nl-kicker {
+    font-family: var(--tiny);
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    color: var(--ylw);
+    margin-bottom: 8px;
+  }
+  .nl-title {
+    font-size: 22px;
+    margin: 0 0 8px;
+    line-height: 0.95;
+    text-transform: uppercase;
+    color: var(--ylw);
+  }
+  .nl-copy {
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.5;
+    color: #fff;
+    margin: 0 0 12px;
+  }
+  .nl-form { display: flex; flex-direction: column; gap: 8px; }
+  .nl-input {
+    width: 100%;
+    font-size: 11px;
+    color: var(--ylw);
+    border-color: var(--ylw);
+  }
+  .nl-input::placeholder { color: var(--ylw); opacity: 0.6; }
+  .nl-submit { justify-content: center; }
+
+  .archive { display: flex; flex-direction: column; }
+  .arch-kicker {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--fg);
+    opacity: 0.6;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .arch-row {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 4px 0;
+    border-bottom: 1.5px dashed var(--fg);
+    display: flex;
+    justify-content: space-between;
+  }
+  .arch-row .arr { color: var(--vio); }
+
+  .webring {
+    border: 2px solid var(--cyan);
+    color: var(--cyan);
+    padding: 10px 12px;
+  }
+  .wr-kicker {
+    font-family: var(--tiny);
+    font-size: 9px;
+    margin-bottom: 6px;
+  }
+  .wr-list {
+    font-family: var(--mono);
+    font-size: 10px;
+    line-height: 1.6;
+  }
+  .wr-list a { color: var(--cyan); }
+
+  .serif { font-family: var(--serif); }
+
+  @media (max-width: 900px) {
+    .blog-grid { grid-template-columns: 1fr; }
     .post-row {
-      grid-template-columns: 1fr;
+      grid-template-columns: 60px 1fr 24px;
       gap: 8px;
-      padding: 20px 0;
     }
-    .post-row:hover {
-      padding-left: 0;
-    }
-    .rtag,
-    .rmins {
-      text-align: left;
-      padding-top: 0;
-    }
-    .rdate {
-      padding-top: 0;
-    }
+    .rtag, .rmins { display: none; }
+    .ft-title { font-size: 28px; }
   }
 </style>

@@ -7,222 +7,323 @@ interface Props {
 const { lang } = Astro.props;
 const t = ui[lang];
 const pdfHref = link(lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf');
+
+const eyebrow = '02 / CV.PROFISSIONAL.PDF';
+const updatedLabel = lang === 'en'
+  ? 'updated 04/2026 · also in [PT] · written in markdown'
+  : 'atualizado 04/2026 · também em [EN] · feito em markdown';
+
+const sections = lang === 'en'
+  ? [
+      { l: 'Current', c: 'ylw' },
+      { l: 'Experience', c: 'fg' },
+      { l: 'Education', c: 'fg' },
+      { l: 'Skills', c: 'fg' },
+      { l: 'Languages', c: 'fg' },
+    ]
+  : [
+      { l: 'Atual', c: 'ylw' },
+      { l: 'Experiência', c: 'fg' },
+      { l: 'Formação', c: 'fg' },
+      { l: 'Skills', c: 'fg' },
+      { l: 'Idiomas', c: 'fg' },
+    ];
+
+const expHeading = lang === 'en' ? '>> EXPERIENCE' : '>> EXPERIÊNCIA';
+const formHeading = lang === 'en' ? '>> EDUCATION' : '>> FORMAÇÃO';
+const skillsHeading = lang === 'en' ? '>> SKILLS' : '>> SKILLS';
+const langHeading = lang === 'en' ? '>> LANGUAGES' : '>> IDIOMAS';
+const whereLabel = 'WHERE';
+const statusLabel = 'STATUS';
+const whereVal = 'São Paulo / -3 GMT';
+const statusVal = lang === 'en' ? '● open to freelance' : '● aceitando freelas';
+
+const formationItems = lang === 'en'
+  ? [
+      { p: '2023 →', r: 'PhD in Communication', o: 'PUC-SP · in progress' },
+      { p: '2018—21', r: 'MA in Communication', o: 'PUC-SP · concluded' },
+      { p: '2014—17', r: 'BA in Journalism', o: 'USP · concluded' },
+    ]
+  : [
+      { p: '2023 →', r: 'Doutorado em Comunicação', o: 'PUC-SP · em curso' },
+      { p: '2018—21', r: 'Mestrado em Comunicação', o: 'PUC-SP · concluído' },
+      { p: '2014—17', r: 'Bacharel em Jornalismo', o: 'USP · concluído' },
+    ];
+
+const langs = lang === 'en'
+  ? [
+      { l: 'PT-BR', n: 'native' },
+      { l: 'EN', n: 'fluent' },
+      { l: 'ES', n: 'reading' },
+    ]
+  : [
+      { l: 'PT-BR', n: 'nativo' },
+      { l: 'EN', n: 'fluente' },
+      { l: 'ES', n: 'leitura' },
+    ];
+
+const skillTags = ['discovery', 'pesquisa qualitativa', 'métricas', 'SQL', 'Python', 'escrita', 'edição', 'reportagem', 'Notion', 'Figma', 'Astro', 'markdown', 'entrevistas', 'roadmap'];
+const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
 ---
 
-<div class="head row-flex">
-  <div>
-    <div class="eyebrow hf-mono">{t.cv.eyebrow}</div>
-    <h1 class="hf-display headline">
-      {t.cv.title.line1}{t.cv.title.emph}
-    </h1>
-  </div>
-  <a class="hf-btn solid" href={pdfHref} download>{t.cv.download}</a>
+<div class="cv-head">
+  <div class="kicker">{eyebrow}</div>
+  <h1 class="ad-bungee headline">
+    {lang === 'en' ? 'RESUME' : 'CURRÍCULO'} <span class="arr">↓</span>
+  </h1>
+  <div class="updated">{updatedLabel}</div>
 </div>
 
-<div class="kicker hf-mono">{t.cv.experienceHeading}</div>
-<div class="exp-list">
-  {t.cv.experience.map((e) => (
-    <div class="exp-row">
-      <span class="exp-period hf-mono">{e.p}</span>
-      <div class="exp-body">
-        <div class="hf-display exp-role">{e.r}</div>
-        <div class="exp-org">{e.o}</div>
-        <p class="exp-desc">{e.d}</p>
+<div class="cv-grid">
+  <aside class="cv-aside">
+    <div class="aside-kicker">{lang === 'en' ? 'SECTIONS' : 'SEÇÕES'}</div>
+    {sections.map((s, i) => (
+      <div class={`section-link ${s.c === 'ylw' ? 'on' : ''}`}>
+        {i === 0 ? '▶ ' : '· '}{s.l}
       </div>
-      <a class="exp-cta hf-mono" href="#">{e.cta}</a>
-    </div>
-  ))}
-</div>
+    ))}
 
-<div class="kicker hf-mono skills-kicker">{t.cv.skillsHeading}</div>
-<div class="skills">
-  {t.cv.skills.map((s) => (
-    <div class="skill-row">
-      <span class="skill-name">{s.name}</span>
-      <div class="skill-bar" style={`--level: ${s.level}%`}>
-        <span class="skill-fill"></span>
-      </div>
-      <span class="skill-level hf-mono">{s.level}%</span>
+    <div class="info-box">
+      <div class="info-kicker">{whereLabel}</div>
+      <div class="info-val">{whereVal}</div>
+      <div class="info-kicker">{statusLabel}</div>
+      <div class="info-val acid">{statusVal}</div>
     </div>
-  ))}
+
+    <a class="ad-btn ylw download-btn" href={pdfHref} download>↓ {t.cv.download}</a>
+  </aside>
+
+  <main>
+    <div class="section-kicker">{expHeading}</div>
+    <hr class="section-rule ylw" />
+
+    {t.cv.experience.map((e, i) => {
+      const colors = ['ylw', 'hot', 'cyan'];
+      const c = colors[i % 3];
+      const tags = lang === 'en'
+        ? ['discovery', 'metrics', 'specs', 'SQL']
+        : ['discovery', 'métricas', 'specs', 'SQL'];
+      return (
+        <div class="exp-row">
+          <div class={`exp-period c-${c}`}>{e.p}</div>
+          <div>
+            <div class="ad-bungee exp-role">{e.r}</div>
+            <div class="exp-org">{e.o}</div>
+            <p class="exp-desc serif">{e.d}</p>
+            <div class="exp-tags">
+              {tags.map((tg) => <span class={`ad-tag c-${c}`}>{tg}</span>)}
+            </div>
+          </div>
+        </div>
+      );
+    })}
+
+    <div class="section-kicker cyan">{formHeading}</div>
+    <hr class="section-rule cyan" />
+    {formationItems.map((e) => (
+      <div class="form-row">
+        <div class="form-period">{e.p}</div>
+        <div>
+          <div class="ad-bungee form-role">{e.r}</div>
+          <div class="form-org">{e.o}</div>
+        </div>
+      </div>
+    ))}
+
+    <div class="section-kicker acid">{skillsHeading}</div>
+    <div class="skill-tags">
+      {skillTags.map((s, i) => {
+        const bg = tagBgs[i % 4];
+        const transparent = bg === 'transparent';
+        const style = transparent
+          ? 'background:transparent;color:var(--fg);border-color:var(--fg)'
+          : `background:${bg};color:#000;border-color:#000`;
+        return <span class="ad-tag" style={style}>{s}</span>;
+      })}
+    </div>
+
+    <div class="section-kicker vio">{langHeading}</div>
+    <div class="langs">
+      {langs.map((id) => (
+        <div class="lang-cell">
+          <div class="ad-bungee lang-l">{id.l}</div>
+          <div class="lang-n">{id.n}</div>
+        </div>
+      ))}
+    </div>
+  </main>
 </div>
 
 <style>
-  .head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 56px;
-    gap: 24px;
-  }
-  .eyebrow {
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    color: var(--accent);
+  .cv-head { padding-top: 6px; }
+  .kicker {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--ylw);
     text-transform: uppercase;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
   .headline {
-    font-size: 56px;
-    margin: 0;
-    line-height: 1.05;
-  }
-  .kicker {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    color: var(--fg-3);
+    font-size: clamp(48px, 9vw, 88px);
+    margin: 0 0 6px;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
     text-transform: uppercase;
+  }
+  .headline .arr { color: var(--ylw); }
+  .updated {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.6;
     margin-bottom: 24px;
   }
-  .exp-list {
-    margin-bottom: 12px;
+
+  .cv-grid {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 32px;
+    align-items: flex-start;
   }
+  .aside-kicker {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--fg);
+    opacity: 0.6;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .section-link {
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 4px 0;
+    color: var(--fg);
+  }
+  .section-link.on { color: var(--ylw); font-weight: 700; }
+
+  .info-box {
+    margin-top: 24px;
+    border: 2px solid var(--hot);
+    padding: 10px 12px;
+    font-family: var(--mono);
+  }
+  .info-kicker {
+    font-size: 9px;
+    color: var(--hot);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .info-kicker:first-child { margin-top: 0; }
+  .info-val { font-size: 12px; margin-top: 4px; }
+  .info-val.acid { color: var(--acid); }
+  .download-btn { margin-top: 18px; }
+
+  .section-kicker {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ylw);
+    text-transform: uppercase;
+    margin-top: 24px;
+    margin-bottom: 8px;
+  }
+  .section-kicker.cyan { color: var(--cyan); }
+  .section-kicker.acid { color: var(--acid); }
+  .section-kicker.vio { color: var(--vio); }
+
+  .section-rule { border-top: 2px solid var(--ylw); margin-bottom: 14px; }
+  .section-rule.cyan { border-top-color: var(--cyan); }
+  .section-rule.acid { border-top-color: var(--acid); }
+
   .exp-row {
     display: grid;
-    grid-template-columns: 180px 1fr 100px;
-    gap: 32px;
-    padding: 32px 24px;
-    margin: 0 -24px;
-    border-bottom: 1px solid var(--rule-soft);
-    align-items: start;
-    border-left: 2px solid transparent;
-    transition: background 0.18s ease, border-left-color 0.18s ease;
-  }
-  .exp-row:first-child {
-    border-top: 1px solid var(--rule-soft);
-  }
-  .exp-row:hover {
-    background: var(--bg-2);
-    border-left-color: var(--accent);
-  }
-  .exp-row:hover .exp-role {
-    color: var(--accent);
+    grid-template-columns: 120px 1fr;
+    gap: 18px;
+    padding: 14px 0;
+    border-bottom: 1.5px dashed var(--fg);
   }
   .exp-period {
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    color: var(--fg-3);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding-top: 4px;
   }
-  .exp-body {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+  .exp-period.c-ylw { color: var(--ylw); }
+  .exp-period.c-hot { color: var(--hot); }
+  .exp-period.c-cyan { color: var(--cyan); }
   .exp-role {
-    font-size: 22px;
-    font-weight: 600;
-    line-height: 1.2;
-    transition: color 0.18s ease;
+    font-size: 24px;
+    line-height: 1.05;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
   }
   .exp-org {
-    font-size: 14px;
-    color: var(--fg-2);
     font-family: var(--mono);
-    letter-spacing: 0.04em;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 8px;
   }
   .exp-desc {
-    font-size: 16px;
-    color: var(--fg-2);
-    margin: 4px 0 0;
-    line-height: 1.6;
-    max-width: 620px;
-  }
-  .exp-cta {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    color: var(--fg-2);
-    text-transform: uppercase;
-    text-align: right;
-    padding-top: 6px;
-    transition: color 0.18s ease;
-  }
-  .exp-cta:hover {
-    color: var(--accent);
-  }
-  .skills-kicker {
-    margin-top: 56px;
-  }
-  .skills {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 56px;
-    row-gap: 14px;
-    max-width: 920px;
-  }
-  .skill-row {
-    display: grid;
-    grid-template-columns: 160px 1fr 44px;
-    gap: 16px;
-    align-items: center;
-  }
-  .skill-name {
     font-size: 14px;
-    color: var(--fg);
-    font-weight: 500;
+    margin: 0 0 8px;
+    line-height: 1.5;
   }
-  .skill-bar {
-    height: 6px;
-    background: var(--rule-soft);
-    border-radius: 999px;
-    overflow: hidden;
-    position: relative;
+  .exp-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+  .exp-tags .ad-tag { font-size: 9px; padding: 2px 6px; }
+  .exp-tags .ad-tag.c-ylw { color: var(--ylw); border-color: var(--ylw); }
+  .exp-tags .ad-tag.c-hot { color: var(--hot); border-color: var(--hot); }
+  .exp-tags .ad-tag.c-cyan { color: var(--cyan); border-color: var(--cyan); }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 18px;
+    padding: 10px 0;
+    border-bottom: 1px dotted var(--fg);
   }
-  .skill-fill {
-    display: block;
-    height: 100%;
-    width: var(--level);
-    background: var(--accent);
-    border-radius: 999px;
-    transform: scaleX(0);
-    transform-origin: left;
-    animation: grow 0.9s 0.1s ease-out forwards;
+  .form-period {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
-  @keyframes grow {
-    to {
-      transform: scaleX(1);
-    }
+  .form-role {
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
   }
-  .skill-level {
-    font-size: 12px;
-    color: var(--fg-3);
-    text-align: right;
-    letter-spacing: 0.04em;
-    font-variant-numeric: tabular-nums;
+  .form-org {
+    font-family: var(--mono);
+    font-size: 11px;
+    opacity: 0.7;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
   }
-  .skill-row:hover .skill-fill {
-    background: var(--fg);
+
+  .skill-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .skill-tags .ad-tag { font-size: 11px; padding: 4px 8px; }
+
+  .langs { display: flex; gap: 18px; flex-wrap: wrap; }
+  .lang-l { font-size: 30px; }
+  .lang-n {
+    font-family: var(--mono);
+    font-size: 10px;
+    opacity: 0.7;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
-  .skill-row:hover .skill-name {
-    color: var(--accent);
-  }
-  @media (max-width: 720px) {
-    .head {
-      align-items: flex-start;
-    }
-    .exp-row {
-      grid-template-columns: 1fr;
-      gap: 12px;
-      padding: 24px 16px;
-      margin: 0 -16px;
-    }
-    .exp-cta {
-      text-align: left;
-    }
-    .headline {
-      font-size: 40px;
-    }
-    .skills {
-      grid-template-columns: 1fr;
-      column-gap: 0;
-    }
-    .skill-row {
-      grid-template-columns: 110px 1fr 40px;
-    }
+
+  .serif { font-family: var(--serif); }
+
+  @media (max-width: 900px) {
+    .cv-grid { grid-template-columns: 1fr; }
+    .exp-row, .form-row { grid-template-columns: 1fr; gap: 8px; }
   }
 </style>

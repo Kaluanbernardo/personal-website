@@ -13,7 +13,14 @@ interface Props {
   backHref?: string;
   pathname: string;
 }
-const { lang, active = 'home', variant = 'full', backLabel, backHref, pathname } = Astro.props;
+const {
+  lang,
+  active = 'home',
+  variant = 'full',
+  backLabel,
+  backHref,
+  pathname,
+} = Astro.props;
 const t = ui[lang];
 const prefix = lang === 'en' ? '/en' : '';
 const linkFor = (key: keyof typeof t.nav) => {
@@ -29,42 +36,61 @@ const linkFor = (key: keyof typeof t.nav) => {
   };
   return link(`${prefix}/${slugs[key]}`);
 };
+const items: { k: string; key: keyof typeof t.nav; active: boolean }[] = [
+  { k: '00', key: 'home', active: active === 'home' },
+  { k: '01', key: 'sobre', active: active === 'sobre' },
+  { k: '02', key: 'cv', active: active === 'cv' },
+  { k: '03', key: 'academico', active: active === 'academico' },
+  { k: '04', key: 'blog', active: active === 'blog' },
+  { k: '05', key: 'projetos', active: active === 'projetos' },
+  { k: '06', key: 'contato', active: active === 'contato' },
+];
+const username = (t.brand || '').replace(/\s+/g, '_');
 ---
 
 <header class="site-header">
   {variant === 'full' ? (
     <div class="brand">
-      <Monogram />
-      <span class="brand-label">{t.brand}</span>
+      <a href={linkFor('home')} class="brand-link" aria-label={t.brand}>
+        <Monogram />
+      </a>
+      <span class="brand-label">
+        {username} <span class="slash">/</span> personal_dot_com
+      </span>
     </div>
   ) : (
-    <a class="hf-mono brand-back" href={backHref ?? link(`${prefix}/blog`)}>
-      {backLabel ?? t.post.backToList}
-    </a>
+    <a class="brand brand-back" href={backHref ?? link(`${prefix}/blog`)}>{backLabel ?? t.post.backToList}</a>
   )}
+
   <button class="menu-toggle" type="button" aria-label="Toggle navigation">{t.nav.menu}</button>
-  <nav>
-    <a class={`hf-chip ${active === 'home' ? 'active' : ''}`} href={linkFor('home')}>{t.nav.home}</a>
-    <a class={`hf-chip ${active === 'sobre' ? 'active' : ''}`} href={linkFor('sobre')}>{t.nav.sobre}</a>
-    <a class={`hf-chip ${active === 'cv' ? 'active' : ''}`} href={linkFor('cv')}>{t.nav.cv}</a>
-    <a class={`hf-chip ${active === 'academico' ? 'active' : ''}`} href={linkFor('academico')}>{t.nav.academico}</a>
-    <a class={`hf-chip ${active === 'blog' ? 'active' : ''}`} href={linkFor('blog')}>{t.nav.blog}</a>
-    <a class={`hf-chip ${active === 'projetos' ? 'active' : ''}`} href={linkFor('projetos')}>{t.nav.projetos}</a>
-    <a class={`hf-chip ${active === 'contato' ? 'active' : ''}`} href={linkFor('contato')}>{t.nav.contato}</a>
-    <span class="nav-aux">
-      <LangToggle lang={lang} pathname={pathname} />
-      <ThemeToggle />
-    </span>
+
+  <nav class="site-nav" aria-label="primary">
+    {items.map((it) => (
+      <a class={it.active ? 'active' : ''} href={linkFor(it.key)} aria-current={it.active ? 'page' : undefined}>
+        <span class="num">{it.k}</span>{t.nav[it.key]}
+      </a>
+    ))}
   </nav>
+
+  <span class="nav-aux">
+    <LangToggle lang={lang} pathname={pathname} />
+    <ThemeToggle />
+  </span>
 </header>
-<hr class="hf-rule" style="margin: 0 0 40px;" />
 
 <style>
+  .brand-link {
+    display: inline-flex;
+    text-decoration: none;
+  }
+  .brand-link:hover { background: transparent; }
   .brand-back {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    color: var(--fg-2);
-    text-transform: uppercase;
+    background: transparent;
+  }
+  .brand-back:hover { background: var(--ylw); color: #000; }
+
+  @media (max-width: 720px) {
+    .brand-label { display: none; }
   }
 </style>
 

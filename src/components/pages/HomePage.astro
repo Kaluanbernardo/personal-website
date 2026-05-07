@@ -112,19 +112,15 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
           <stop offset="75%" stop-color="#00f0ff" />
           <stop offset="100%" stop-color="#b400ff" />
         </linearGradient>
-        <path id="aiSealPath" d="M 100,100 m -78,0 a 78,78 0 1,1 156,0 a 78,78 0 1,1 -156,0" fill="none" />
       </defs>
       <circle cx="100" cy="100" r="96" fill="url(#aiSealGrad)" stroke="#000" stroke-width="3" />
-      <circle cx="100" cy="100" r="62" fill="#0a0a0a" stroke="#000" stroke-width="3" />
-      <text font-family="Bungee, sans-serif" font-size="14" font-weight="700" fill="#000" letter-spacing="2">
-        <textPath href="#aiSealPath" startOffset="0">
-          ★ INTELIGÊNCIA · AS · A · SERVICE ★ INTELIGÊNCIA · AS · A · SERVICE
-          <animate attributeName="startOffset" from="0%" to="100%" dur="14s" repeatCount="indefinite" />
-        </textPath>
-      </text>
-      <text x="100" y="84" text-anchor="middle" fill="#c4ff00" font-size="12" font-weight="700" font-family="Bungee, sans-serif">★ ★ ★</text>
-      <text x="100" y="108" text-anchor="middle" fill="#fff" font-size="22" font-weight="700" font-family="Bungee, sans-serif" letter-spacing="3">I.A.S</text>
-      <text x="100" y="128" text-anchor="middle" fill="#ffe600" font-size="9" font-weight="700" font-family="Bungee, sans-serif" letter-spacing="2">100% REAL</text>
+      <g font-family="Bungee, sans-serif" font-weight="700" fill="#000" stroke="#fff" stroke-width="0.6" paint-order="stroke" text-anchor="middle">
+        <text x="100" y="50" font-size="13" letter-spacing="3">★ ★ ★</text>
+        <text x="100" y="78" font-size="15" letter-spacing="2">INTELIGÊNCIA</text>
+        <text x="100" y="130" font-size="46" letter-spacing="3">I.A.S</text>
+        <text x="100" y="156" font-size="13" letter-spacing="2">AS A SERVICE</text>
+        <text x="100" y="180" font-size="13" letter-spacing="3">★ ★ ★</text>
+      </g>
     </svg>
   </div>
 

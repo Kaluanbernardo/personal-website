@@ -101,6 +101,33 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
 <section class="hero">
   <div class="hero-grid-bg" aria-hidden="true"></div>
 
+  <div class="ai-seal" role="img" aria-label="Selo: Inteligência as a service">
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="aiSealGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="200" y2="200">
+          <stop offset="0%" stop-color="#ff2d55" />
+          <stop offset="20%" stop-color="#ff6a00" />
+          <stop offset="40%" stop-color="#ffe600" />
+          <stop offset="55%" stop-color="#c4ff00" />
+          <stop offset="75%" stop-color="#00f0ff" />
+          <stop offset="100%" stop-color="#b400ff" />
+        </linearGradient>
+        <path id="aiSealPath" d="M 100,100 m -78,0 a 78,78 0 1,1 156,0 a 78,78 0 1,1 -156,0" fill="none" />
+      </defs>
+      <circle cx="100" cy="100" r="96" fill="url(#aiSealGrad)" stroke="#000" stroke-width="3" />
+      <circle cx="100" cy="100" r="62" fill="#0a0a0a" stroke="#000" stroke-width="3" />
+      <text font-family="Bungee, sans-serif" font-size="14" font-weight="700" fill="#000" letter-spacing="2">
+        <textPath href="#aiSealPath" startOffset="0">
+          ★ INTELIGÊNCIA · AS · A · SERVICE ★ INTELIGÊNCIA · AS · A · SERVICE
+          <animate attributeName="startOffset" from="0%" to="100%" dur="14s" repeatCount="indefinite" />
+        </textPath>
+      </text>
+      <text x="100" y="84" text-anchor="middle" fill="#c4ff00" font-size="12" font-weight="700" font-family="Bungee, sans-serif">★ ★ ★</text>
+      <text x="100" y="108" text-anchor="middle" fill="#fff" font-size="22" font-weight="700" font-family="Bungee, sans-serif" letter-spacing="3">I.A.S</text>
+      <text x="100" y="128" text-anchor="middle" fill="#ffe600" font-size="9" font-weight="700" font-family="Bungee, sans-serif" letter-spacing="2">100% REAL</text>
+    </svg>
+  </div>
+
   <div class="hero-main">
     <div class="hero-eyebrow">
       <span class="hf-mono kicker" data-live-date data-lang={lang}>
@@ -198,6 +225,30 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
     z-index: 0;
   }
   .hero-main, .hero-tags { position: relative; z-index: 1; }
+
+  .ai-seal {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    z-index: 2;
+    transform: rotate(-8deg);
+    filter: drop-shadow(4px 6px 0 rgba(0, 0, 0, 0.55));
+    pointer-events: none;
+    animation: ai-seal-wobble 3.4s ease-in-out infinite;
+  }
+  .ai-seal svg { width: 100%; height: 100%; display: block; }
+  @keyframes ai-seal-wobble {
+    0%, 100% { transform: rotate(-8deg); }
+    50%      { transform: rotate(-4deg); }
+  }
+  @media (max-width: 960px) {
+    .ai-seal { width: 150px; height: 150px; top: 24px; }
+  }
+  @media (max-width: 720px) {
+    .ai-seal { width: 110px; height: 110px; top: 14px; right: -4px; }
+  }
 
   .hero-eyebrow {
     display: flex;

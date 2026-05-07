@@ -327,6 +327,10 @@ button { font: inherit; }
 .ad-mark-hot { background: var(--hot); color: #000; padding: 0 4px; box-decoration-break: clone; }
 .ad-mark-cyan { background: var(--cyan); color: #000; padding: 0 4px; box-decoration-break: clone; }
 .ad-mark-acid { background: var(--acid); color: #000; padding: 0 4px; box-decoration-break: clone; }
+.ad-mark-ylw { background: var(--ylw); color: #000; padding: 0 4px; box-decoration-break: clone; }
+.ad-mark-orng { background: var(--orng); color: #000; padding: 0 4px; box-decoration-break: clone; }
+.ad-mark-vio { background: var(--vio); color: #fff; padding: 0 4px; box-decoration-break: clone; }
+.ad-mark-blue { background: var(--blue); color: #fff; padding: 0 4px; box-decoration-break: clone; }
 
 /* rules */
 .ad-rule { border: none; border-top: 2px solid var(--fg); margin: 0; }

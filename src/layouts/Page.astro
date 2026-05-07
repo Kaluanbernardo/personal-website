@@ -2,7 +2,6 @@
 import Base from './Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import Marquee from '../components/Marquee.astro';
 import StatusBar from '../components/StatusBar.astro';
 import type { Lang } from '../i18n/ui';
 
@@ -16,8 +15,6 @@ interface Props {
   navVariant?: 'full' | 'back';
   backLabel?: string;
   backHref?: string;
-  marquee?: string[];
-  marqueeColor?: string;
 }
 const {
   title,
@@ -27,54 +24,8 @@ const {
   navVariant = 'full',
   backLabel,
   backHref,
-  marquee,
-  marqueeColor,
 } = Astro.props;
 const pathname = Astro.url.pathname;
-
-// Default marquees per section, in PT/EN
-const defaultMarquees: Record<Active, Record<Lang, string[]>> = {
-  home: {
-    pt: [
-      'STATUS: ACEITANDO FREELAS',
-      'CAPÍTULO 3 DA TESE',
-      'BLOG ATUALIZADO',
-      'ZONA -3 GMT · SP/BR',
-      'NÃO USE ESTE SITE NO TRABALHO',
-    ],
-    en: [
-      'STATUS: TAKING FREELANCE',
-      'THESIS CHAPTER 3',
-      'BLOG UPDATED',
-      'TIME ZONE -3 GMT · SP/BR',
-      "DON'T BROWSE THIS AT WORK",
-    ],
-  },
-  sobre: {
-    pt: ['SOBRE / WHO_IS_THIS', 'BIO PESSOAL', 'NÃO É O QUE PARECE', 'SP / -3 GMT'],
-    en: ['ABOUT / WHO_IS_THIS', 'PERSONAL BIO', "NOT WHAT IT LOOKS LIKE", 'SP / -3 GMT'],
-  },
-  cv: {
-    pt: ['CV / RESUME', 'PROFISSIONAL · 2026', 'BAIXAR PDF', 'VERSÃO EN ABAIXO'],
-    en: ['CV / RESUME', 'PROFESSIONAL · 2026', 'DOWNLOAD PDF', 'PT VERSION ABOVE'],
-  },
-  academico: {
-    pt: ['CV ACADÊMICO', 'LATTES · ORCID · SCHOLAR', 'TESE EM CURSO', 'COMUNICAÇÃO'],
-    en: ['ACADEMIC CV', 'LATTES · ORCID · SCHOLAR', 'THESIS IN PROGRESS', 'COMMUNICATION'],
-  },
-  blog: {
-    pt: ['BLOG · MARKDOWN', 'NOVO POST EM ABRIL', 'ASSINE A NEWSLETTER', 'ESCRITO À MÃO'],
-    en: ['BLOG · MARKDOWN', 'NEW POST IN APRIL', 'SUBSCRIBE TO NEWSLETTER', 'HAND-WRITTEN'],
-  },
-  projetos: {
-    pt: ['PROJETOS · OUTPUT', 'REPORTAGENS · PRODUTO · PAPERS · PALESTRAS', 'FILTRA POR TIPO'],
-    en: ['PROJECTS · OUTPUT', 'REPORTING · PRODUCT · PAPERS · TALKS', 'FILTER BY TYPE'],
-  },
-  contato: {
-    pt: ['CONTATO / GET IN TOUCH', 'NÃO DM NO INSTAGRAM', 'E-MAIL FUNCIONA MELHOR', 'SEM WHATSAPP'],
-    en: ['CONTACT / GET IN TOUCH', "NO DMs ON INSTAGRAM", 'EMAIL WORKS BEST', 'NO WHATSAPP'],
-  },
-};
 
 const themeMap: Record<Active, string> = {
   home: 'theme-home',
@@ -85,24 +36,10 @@ const themeMap: Record<Active, string> = {
   projetos: 'theme-projetos',
   contato: 'theme-contato',
 };
-
-const accentMap: Record<Active, string> = {
-  home: 'var(--acid)',
-  sobre: 'var(--cyan)',
-  cv: 'var(--ylw)',
-  academico: 'var(--acid)',
-  blog: 'var(--vio)',
-  projetos: 'var(--orng)',
-  contato: 'var(--hot)',
-};
-
-const items = marquee ?? defaultMarquees[active][lang];
-const color = marqueeColor ?? accentMap[active];
 ---
 
 <Base title={title} description={description} lang={lang}>
   <div class={`page ${themeMap[active]}`}>
-    <Marquee items={items} color={color} />
     <Nav
       lang={lang}
       active={active}

@@ -197,38 +197,6 @@ button { font: inherit; }
 .site-footer a:hover { background: var(--ylw); color: #000; }
 
 /* =========================================================
-   Marquee
-   ========================================================= */
-.marquee {
-  overflow: hidden;
-  white-space: nowrap;
-  display: flex;
-  background: var(--accent);
-  color: #000;
-  padding: 6px 0;
-  border-top: 2px solid var(--fg);
-  border-bottom: 2px solid var(--fg);
-}
-.marquee .track {
-  display: inline-flex;
-  gap: 32px;
-  padding-right: 32px;
-  animation: ad-march 22s linear infinite;
-  white-space: nowrap;
-  font-family: var(--mono);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.marquee.fast .track { animation-duration: 10s; }
-.marquee.rev .track { animation-direction: reverse; }
-@keyframes ad-march {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-/* =========================================================
    Status bar
    ========================================================= */
 .statusbar {
@@ -490,7 +458,6 @@ button { font: inherit; }
 }
 @media (max-width: 720px) {
   .page-inner { padding: 18px 16px 48px; }
-  .marquee .track { font-size: 11px; gap: 18px; }
   .site-header { padding: 10px 16px; }
   .site-footer { padding: 14px 16px; }
 }

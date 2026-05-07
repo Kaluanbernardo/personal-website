@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import { ui, type Lang, formatDate, tagDisplay } from '../../i18n/ui';
+import { ui, type Lang, formatDate, formatLongDate, tagDisplay } from '../../i18n/ui';
 import { link } from '../../lib/links';
 
 interface Props {
@@ -80,7 +80,11 @@ const heroTags = lang === 'en'
   ? ['anti-design', 'product', 'journalism', 'academia', 'digital culture', 'tech', 'punk', 'são paulo']
   : ['anti-design', 'product', 'jornalismo', 'academia', 'cultura digital', 'tech', 'punk', 'são paulo'];
 
-const editionLabel = lang === 'en' ? 'EDITION 04 · 2026 · SÃO PAULO' : 'EDIÇÃO 04 · 2026 · SÃO PAULO';
+const now = new Date();
+const [dateDay, dateMon, dateYr] = formatLongDate(now, lang).split(' ');
+const locationLabel = lang === 'en'
+  ? 'SÃO PAULO, BRAZIL, SOUTH AMERICA, EARTH'
+  : 'SÃO PAULO, BRASIL, AMÉRICA DO SUL, TERRA';
 const indexHeading = lang === 'en' ? 'INDEX / RAW NAVIGATION' : 'ÍNDICE / NAVEGAÇÃO RAW';
 const entriesLabel = lang === 'en' ? `0${indexEntries.length}_ENTRIES` : `0${indexEntries.length}_ENTRADAS`;
 
@@ -99,7 +103,9 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
 
   <div class="hero-main">
     <div class="hero-eyebrow">
-      <span class="hf-mono kicker">{editionLabel}</span>
+      <span class="hf-mono kicker" data-live-date data-lang={lang}>
+        <span class="d-day">{dateDay}</span> · <span class="d-mon">{dateMon.toUpperCase()}</span> · <span class="d-yr">{dateYr}</span> · {locationLabel}
+      </span>
       <span class="rec ad-blink">● REC</span>
     </div>
 
@@ -111,19 +117,23 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
     <p class="hero-intro ad-mono">
       {lang === 'en' ? (
         <>
-          <span class="ad-mark-hot">PRODUCT MANAGER</span> in education,
-          <span class="ad-mark-cyan">FREELANCE JOURNALIST</span> and a
-          <span class="ad-mark-acid">PHD CANDIDATE</span> in communication.
-          <br /><br />
-          I write on the blog. I send a newsletter. I take pitches. Nothing else.
+          <span class="ad-mark-hot">PRODUCT</span> ·
+          <span class="ad-mark-cyan">JOURNALISM</span> ·
+          <span class="ad-mark-acid">TECHNOLOGY</span> ·
+          <span class="ad-mark-hot">GAMES</span> ·
+          <span class="ad-mark-cyan">CULTURE</span> ·
+          <span class="ad-mark-acid">CONTENT</span> ·
+          <span class="ad-mark-hot">STRATEGY</span>
         </>
       ) : (
         <>
-          <span class="ad-mark-hot">PRODUCT MANAGER</span> em educação,
-          <span class="ad-mark-cyan">JORNALISTA FREELANCER</span> e
-          <span class="ad-mark-acid">DOUTORANDO</span> em comunicação.
-          <br /><br />
-          Escrevo no blog. Mando newsletter. Aceito propostas. Nada mais.
+          <span class="ad-mark-hot">PRODUTO</span> ·
+          <span class="ad-mark-cyan">JORNALISMO</span> ·
+          <span class="ad-mark-acid">TECNOLOGIA</span> ·
+          <span class="ad-mark-hot">GAMES</span> ·
+          <span class="ad-mark-cyan">CULTURA</span> ·
+          <span class="ad-mark-acid">CONTEÚDO</span> ·
+          <span class="ad-mark-hot">ESTRATÉGIA</span>
         </>
       )}
     </p>
@@ -460,3 +470,23 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
     .fb-title { font-size: 28px; }
   }
 </style>
+
+<script>
+  const monthsByLang: Record<string, string[]> = {
+    pt: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
+    en: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
+  };
+  const update = () => {
+    const now = new Date();
+    document.querySelectorAll<HTMLElement>('[data-live-date]').forEach((el) => {
+      const lang = el.dataset.lang === 'en' ? 'en' : 'pt';
+      const day = el.querySelector<HTMLElement>('.d-day');
+      const mon = el.querySelector<HTMLElement>('.d-mon');
+      const yr = el.querySelector<HTMLElement>('.d-yr');
+      if (day) day.textContent = String(now.getDate()).padStart(2, '0');
+      if (mon) mon.textContent = monthsByLang[lang][now.getMonth()].toUpperCase();
+      if (yr) yr.textContent = String(now.getFullYear());
+    });
+  };
+  update();
+</script>

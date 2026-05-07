@@ -148,7 +148,7 @@ export const ui: Record<Lang, Dict> = {
       eyebrow: '01 · sobre',
       title: { line1: 'Em ', emph: 'poucas', line2: 'palavras.' },
       p1Lead: 'H',
-      p1: 'á mais de 15 anos, trabalho na intersecção entre jornalismo, conteúdo, educação, produto e estratégia. Embora pareçam muitas frente para atuar, todas elas se conversam o tempo todo. Pode chamar de interdisciplinaridade, mas eu chamo de curiosidade mesmo. Aqui, tento mostrar como esses interesses se cruzam.',
+      p1: 'á mais de 15 anos, trabalho na interseção entre jornalismo, conteúdo, educação, produto e estratégia. Embora pareçam muitas frentes para atuar, todas elas conversam entre si o tempo todo. Pode chamar de interdisciplinaridade, mas eu chamo de curiosidade mesmo. Aqui, tento mostrar como esses interesses se cruzam.',
       p2: '',
       nowHeading: 'agora',
       nowRows: [
@@ -342,7 +342,7 @@ export const ui: Record<Lang, Dict> = {
       eyebrow: '01 · about',
       title: { line1: 'In a ', emph: 'few', line2: 'words.' },
       p1Lead: 'F',
-      p1: "or over 15 years, I've been working at the intersection of journalism, content, education, product, and strategy. They might look like a lot of fronts to cover, but they all talk to each other all the time. You can call it interdisciplinarity — I just call it curiosity. Here, I try to show how these interests cross paths.",
+      p1: "or over 15 years, I've been working at the intersection of journalism, content, education, product, and strategy. They might seem like a lot of different fields to work in, but they're all in conversation with each other all the time. You can call it interdisciplinarity — I just call it curiosity. Here, I try to show how these interests cross paths.",
       p2: '',
       nowHeading: 'now',
       nowRows: [

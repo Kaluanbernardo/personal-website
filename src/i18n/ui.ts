@@ -101,7 +101,7 @@ type Dict = {
 
 export const ui: Record<Lang, Dict> = {
   pt: {
-    brand: 'nome sobrenome',
+    brand: 'kaluan bernardo',
     nav: {
       home: 'home',
       sobre: 'sobre',
@@ -114,7 +114,7 @@ export const ui: Record<Lang, Dict> = {
     },
     home: {
       eyebrow: '— site pessoal · ed. 2026',
-      title: { line1: 'Nome', line2: 'Sobrenome.' },
+      title: { line1: 'Kaluan', line2: 'Bernardo.' },
       intro:
         'Product manager em educação, jornalista freelancer e doutorando em comunicação. Escrevo sobre o que constróem, lêem e estudam — e sobre o que conecta as três coisas.',
       ctaBlog: 'Ler o blog →',
@@ -148,7 +148,7 @@ export const ui: Record<Lang, Dict> = {
       eyebrow: '01 · sobre',
       title: { line1: 'Em ', emph: 'poucas', line2: 'palavras.' },
       p1Lead: 'S',
-      p1: 'ou Nome Sobrenome. Trabalho com produto digital em educação, escrevo sobre tecnologia e mídia, e investigo comunicação como doutorando. Este site é onde essas três conversas se encontram.',
+      p1: 'ou Kaluan Bernardo. Trabalho com produto digital em educação, escrevo sobre tecnologia e mídia, e investigo comunicação como doutorando. Este site é onde essas três conversas se encontram.',
       p2: 'Comecei na redação. Migrei pra produto sem deixar de escrever. Voltei à academia porque algumas perguntas exigem mais do que um deadline.',
       nowHeading: 'agora',
       nowRows: [
@@ -286,7 +286,7 @@ export const ui: Record<Lang, Dict> = {
       ],
     },
     footer: {
-      note: '© nome sobrenome · feito com markdown + astro',
+      note: '© kaluan bernardo · feito com markdown + astro',
       sourceLabel: 'código fonte ↗',
     },
     altLang: {
@@ -295,7 +295,7 @@ export const ui: Record<Lang, Dict> = {
     },
   },
   en: {
-    brand: 'first last',
+    brand: 'kaluan bernardo',
     nav: {
       home: 'home',
       sobre: 'about',
@@ -308,7 +308,7 @@ export const ui: Record<Lang, Dict> = {
     },
     home: {
       eyebrow: '— personal site · ed. 2026',
-      title: { line1: 'First', line2: 'Last.' },
+      title: { line1: 'Kaluan', line2: 'Bernardo.' },
       intro:
         'Product manager in education, freelance journalist, and PhD candidate in communication. I write about what we build, read, and study — and about what ties the three together.',
       ctaBlog: 'Read the blog →',
@@ -342,7 +342,7 @@ export const ui: Record<Lang, Dict> = {
       eyebrow: '01 · about',
       title: { line1: 'In a ', emph: 'few', line2: 'words.' },
       p1Lead: 'I',
-      p1: " am First Last. I work in digital product for education, write about technology and media, and study communication as a doctoral candidate. This site is where those three conversations meet.",
+      p1: " am Kaluan Bernardo. I work in digital product for education, write about technology and media, and study communication as a doctoral candidate. This site is where those three conversations meet.",
       p2: 'I started in the newsroom. Moved into product without giving up writing. Came back to academia because some questions ask for more than a deadline.',
       nowHeading: 'now',
       nowRows: [
@@ -480,7 +480,7 @@ export const ui: Record<Lang, Dict> = {
       ],
     },
     footer: {
-      note: '© first last · made with markdown + astro',
+      note: '© kaluan bernardo · made with markdown + astro',
       sourceLabel: 'source code ↗',
     },
     altLang: {

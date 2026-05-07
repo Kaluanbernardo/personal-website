@@ -113,13 +113,18 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
           <stop offset="100%" stop-color="#b400ff" />
         </linearGradient>
       </defs>
-      <circle cx="100" cy="100" r="96" fill="url(#aiSealGrad)" stroke="#000" stroke-width="3" />
+      <polygon
+        points="100,4 120.2,24.7 148,16.9 155.2,44.8 183.1,52 175.3,79.8 196,100 175.3,120.2 183.1,148 155.2,155.2 148,183.1 120.2,175.3 100,196 79.8,175.3 52,183.1 44.8,155.2 16.9,148 24.7,120.2 4,100 24.7,79.8 16.9,52 44.8,44.8 52,16.9 79.8,24.7"
+        fill="url(#aiSealGrad)"
+        stroke="#000"
+        stroke-width="3"
+        stroke-linejoin="miter"
+        stroke-miterlimit="20"
+      />
       <g font-family="Bungee, sans-serif" font-weight="700" fill="#000" stroke="#fff" stroke-width="0.6" paint-order="stroke" text-anchor="middle">
-        <text x="100" y="50" font-size="13" letter-spacing="3">★ ★ ★</text>
-        <text x="100" y="78" font-size="15" letter-spacing="2">INTELIGÊNCIA</text>
-        <text x="100" y="130" font-size="46" letter-spacing="3">I.A.S</text>
-        <text x="100" y="156" font-size="13" letter-spacing="2">AS A SERVICE</text>
-        <text x="100" y="180" font-size="13" letter-spacing="3">★ ★ ★</text>
+        <text x="100" y="92" font-size="32" letter-spacing="3">I.A.S</text>
+        <text x="100" y="124" font-size="14" letter-spacing="2">INTELIGÊNCIA</text>
+        <text x="100" y="146" font-size="14" letter-spacing="2">AS A SERVICE</text>
       </g>
     </svg>
   </div>

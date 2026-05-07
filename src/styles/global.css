@@ -15,9 +15,6 @@
   --fg-2: #c8c6be;
   --fg-3: #8a8884;
 
-  --paper: #ebe7d8;
-  --ink: #0a0a0a;
-
   /* neon */
   --hot: #ff2d55;       /* magenta */
   --cyan: #00f0ff;
@@ -39,16 +36,6 @@
   --bungee: 'Bungee', sans-serif;
   --bungee-s: 'Bungee Shade', sans-serif;
   --serif: 'Times New Roman', Times, serif;
-}
-
-/* light mode = paper / xerox-zine */
-[data-theme='light'] {
-  --bg: var(--paper);
-  --fg: var(--ink);
-  --bg-2: #d9d4c3;
-  --bg-3: #cfc9b6;
-  --fg-2: #2a2a26;
-  --fg-3: #5e5c54;
 }
 
 * { box-sizing: border-box; }
@@ -364,11 +351,6 @@ button { font: inherit; }
     linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
   background-size: 32px 32px;
-}
-[data-theme='light'] .ad-grid-bg {
-  background-image:
-    linear-gradient(to right, rgba(0,0,0,0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0,0,0,0.08) 1px, transparent 1px);
 }
 
 /* dot bg */

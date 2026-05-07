@@ -132,17 +132,6 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
     </div>
   </div>
 
-  <aside class="hero-aside">
-    <div class="ad-sticker stamp">★ EST. 2026 ★</div>
-    <div class="now-playing ad-box">
-      <div class="np-kicker">{'> '}{lang === 'en' ? 'NOW PLAYING' : 'NOW PLAYING'}</div>
-      <div class="np-track">TIM MAIA — IMUNIZAÇÃO RACIONAL</div>
-      <div class="np-time">03:42 / 06:18</div>
-      <div class="np-bar"><span></span></div>
-    </div>
-    <div class="visits ad-tiny">VISITS: 0001337</div>
-  </aside>
-
   <div class="hero-tags">
     {heroTags.map((tag, i) => (
       <span class={`ad-tag t-${i % 3}`}>#{tag}</span>
@@ -193,7 +182,7 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
     position: relative;
     padding: 30px 0 36px;
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr;
     gap: 24px;
     align-items: flex-start;
   }
@@ -213,7 +202,7 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
       linear-gradient(to right, rgba(0,0,0,0.08) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(0,0,0,0.08) 1px, transparent 1px);
   }
-  .hero-main, .hero-aside, .hero-tags { position: relative; z-index: 1; }
+  .hero-main, .hero-tags { position: relative; z-index: 1; }
 
   .hero-eyebrow {
     display: flex;
@@ -261,55 +250,6 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-  }
-
-  .hero-aside {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-end;
-    min-width: 260px;
-  }
-  .stamp {
-    background: transparent;
-    color: var(--ylw);
-    border-color: var(--ylw);
-    transform: rotate(6deg);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    align-self: flex-end;
-  }
-  .now-playing {
-    border: 2px solid var(--fg);
-    padding: 8px 14px;
-    background: var(--bg);
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    width: 240px;
-  }
-  .np-kicker { color: var(--acid); margin-bottom: 4px; }
-  .np-track { letter-spacing: 0.04em; }
-  .np-time { opacity: 0.5; margin-top: 4px; }
-  .np-bar {
-    height: 4px;
-    background: #222;
-    margin-top: 6px;
-    position: relative;
-  }
-  :global([data-theme='light']) .np-bar { background: #cfc9b6; }
-  .np-bar > span {
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: 58%;
-    background: var(--hot);
-  }
-  .visits {
-    border: 1.5px solid var(--cyan);
-    color: var(--cyan);
-    padding: 6px 8px;
-    font-family: var(--tiny);
-    font-size: 9px;
   }
 
   .hero-tags {
@@ -439,11 +379,6 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
   }
 
   @media (max-width: 960px) {
-    .hero {
-      grid-template-columns: 1fr;
-    }
-    .hero-aside { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
-    .now-playing { width: auto; flex: 1 1 240px; }
     .bi-row {
       grid-template-columns: 40px 1fr 60px 24px;
       gap: 10px;

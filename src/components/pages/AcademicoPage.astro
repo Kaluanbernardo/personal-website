@@ -21,14 +21,14 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
 
 <header class="head">
   <div class="kicker">{eyebrow}</div>
-  <h1 class="ad-bungee headline">
+  <h1 class="ed-bungee headline">
     <span class="t-acid">{t.academico.title.line1.toUpperCase()}</span>
-    <span class="ad-bungee-s">{t.academico.title.emph.toUpperCase()}</span>
-    <span class="ad-blink">_</span>
+    <span class="ed-bungee-s">{t.academico.title.emph.toUpperCase()}</span>
+    <span class="ed-blink">_</span>
   </h1>
   <div class="scholar-row">
     {t.academico.scholarIds.map((s) => (
-      <a class="ad-btn scholar-btn" href={s.href} target="_blank" rel="noreferrer noopener">
+      <a class="ed-btn scholar-btn" href={s.href} target="_blank" rel="noreferrer noopener">
         {s.label} ↗
       </a>
     ))}
@@ -37,13 +37,13 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
 
 <section class="lines">
   <div class="section-kicker acid">{linesHeading}</div>
-  <hr class="ad-rule" style="border-top-color: var(--acid)" />
+  <hr class="ed-rule" style="border-top-color: var(--acid)" />
   <div class="line-tags">
     {t.academico.lines.map((l, i) => {
       const bgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'var(--ylw)'];
       const bg = bgs[i % bgs.length];
       return (
-        <span class="ad-tag line-tag" style={`background:${bg};color:#000;border-color:#000`}>
+        <span class="ed-tag line-tag" style={`background:${bg};color:#000;border-color:#000`}>
           {l}
         </span>
       );
@@ -54,12 +54,12 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
 <section class="main-grid">
   <aside class="formation">
     <div class="section-kicker cyan">{formationHeading}</div>
-    <hr class="ad-rule" style="border-top-color: var(--cyan)" />
+    <hr class="ed-rule" style="border-top-color: var(--cyan)" />
     <div class="formation-list">
       {t.academico.formation.map((e) => (
         <article class="formation-row">
           <span class="period">{e.p}</span>
-          <h3 class="ad-bungee role">{e.r}</h3>
+          <h3 class="ed-bungee role">{e.r}</h3>
           <div class="org">{e.o}</div>
           <p class="desc">{e.d}</p>
         </article>
@@ -69,10 +69,10 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
 
   <div class="pubs">
     <div class="section-kicker vio">{pubsHeading}</div>
-    <hr class="ad-rule" style="border-top-color: var(--vio)" />
+    <hr class="ed-rule" style="border-top-color: var(--vio)" />
     {publications.length === 0 ? (
       <div class="empty">
-        <span class="ad-blink">[ ]</span> {lang === 'en' ? 'no publications listed yet.' : 'sem publicações listadas ainda.'}
+        <span class="ed-blink">[ ]</span> {lang === 'en' ? 'no publications listed yet.' : 'sem publicações listadas ainda.'}
       </div>
     ) : (
       <div class="pub-list">
@@ -80,7 +80,7 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
           <a class="pub-row" href={p.url ?? '#'} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
             <span class="pub-year">{p.year}</span>
             <div class="pub-body">
-              <h3 class="ad-bungee pub-title">{p.title}</h3>
+              <h3 class="ed-bungee pub-title">{p.title}</h3>
               <div class="pub-venue">{p.venue}</div>
             </div>
             <span class="pub-tag">#{tagDisplay[lang][p.kind] ?? p.kind}</span>

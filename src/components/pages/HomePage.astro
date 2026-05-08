@@ -133,35 +133,35 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
       <span class="hf-mono kicker" data-live-date data-lang={lang}>
         <span class="d-day">{dateDay}</span> · <span class="d-mon">{dateMon.toUpperCase()}</span> · <span class="d-yr">{dateYr}</span> · {locationLabel}
       </span>
-      <span class="rec ad-blink">● REC</span>
+      <span class="rec ed-blink">● REC</span>
     </div>
 
-    <h1 class="hero-title ad-bungee">
+    <h1 class="hero-title ed-bungee">
       <span class="t-fg">{firstName.toUpperCase()}</span><br />
-      <span class="t-stroke ad-bungee-s">{lastFirstHalf.toUpperCase()}</span><span class="t-hot">{lastSecondHalf.toUpperCase()}</span><span class="ad-blink t-cyan">_</span>
+      <span class="t-stroke ed-bungee-s">{lastFirstHalf.toUpperCase()}</span><span class="t-hot">{lastSecondHalf.toUpperCase()}</span><span class="ed-blink t-cyan">_</span>
     </h1>
 
-    <p class="hero-intro ad-mono">
+    <p class="hero-intro ed-mono">
       {lang === 'en' ? (
         <>
-          I create <span class="ad-mark-hot">products</span>, develop <span class="ad-mark-cyan">strategies</span>, do research and <span class="ad-mark-acid">analysis</span>, teach <span class="ad-mark-vio">classes</span>, think up and execute <span class="ad-mark-ylw">ideas</span> — all with a touch of <span class="ad-mark-orng">groove</span>. I like technology, culture, games, music and journalism. I also like potatoes and <span class="ad-mark-blue">studying</span>.
+          I create <span class="ed-mark-hot">products</span>, develop <span class="ed-mark-cyan">strategies</span>, do research and <span class="ed-mark-acid">analysis</span>, teach <span class="ed-mark-vio">classes</span>, think up and execute <span class="ed-mark-ylw">ideas</span> — all with a touch of <span class="ed-mark-orng">groove</span>. I like technology, culture, games, music and journalism. I also like potatoes and <span class="ed-mark-blue">studying</span>.
         </>
       ) : (
         <>
-          Crio <span class="ad-mark-hot">produtos</span>, desenvolvo <span class="ad-mark-cyan">estratégias</span>, faço pesquisas e <span class="ad-mark-acid">análises</span>, dou <span class="ad-mark-vio">aulas</span>, penso e executo <span class="ad-mark-ylw">ideias</span> — tudo com um tiquinho de <span class="ad-mark-orng">molho</span>. Gosto de tecnologia, cultura, games, música e jornalismo. Também gosto de batata e de <span class="ad-mark-blue">estudar</span>.
+          Crio <span class="ed-mark-hot">produtos</span>, desenvolvo <span class="ed-mark-cyan">estratégias</span>, faço pesquisas e <span class="ed-mark-acid">análises</span>, dou <span class="ed-mark-vio">aulas</span>, penso e executo <span class="ed-mark-ylw">ideias</span> — tudo com um tiquinho de <span class="ed-mark-orng">molho</span>. Gosto de tecnologia, cultura, games, música e jornalismo. Também gosto de batata e de <span class="ed-mark-blue">estudar</span>.
         </>
       )}
     </p>
 
     <div class="hero-cta">
-      <a class="ad-btn acid" href={blogHref}>{t.home.ctaBlog}</a>
-      <a class="ad-btn ylw" href={cvPdfHref} download>↓ {t.home.ctaCV}</a>
+      <a class="ed-btn acid" href={blogHref}>{t.home.ctaBlog}</a>
+      <a class="ed-btn ylw" href={cvPdfHref} download>↓ {t.home.ctaCV}</a>
     </div>
   </div>
 
   <div class="hero-tags">
     {heroTags.map((tag, i) => (
-      <span class={`ad-tag t-${i % 3}`}>#{tag}</span>
+      <span class={`ed-tag t-${i % 3}`}>#{tag}</span>
     ))}
   </div>
 </section>
@@ -169,14 +169,14 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
 <section class="brutal-index">
   <div class="bi-head">
     <div class="bi-kicker hf-mono">{'>>>'} {indexHeading}</div>
-    <div class="bi-counter ad-tiny">{entriesLabel}</div>
+    <div class="bi-counter ed-tiny">{entriesLabel}</div>
   </div>
-  <hr class="ad-rule-rainbow" />
+  <hr class="ed-rule-rainbow" />
 
   {indexEntries.map((s) => (
     <a class="bi-row" href={s.href} style={`--row-c:${s.color}`}>
       <span class="bi-num">[{s.n}]</span>
-      <span class="bi-title ad-bungee">{s.t}</span>
+      <span class="bi-title ed-bungee">{s.t}</span>
       <span class="bi-sub">{s.sub}</span>
       <span class="bi-meta">{s.meta}</span>
       <span class="bi-arr">→</span>
@@ -187,14 +187,14 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
 {recentPosts.length > 0 && (
   <section class="from-blog">
     <div class="fb-head">
-      <h2 class="ad-bungee fb-title">{fromBlogHeading}</h2>
+      <h2 class="ed-bungee fb-title">{fromBlogHeading}</h2>
       <a class="fb-all hf-mono" href={blogHref}>{allPostsLabel}</a>
     </div>
     <div class="fb-grid">
       {recentPosts.map((p) => (
         <a class="fb-card" href={postHref(p.id)}>
           <span class="fb-tag">#{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
-          <h3 class="ad-bungee fb-card-title">{p.data.title}</h3>
+          <h3 class="ed-bungee fb-card-title">{p.data.title}</h3>
           <div class="fb-meta hf-mono">
             {formatDate(p.data.pubDate, lang).toUpperCase()} · {p.data.readingTime} min
           </div>

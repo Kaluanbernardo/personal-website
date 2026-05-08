@@ -27,26 +27,26 @@ const helloLine2 = lang === 'en' ? 'TALK' : 'COMIGO';
 <div class="contato-grid">
   <div class="left">
     <div class="kicker">{eyebrow}</div>
-    <h1 class="ad-bungee headline">
+    <h1 class="ed-bungee headline">
       <span class="t-hot">{helloLine1}</span><br />
-      <span class="ad-bungee-s">{helloLine2}</span><span class="ad-blink t-hot">.</span>
+      <span class="ed-bungee-s">{helloLine2}</span><span class="ed-blink t-hot">.</span>
     </h1>
     <p class="intro serif">{t.contato.intro}</p>
 
     <div class="form-box">
       <div class="form-kicker">{formKicker}</div>
       <form class="form" onsubmit="return false">
-        <input class="ad-input" placeholder={placeholders.name} />
-        <input class="ad-input" type="email" placeholder={placeholders.email} />
-        <select class="ad-input">
+        <input class="ed-input" placeholder={placeholders.name} />
+        <input class="ed-input" type="email" placeholder={placeholders.email} />
+        <select class="ed-input">
           {motivos.map((m) => <option>{m}</option>)}
         </select>
-        <textarea class="ad-input" placeholder={placeholders.msg} rows={4}></textarea>
+        <textarea class="ed-input" placeholder={placeholders.msg} rows={4}></textarea>
         <div class="form-foot">
           <label class="bot-check">
             <input type="checkbox" /> {botCheck}
           </label>
-          <button class="ad-btn hot">{fillEnviar}</button>
+          <button class="ed-btn hot">{fillEnviar}</button>
         </div>
       </form>
     </div>

@@ -36,15 +36,15 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
 
 <header class="head">
   <div class="kicker">{eyebrow}</div>
-  <h1 class="ad-bungee headline">
-    BLOG <span class="ad-blink t-vio">█</span>
+  <h1 class="ed-bungee headline">
+    BLOG <span class="ed-blink t-vio">█</span>
   </h1>
   <div class="meta">{t.blog.meta(posts.length)}</div>
 </header>
 
 <div class="filters">
   {t.blog.filters.map((label, i) => (
-    <button type="button" class={`ad-tag filter-btn ${i === 0 ? 'is-active' : ''}`} data-tag={tagByFilter[label] ?? ''}>
+    <button type="button" class={`ed-tag filter-btn ${i === 0 ? 'is-active' : ''}`} data-tag={tagByFilter[label] ?? ''}>
       #{label}
     </button>
   ))}
@@ -55,7 +55,7 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
     {featured && (
       <a class="featured" href={postHref(featured.id)} data-tag={featured.data.tag}>
         <div class="ft-kicker">{featuredKicker}</div>
-        <h2 class="ad-bungee ft-title">{featured.data.title}</h2>
+        <h2 class="ed-bungee ft-title">{featured.data.title}</h2>
         <p class="ft-desc serif">{featured.data.description}</p>
         <div class="ft-meta">
           {formatDate(featured.data.pubDate, lang).toUpperCase()} · {featured.data.readingTime} {minLabel} · #{tagDisplay[lang][featured.data.tag] ?? featured.data.tag}
@@ -66,7 +66,7 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
     {rest.map((p) => (
       <a class="post-row" href={postHref(p.id)} data-tag={p.data.tag}>
         <span class="rdate">{formatDate(p.data.pubDate, lang).toUpperCase()}</span>
-        <h3 class="ad-bungee rtitle">{p.data.title}</h3>
+        <h3 class="ed-bungee rtitle">{p.data.title}</h3>
         <span class="rtag">#{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
         <span class="rmins">{p.data.readingTime} {minLabel}</span>
         <span class="rarr">→</span>
@@ -77,13 +77,13 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
   <aside class="aside">
     <div class="newsletter">
       <div class="nl-kicker">{sidebarKickerNL}</div>
-      <h3 class="ad-bungee nl-title">
+      <h3 class="ed-bungee nl-title">
         {lang === 'en' ? <>IN YOUR<br />INBOX.</> : <>NO E-MAIL.<br />SEM SPAM.</>}
       </h3>
       <p class="nl-copy">{t.blog.newsletterCopy}</p>
       <form class="nl-form" onsubmit="return false">
-        <input class="ad-input nl-input" placeholder={t.blog.newsletterPlaceholder} type="email" />
-        <button class="ad-btn ylw nl-submit">SUBSCRIBE →</button>
+        <input class="ed-input nl-input" placeholder={t.blog.newsletterPlaceholder} type="email" />
+        <button class="ed-btn ylw nl-submit">SUBSCRIBE →</button>
       </form>
     </div>
 

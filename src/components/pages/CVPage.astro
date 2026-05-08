@@ -68,7 +68,7 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
 
 <div class="cv-head">
   <div class="kicker">{eyebrow}</div>
-  <h1 class="ad-bungee headline">
+  <h1 class="ed-bungee headline">
     {lang === 'en' ? 'RESUME' : 'CURRÍCULO'} <span class="arr">↓</span>
   </h1>
   <div class="updated">{updatedLabel}</div>
@@ -90,7 +90,7 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
       <div class="info-val acid">{statusVal}</div>
     </div>
 
-    <a class="ad-btn ylw download-btn" href={pdfHref} download>↓ {t.cv.download}</a>
+    <a class="ed-btn ylw download-btn" href={pdfHref} download>↓ {t.cv.download}</a>
   </aside>
 
   <main>
@@ -107,11 +107,11 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
         <div class="exp-row">
           <div class={`exp-period c-${c}`}>{e.p}</div>
           <div>
-            <div class="ad-bungee exp-role">{e.r}</div>
+            <div class="ed-bungee exp-role">{e.r}</div>
             <div class="exp-org">{e.o}</div>
             <p class="exp-desc serif">{e.d}</p>
             <div class="exp-tags">
-              {tags.map((tg) => <span class={`ad-tag c-${c}`}>{tg}</span>)}
+              {tags.map((tg) => <span class={`ed-tag c-${c}`}>{tg}</span>)}
             </div>
           </div>
         </div>
@@ -124,7 +124,7 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
       <div class="form-row">
         <div class="form-period">{e.p}</div>
         <div>
-          <div class="ad-bungee form-role">{e.r}</div>
+          <div class="ed-bungee form-role">{e.r}</div>
           <div class="form-org">{e.o}</div>
         </div>
       </div>
@@ -138,7 +138,7 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
         const style = transparent
           ? 'background:transparent;color:var(--fg);border-color:var(--fg)'
           : `background:${bg};color:#000;border-color:#000`;
-        return <span class="ad-tag" style={style}>{s}</span>;
+        return <span class="ed-tag" style={style}>{s}</span>;
       })}
     </div>
 
@@ -146,7 +146,7 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
     <div class="langs">
       {langs.map((id) => (
         <div class="lang-cell">
-          <div class="ad-bungee lang-l">{id.l}</div>
+          <div class="ed-bungee lang-l">{id.l}</div>
           <div class="lang-n">{id.n}</div>
         </div>
       ))}
@@ -275,10 +275,10 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
     line-height: 1.5;
   }
   .exp-tags { display: flex; gap: 4px; flex-wrap: wrap; }
-  .exp-tags .ad-tag { font-size: 9px; padding: 2px 6px; }
-  .exp-tags .ad-tag.c-ylw { color: var(--ylw); border-color: var(--ylw); }
-  .exp-tags .ad-tag.c-hot { color: var(--hot); border-color: var(--hot); }
-  .exp-tags .ad-tag.c-cyan { color: var(--cyan); border-color: var(--cyan); }
+  .exp-tags .ed-tag { font-size: 9px; padding: 2px 6px; }
+  .exp-tags .ed-tag.c-ylw { color: var(--ylw); border-color: var(--ylw); }
+  .exp-tags .ed-tag.c-hot { color: var(--hot); border-color: var(--hot); }
+  .exp-tags .ed-tag.c-cyan { color: var(--cyan); border-color: var(--cyan); }
 
   .form-row {
     display: grid;
@@ -308,7 +308,7 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   }
 
   .skill-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
-  .skill-tags .ad-tag { font-size: 11px; padding: 4px 8px; }
+  .skill-tags .ed-tag { font-size: 11px; padding: 4px 8px; }
 
   .langs { display: flex; gap: 18px; flex-wrap: wrap; }
   .lang-l { font-size: 30px; }

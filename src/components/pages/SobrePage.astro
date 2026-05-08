@@ -68,10 +68,10 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
 <div class="sobre-grid">
   <article>
     <div class="kicker hf-mono">{eyebrow}</div>
-    <h1 class="ad-bungee headline">
+    <h1 class="ed-bungee headline">
       <span class="t-cyan">{lang === 'en' ? 'ABOUT' : 'SOBRE'}</span><br />
-      <span class="ad-bungee-s">{lang === 'en' ? 'ME' : 'MIM,'}</span>
-      <span class="ad-blink t-hot">_</span>
+      <span class="ed-bungee-s">{lang === 'en' ? 'ME' : 'MIM,'}</span>
+      <span class="ed-blink t-hot">_</span>
     </h1>
 
     <div class="serif body">
@@ -80,12 +80,12 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
     </div>
 
     <div class="cta-row">
-      <a class="ad-btn cyan" href={link(`${lang === 'en' ? '/en' : ''}/cv`)}>{ctaCV}</a>
-      <a class="ad-btn hot" href={link(`${lang === 'en' ? '/en' : ''}/contato`)}>{ctaEmail}</a>
-      <a class="ad-btn" href="#">{ctaRSS}</a>
+      <a class="ed-btn cyan" href={link(`${lang === 'en' ? '/en' : ''}/cv`)}>{ctaCV}</a>
+      <a class="ed-btn hot" href={link(`${lang === 'en' ? '/en' : ''}/contato`)}>{ctaEmail}</a>
+      <a class="ed-btn" href="#">{ctaRSS}</a>
     </div>
 
-    <hr class="ad-rule-dashed sep" />
+    <hr class="ed-rule-dashed sep" />
 
     <div class="boxes">
       <div class="box box-acid">
@@ -104,7 +104,7 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
   </article>
 
   <aside class="sidebar">
-    <div class="ad-imgframe photo">
+    <div class="ed-imgframe photo">
       <img src={link('/img/portrait.png')} alt="" onerror="this.remove()" />
       <div class="ph">{photoLabel}</div>
     </div>

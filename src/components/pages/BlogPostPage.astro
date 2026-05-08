@@ -24,12 +24,12 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
 
 <article class="post">
   <div class="kicker">#{tagLabel}</div>
-  <h1 class="ad-bungee title">{post.data.title}</h1>
+  <h1 class="ed-bungee title">{post.data.title}</h1>
   <div class="meta">
     {t.post.metaJoin(formatLongDate(post.data.pubDate, lang), post.data.readingTime)}
   </div>
 
-  <hr class="ad-rule-rainbow" />
+  <hr class="ed-rule-rainbow" />
 
   <p class="lead serif">{post.data.description}</p>
 
@@ -37,7 +37,7 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
     <Content />
   </div>
 
-  <hr class="ad-rule-dashed sep" />
+  <hr class="ed-rule-dashed sep" />
   <nav class="post-nav">
     {prev ? <a class="nav-link" href={postHref(prev.id)}>{t.post.prev}</a> : <span></span>}
     <a class="nav-link accent" href="https://example.substack.com" target="_blank" rel="noreferrer noopener">{t.post.subscribe}</a>

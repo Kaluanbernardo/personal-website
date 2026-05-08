@@ -30,7 +30,7 @@ const kindColor: Record<string, string> = {
 
 <header class="head">
   <div class="kicker">{eyebrow}</div>
-  <h1 class="ad-bungee headline">
+  <h1 class="ed-bungee headline">
     {t.projetos.title.toUpperCase()}<span class="dot">.</span>
   </h1>
   <div class="sub">{t.projetos.sub}</div>
@@ -38,7 +38,7 @@ const kindColor: Record<string, string> = {
 
 <div class="filters" role="group" aria-label="filters">
   {t.projetos.filters.map((label, i) => (
-    <button type="button" class={`ad-tag filter-btn ${i === 0 ? 'is-active' : ''}`} data-kind={kindByFilter[label] ?? ''}>
+    <button type="button" class={`ed-tag filter-btn ${i === 0 ? 'is-active' : ''}`} data-kind={kindByFilter[label] ?? ''}>
       #{label}
     </button>
   ))}
@@ -51,12 +51,12 @@ const kindColor: Record<string, string> = {
     return (
       <article class="cell" data-kind={p.kind} style={`--card-c:${c};--rot:${rotate}`}>
         <a class="card" href={p.url ?? '#'} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
-          <div class="thumb ad-imgframe">
+          <div class="thumb ed-imgframe">
             <div class="ph">thumb · 4×3</div>
           </div>
           <div class="card-body">
             <span class="card-tag">#{tagDisplay[lang][p.kind] ?? p.kind}</span>
-            <h3 class="ad-bungee card-title">{p.title}</h3>
+            <h3 class="ed-bungee card-title">{p.title}</h3>
             <div class="card-place">{p.place} →</div>
           </div>
         </a>

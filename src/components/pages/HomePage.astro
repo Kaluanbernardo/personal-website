@@ -247,7 +247,7 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
     .ai-seal { width: 150px; height: 150px; top: 24px; }
   }
   @media (max-width: 720px) {
-    .ai-seal { width: 110px; height: 110px; top: 14px; right: -4px; }
+    .ai-seal { width: 110px; height: 110px; top: 14px; right: 0; }
   }
 
   .hero-eyebrow {
@@ -275,6 +275,8 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
     line-height: 0.82;
     letter-spacing: -0.06em;
     text-transform: uppercase;
+    overflow-wrap: anywhere;
+    max-width: 100%;
   }
   .t-fg { color: var(--fg); }
   .t-hot { color: var(--hot); }
@@ -304,6 +306,12 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
     gap: 6px;
     margin-top: 32px;
     flex-wrap: wrap;
+    max-width: 100%;
+  }
+  .hero-tags .ad-tag {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
   .hero-tags .t-0 { background: var(--hot); color: #000; border-color: #000; }
   .hero-tags .t-1 { background: transparent; color: var(--fg); border-color: var(--fg); }
@@ -326,7 +334,7 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
 
   .bi-row {
     display: grid;
-    grid-template-columns: 50px 1fr 220px 90px 28px;
+    grid-template-columns: 50px minmax(0, 1fr) 220px 90px 28px;
     align-items: center;
     padding: 14px 0;
     border-bottom: 1.5px solid var(--fg);
@@ -334,6 +342,7 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
     color: var(--fg);
     transition: padding-left 0.12s linear, background 0.05s linear;
   }
+  .bi-row > * { min-width: 0; }
   .bi-row:hover {
     background: transparent;
     padding-left: 8px;
@@ -349,6 +358,7 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
     font-size: clamp(24px, 4vw, 42px);
     letter-spacing: -0.03em;
     color: var(--fg);
+    overflow-wrap: anywhere;
   }
   .bi-row:hover .bi-title { color: var(--row-c); }
   .bi-row .bi-sub {
@@ -426,17 +436,28 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
 
   @media (max-width: 960px) {
     .bi-row {
-      grid-template-columns: 40px 1fr 60px 24px;
+      grid-template-columns: 36px minmax(0, 1fr) 60px 22px;
       gap: 10px;
     }
     .bi-row .bi-sub { display: none; }
+    .bi-row .bi-title { font-size: clamp(20px, 4vw, 36px); }
     .fb-grid { grid-template-columns: 1fr; }
     .fb-card { border-left: 2px solid var(--fg); border-top: none; }
     .fb-card:first-child { border-top: 2px solid var(--fg); }
   }
   @media (max-width: 720px) {
-    .hero-title { font-size: clamp(48px, 16vw, 96px); }
+    .hero { padding-right: 0; }
+    .hero-title { font-size: clamp(40px, 13vw, 96px); }
+    .hero-eyebrow { flex-wrap: wrap; row-gap: 6px; }
+    .hero-intro { font-size: 15px; }
+    .bi-row { grid-template-columns: 30px minmax(0, 1fr) 52px 18px; gap: 8px; }
+    .bi-row .bi-num { font-size: 10px; }
+    .bi-row .bi-meta { font-size: 9px; }
+    .bi-row .bi-arr { font-size: 18px; }
     .fb-title { font-size: 28px; }
+  }
+  @media (max-width: 380px) {
+    .hero-title { font-size: clamp(36px, 12vw, 96px); }
   }
 </style>
 

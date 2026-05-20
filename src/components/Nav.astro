@@ -44,7 +44,6 @@ const items: { k: string; key: keyof typeof t.nav; active: boolean }[] = [
   { k: '05', key: 'projetos', active: active === 'projetos' },
   { k: '06', key: 'contato', active: active === 'contato' },
 ];
-const username = (t.brand || '').replace(/\s+/g, '_');
 ---
 
 <header class="site-header">
@@ -53,9 +52,6 @@ const username = (t.brand || '').replace(/\s+/g, '_');
       <a href={linkFor('home')} class="brand-link" aria-label={t.brand}>
         <Monogram />
       </a>
-      <span class="brand-label">
-        {username} <span class="slash">/</span> personal_dot_com
-      </span>
     </div>
   ) : (
     <a class="brand brand-back" href={backHref ?? link(`${prefix}/blog`)}>{backLabel ?? t.post.backToList}</a>

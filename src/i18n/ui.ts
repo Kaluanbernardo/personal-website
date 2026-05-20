@@ -467,7 +467,7 @@ export const ui: Record<Lang, Dict> = {
       ],
     },
     footer: {
-      note: '© kaluan bernardo · feito com markdown + astro',
+      note: '© kaluan bernardo · vibecodado com claude + markdown + astro',
       sourceLabel: 'código fonte ↗',
     },
     altLang: {
@@ -842,7 +842,7 @@ export const ui: Record<Lang, Dict> = {
       ],
     },
     footer: {
-      note: '© kaluan bernardo · made with markdown + astro',
+      note: '© kaluan bernardo · vibecoded with claude + markdown + astro',
       sourceLabel: 'source code ↗',
     },
     altLang: {

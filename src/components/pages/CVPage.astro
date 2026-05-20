@@ -102,23 +102,33 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
     <hr class="section-rule ylw" />
 
     {t.cv.experience.map((e, i) => {
-      const colors = ['ylw', 'hot', 'cyan'];
-      const c = colors[i % 3];
-      const tags = lang === 'en'
-        ? ['discovery', 'metrics', 'specs', 'SQL']
-        : ['discovery', 'métricas', 'specs', 'SQL'];
+      const colors = ['ylw', 'hot', 'cyan', 'acid', 'vio', 'orng'];
+      const c = colors[i % colors.length];
+      const moreLabel = lang === 'en' ? 'see details' : 'ver detalhes';
+      const lessLabel = lang === 'en' ? 'hide details' : 'ocultar detalhes';
       return (
-        <div class="exp-row">
-          <div class={`exp-period c-${c}`}>{e.p}</div>
-          <div>
-            <div class="ed-bungee exp-role">{e.r}</div>
-            <div class="exp-org">{e.o}</div>
-            <p class="exp-desc">{e.d}</p>
-            <div class="exp-tags">
-              {tags.map((tg) => <span class={`ed-tag c-${c}`}>{tg}</span>)}
+        <details class={`exp-row c-${c}`}>
+          <summary class="exp-summary">
+            <div class={`exp-period c-${c}`}>{e.p}</div>
+            <div class="exp-body">
+              <div class="ed-bungee exp-role">{e.r}</div>
+              <div class={`exp-org c-${c}`}>{e.o}</div>
+              <p class="exp-desc">{e.d}</p>
+              <div class="exp-tags">
+                {e.tags.map((tg) => <span class={`ed-tag c-${c}`}>{tg}</span>)}
+              </div>
+              <span class="exp-toggle" aria-hidden="true">
+                <span class="exp-toggle-more">{moreLabel} <span class="chev">▾</span></span>
+                <span class="exp-toggle-less">{lessLabel} <span class="chev">▴</span></span>
+              </span>
             </div>
+          </summary>
+          <div class="exp-details">
+            <ul>
+              {e.full.map((line) => <li>{line}</li>)}
+            </ul>
           </div>
-        </div>
+        </details>
       );
     })}
 
@@ -244,12 +254,20 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   .section-rule.acid { border-top-color: var(--acid); }
 
   .exp-row {
-    display: grid;
-    grid-template-columns: 120px 1fr;
-    gap: 18px;
     padding: 14px 0;
     border-bottom: 1.5px dashed var(--fg);
   }
+  .exp-row:hover { background: rgba(255,255,255,0.02); }
+  .exp-summary {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 18px;
+    list-style: none;
+    cursor: pointer;
+  }
+  .exp-summary::-webkit-details-marker { display: none; }
+  .exp-summary::marker { content: ''; }
+  .exp-body { min-width: 0; }
   .exp-period {
     font-family: var(--mono);
     font-size: 11px;
@@ -259,20 +277,27 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   .exp-period.c-ylw { color: var(--ylw); }
   .exp-period.c-hot { color: var(--hot); }
   .exp-period.c-cyan { color: var(--cyan); }
+  .exp-period.c-acid { color: var(--acid); }
+  .exp-period.c-vio { color: var(--vio); }
+  .exp-period.c-orng { color: var(--orng); }
   .exp-role {
-    font-size: 24px;
+    font-size: 22px;
     line-height: 1.05;
     text-transform: uppercase;
     letter-spacing: -0.02em;
   }
   .exp-org {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    opacity: 0.7;
-    margin-bottom: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 4px 0 8px;
   }
+  .exp-org.c-ylw { color: var(--ylw); }
+  .exp-org.c-hot { color: var(--hot); }
+  .exp-org.c-cyan { color: var(--cyan); }
+  .exp-org.c-acid { color: var(--acid); }
+  .exp-org.c-vio { color: var(--vio); }
+  .exp-org.c-orng { color: var(--orng); }
   .exp-desc {
     font-size: 14px;
     margin: 0 0 8px;
@@ -283,6 +308,43 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   .exp-tags .ed-tag.c-ylw { color: var(--ylw); border-color: var(--ylw); }
   .exp-tags .ed-tag.c-hot { color: var(--hot); border-color: var(--hot); }
   .exp-tags .ed-tag.c-cyan { color: var(--cyan); border-color: var(--cyan); }
+  .exp-tags .ed-tag.c-acid { color: var(--acid); border-color: var(--acid); }
+  .exp-tags .ed-tag.c-vio { color: var(--vio); border-color: var(--vio); }
+  .exp-tags .ed-tag.c-orng { color: var(--orng); border-color: var(--orng); }
+
+  .exp-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1.5px dashed var(--accent);
+    padding-bottom: 1px;
+    width: max-content;
+  }
+  .exp-toggle .chev {
+    display: inline-block;
+    transition: transform 0.15s ease;
+  }
+  .exp-row:hover .exp-toggle { color: var(--ylw); border-bottom-color: var(--ylw); }
+  .exp-toggle-less { display: none; }
+  .exp-row[open] .exp-toggle-more { display: none; }
+  .exp-row[open] .exp-toggle-less { display: inline; }
+
+  .exp-details {
+    padding: 14px 0 4px 138px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .exp-details ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+  .exp-details li { margin-bottom: 6px; }
 
   .form-row {
     display: grid;
@@ -328,6 +390,7 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
 
   @media (max-width: 900px) {
     .cv-grid { grid-template-columns: 1fr; }
-    .exp-row, .form-row { grid-template-columns: 1fr; gap: 8px; }
+    .exp-summary, .form-row { grid-template-columns: 1fr; gap: 8px; }
+    .exp-details { padding-left: 0; }
   }
 </style>

@@ -104,8 +104,6 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
     {t.cv.experience.map((e, i) => {
       const colors = ['ylw', 'hot', 'cyan', 'acid', 'vio', 'orng'];
       const c = colors[i % colors.length];
-      const moreLabel = lang === 'en' ? 'see details' : 'ver detalhes';
-      const lessLabel = lang === 'en' ? 'hide details' : 'ocultar detalhes';
       return (
         <details class={`exp-row c-${c}`}>
           <summary class="exp-summary">
@@ -117,11 +115,8 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
               <div class="exp-tags">
                 {e.tags.map((tg) => <span class={`ed-tag c-${c}`}>{tg}</span>)}
               </div>
-              <span class="exp-toggle" aria-hidden="true">
-                <span class="exp-toggle-more">{moreLabel} <span class="chev">▾</span></span>
-                <span class="exp-toggle-less">{lessLabel} <span class="chev">▴</span></span>
-              </span>
             </div>
+            <span class={`exp-plus c-${c}`} aria-hidden="true">+</span>
           </summary>
           <div class="exp-details">
             <ul>
@@ -260,8 +255,9 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   .exp-row:hover { background: rgba(255,255,255,0.02); }
   .exp-summary {
     display: grid;
-    grid-template-columns: 120px 1fr;
+    grid-template-columns: 120px 1fr 56px;
     gap: 18px;
+    align-items: start;
     list-style: none;
     cursor: pointer;
   }
@@ -303,37 +299,59 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
     margin: 0 0 8px;
     line-height: 1.5;
   }
-  .exp-tags { display: flex; gap: 4px; flex-wrap: wrap; }
-  .exp-tags .ed-tag { font-size: 9px; padding: 2px 6px; }
-  .exp-tags .ed-tag.c-ylw { color: var(--ylw); border-color: var(--ylw); }
-  .exp-tags .ed-tag.c-hot { color: var(--hot); border-color: var(--hot); }
-  .exp-tags .ed-tag.c-cyan { color: var(--cyan); border-color: var(--cyan); }
-  .exp-tags .ed-tag.c-acid { color: var(--acid); border-color: var(--acid); }
-  .exp-tags .ed-tag.c-vio { color: var(--vio); border-color: var(--vio); }
-  .exp-tags .ed-tag.c-orng { color: var(--orng); border-color: var(--orng); }
+  .exp-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .exp-tags .ed-tag {
+    font-size: 11px;
+    padding: 3px 8px;
+    color: #000;
+    border-color: #000;
+    font-weight: 600;
+  }
+  .exp-tags .ed-tag.c-ylw { background: var(--ylw); }
+  .exp-tags .ed-tag.c-hot { background: var(--hot); }
+  .exp-tags .ed-tag.c-cyan { background: var(--cyan); }
+  .exp-tags .ed-tag.c-acid { background: var(--acid); }
+  .exp-tags .ed-tag.c-vio { background: var(--vio); color: #fff; }
+  .exp-tags .ed-tag.c-orng { background: var(--orng); }
 
-  .exp-toggle {
+  .exp-plus {
+    justify-self: end;
+    align-self: center;
+    width: 44px;
+    height: 44px;
+    border: 2px solid var(--fg);
+    background: var(--bg);
+    color: var(--fg);
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    margin-top: 10px;
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent);
-    border-bottom: 1.5px dashed var(--accent);
-    padding-bottom: 1px;
-    width: max-content;
+    justify-content: center;
+    font-family: var(--bungee);
+    font-size: 26px;
+    line-height: 1;
+    transition: transform 0.18s ease, background 0.12s linear, color 0.12s linear;
   }
-  .exp-toggle .chev {
-    display: inline-block;
-    transition: transform 0.15s ease;
+  .exp-row:hover .exp-plus { transform: rotate(90deg); }
+  .exp-plus.c-ylw { color: var(--ylw); border-color: var(--ylw); }
+  .exp-plus.c-hot { color: var(--hot); border-color: var(--hot); }
+  .exp-plus.c-cyan { color: var(--cyan); border-color: var(--cyan); }
+  .exp-plus.c-acid { color: var(--acid); border-color: var(--acid); }
+  .exp-plus.c-vio { color: var(--vio); border-color: var(--vio); }
+  .exp-plus.c-orng { color: var(--orng); border-color: var(--orng); }
+  .exp-row:hover .exp-plus.c-ylw { background: var(--ylw); color: #000; }
+  .exp-row:hover .exp-plus.c-hot { background: var(--hot); color: #000; }
+  .exp-row:hover .exp-plus.c-cyan { background: var(--cyan); color: #000; }
+  .exp-row:hover .exp-plus.c-acid { background: var(--acid); color: #000; }
+  .exp-row:hover .exp-plus.c-vio { background: var(--vio); color: #fff; }
+  .exp-row:hover .exp-plus.c-orng { background: var(--orng); color: #000; }
+  .exp-row[open] .exp-plus {
+    transform: rotate(45deg);
   }
-  .exp-row:hover .exp-toggle { color: var(--ylw); border-bottom-color: var(--ylw); }
-  .exp-toggle-less { display: none; }
-  .exp-row[open] .exp-toggle-more { display: none; }
-  .exp-row[open] .exp-toggle-less { display: inline; }
+  .exp-row[open] .exp-plus.c-ylw { background: var(--ylw); color: #000; }
+  .exp-row[open] .exp-plus.c-hot { background: var(--hot); color: #000; }
+  .exp-row[open] .exp-plus.c-cyan { background: var(--cyan); color: #000; }
+  .exp-row[open] .exp-plus.c-acid { background: var(--acid); color: #000; }
+  .exp-row[open] .exp-plus.c-vio { background: var(--vio); color: #fff; }
+  .exp-row[open] .exp-plus.c-orng { background: var(--orng); color: #000; }
 
   .exp-details {
     padding: 14px 0 4px 138px;
@@ -390,7 +408,10 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
 
   @media (max-width: 900px) {
     .cv-grid { grid-template-columns: 1fr; }
-    .exp-summary, .form-row { grid-template-columns: 1fr; gap: 8px; }
+    .form-row { grid-template-columns: 1fr; gap: 8px; }
+    .exp-summary { grid-template-columns: 1fr 44px; gap: 10px; }
+    .exp-period { grid-column: 1 / -1; }
+    .exp-plus { width: 40px; height: 40px; font-size: 22px; }
     .exp-details { padding-left: 0; }
   }
 </style>

@@ -294,11 +294,7 @@ button { font: inherit; }
 .ed-rule-rainbow {
   border: none;
   height: 8px;
-  background: repeating-linear-gradient(90deg,
-    var(--hot) 0 12px,
-    var(--ylw) 12px 24px,
-    var(--cyan) 24px 36px,
-    var(--acid) 36px 48px);
+  background: var(--acid);
   margin: 0;
 }
 

@@ -22,9 +22,7 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
 <header class="head">
   <div class="kicker">{eyebrow}</div>
   <h1 class="ed-bungee headline">
-    <span class="t-acid">{t.academico.title.line1.toUpperCase()}</span>
-    <span>{t.academico.title.emph.toUpperCase()}</span>
-    <span class="ed-cursor">_</span>
+    {lang === 'en' ? 'RESEARCH' : 'PESQUISA'} <span class="amp">&amp;</span> {lang === 'en' ? 'PUBLICATIONS' : 'PUBLICAÇÕES'}<span class="ed-cursor">_</span>
   </h1>
   <div class="scholar-row">
     {t.academico.scholarIds.map((s) => (
@@ -55,16 +53,17 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
   <aside class="formation">
     <div class="section-kicker cyan">{formationHeading}</div>
     <hr class="ed-rule" style="border-top-color: var(--cyan)" />
-    <div class="formation-list">
+    <ol class="timeline">
       {t.academico.formation.map((e) => (
-        <article class="formation-row">
-          <span class="period">{e.p}</span>
-          <h3 class="ed-bungee role">{e.r}</h3>
-          <div class="org">{e.o}</div>
-          <p class="desc">{e.d}</p>
-        </article>
+        <li class="tl-item">
+          <span class="tl-dot" aria-hidden="true"></span>
+          <span class="tl-period">{e.p}</span>
+          <h3 class="ed-bungee tl-role">{e.r}</h3>
+          <div class="tl-org">{e.o}</div>
+          {e.d && <p class="tl-desc">{e.d}</p>}
+        </li>
       ))}
-    </div>
+    </ol>
   </aside>
 
   <div class="pubs">
@@ -109,11 +108,7 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
     letter-spacing: -0.04em;
     text-transform: uppercase;
   }
-  .headline .t-acid {
-    background: var(--acid);
-    color: #000;
-    padding: 0 8px;
-  }
+  .headline .amp { color: var(--acid); }
   .scholar-row {
     display: flex;
     flex-wrap: wrap;
@@ -126,14 +121,16 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
 
   .section-kicker {
     font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
     color: var(--acid);
     text-transform: uppercase;
-    margin-bottom: 8px;
+    margin: 0 0 6px;
   }
   .section-kicker.cyan { color: var(--cyan); }
   .section-kicker.vio { color: var(--vio); }
+  .ed-rule { border: none; border-top: 2px solid currentColor; margin: 0 0 20px; }
 
   .lines { margin-bottom: 36px; }
   .line-tags {
@@ -151,36 +148,59 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
     align-items: flex-start;
   }
 
-  .formation-list { margin-top: 14px; }
-  .formation-row {
-    padding: 14px 0;
-    border-bottom: 1.5px dashed var(--fg);
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 28px;
+    position: relative;
   }
-  .period {
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    left: 7px;
+    width: 2px;
+    background: var(--cyan);
+  }
+  .tl-item {
+    position: relative;
+    padding: 0 0 28px;
+  }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-dot {
+    position: absolute;
+    left: -28px;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 3px solid var(--cyan);
+  }
+  .tl-period {
     display: inline-block;
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.1em;
     color: var(--cyan);
     text-transform: uppercase;
     margin-bottom: 6px;
   }
-  .role {
-    font-size: 18px;
+  .tl-role {
+    font-size: 22px;
+    line-height: 1.05;
     text-transform: uppercase;
     letter-spacing: -0.02em;
     margin: 0 0 4px;
   }
-  .org {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    color: var(--fg-2);
-    text-transform: uppercase;
+  .tl-org {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--cyan);
     margin-bottom: 6px;
   }
-  .desc {
-    font-family: var(--serif);
+  .tl-desc {
     font-size: 14px;
     margin: 0;
     line-height: 1.5;

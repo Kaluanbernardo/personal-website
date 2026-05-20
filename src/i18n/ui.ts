@@ -458,12 +458,8 @@ export const ui: Record<Lang, Dict> = {
       email: 'ola@nome.com.br',
       socialsHeading: 'onde mais encontrar',
       socials: [
-        { n: 'Substack', h: '@nome', d: 'ensaios mensais' },
-        { n: 'LinkedIn', h: '/in/nome', d: 'rede profissional' },
-        { n: 'Twitter / X', h: '@nome', d: 'pensamentos curtos' },
-        { n: 'GitHub', h: '/nome', d: 'código e experimentos' },
-        { n: 'Lattes', h: 'CV completo', d: 'currículo acadêmico oficial' },
-        { n: 'ORCID', h: '0000-0000-0000-0000', d: 'identificador acadêmico' },
+        { n: 'Substack', h: '@kaluanbernardo', d: 'ensaios mensais' },
+        { n: 'LinkedIn', h: '/in/kaluanbernardo', d: 'rede profissional' },
       ],
     },
     footer: {
@@ -833,12 +829,8 @@ export const ui: Record<Lang, Dict> = {
       email: 'hello@name.com',
       socialsHeading: 'where else to find me',
       socials: [
-        { n: 'Substack', h: '@name', d: 'monthly essays' },
-        { n: 'LinkedIn', h: '/in/name', d: 'professional network' },
-        { n: 'Twitter / X', h: '@name', d: 'short thoughts' },
-        { n: 'GitHub', h: '/name', d: 'code and experiments' },
-        { n: 'Lattes', h: 'full CV', d: 'official academic record' },
-        { n: 'ORCID', h: '0000-0000-0000-0000', d: 'academic identifier' },
+        { n: 'Substack', h: '@kaluanbernardo', d: 'monthly essays' },
+        { n: 'LinkedIn', h: '/in/kaluanbernardo', d: 'professional network' },
       ],
     },
     footer: {

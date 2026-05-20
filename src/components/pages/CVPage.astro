@@ -50,16 +50,13 @@ const formationItems = lang === 'en'
 
 const langs = lang === 'en'
   ? [
-      { l: 'PT-BR', n: 'native' },
-      { l: 'EN', n: 'fluent' },
-      { l: 'ES', n: 'professional' },
-      { l: 'FR', n: 'basic' },
+      { l: 'Portuguese', n: 'native' },
+      { l: 'English', n: 'fluent' },
+      { l: 'Spanish', n: 'basic' },
     ]
   : [
-      { l: 'PT-BR', n: 'nativo' },
-      { l: 'EN', n: 'fluente' },
-      { l: 'ES', n: 'profissional' },
-      { l: 'FR', n: 'básico' },
+      { l: 'Inglês', n: 'fluente' },
+      { l: 'Espanhol', n: 'básico' },
     ];
 
 const skillTags = lang === 'en'
@@ -100,9 +97,8 @@ const tagBgs = ['var(--hot)', 'var(--cyan)', 'var(--ylw)', 'transparent'];
         <span class="section-kicker">{expHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
       </summary>
-      {t.cv.experience.map((e, i) => {
-        const colors = ['ylw', 'hot', 'cyan', 'acid', 'vio', 'orng'];
-        const c = colors[i % colors.length];
+      {t.cv.experience.map((e) => {
+        const c = 'ylw';
         return (
           <details class={`exp-row c-${c}`}>
             <summary class="exp-summary">

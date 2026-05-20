@@ -173,7 +173,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'SENAI São Paulo',
           d: 'Desenvolvimento end-to-end de produtos tecnológicos e soluções para a indústria, combinando visão estratégica com pesquisa aplicada.',
           cta: 'case ↗',
-          tags: ['Product Management', 'Product Discovery', 'OKRs', 'A/B Testing', 'JTBD', 'AI', 'EdTech', 'Stakeholder Mgmt'],
+          tags: ['Product Management', 'Product Discovery', 'Pesquisas profundas', 'AI Development', 'JTBD/Scrum/Agile', 'Educação', 'EdTech', 'Stakeholder Mgmt'],
           full: [
             'Liderei desenvolvimento de 12+ produtos digitais impactando 1M+ alunos/profissionais, usando Lean Product Management, Stage-Gate e Scrum/Kanban, com NPS médio 80+.',
             'Estruturei programa de IA para indústria com 100+ parcerias estratégicas, reduzindo tempo de processos em até 50%.',
@@ -200,7 +200,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Cortex',
           d: 'Plataforma de monitoramento de reputação. Ponte entre times de estratégia e técnico, responsável por qualidade de dados.',
           cta: 'case ↗',
-          tags: ['Data Product', 'Product Owner', 'B2B SaaS', 'SQL', 'Data Quality', 'KPIs', 'Discovery'],
+          tags: ['Data Product', 'Product Owner', 'B2B SaaS', 'Desenvolvimento com Python', 'Data Quality', 'KPIs', 'Discovery'],
           full: [
             'Migrei fluxos de dados para datalake, reduzindo 50% do SLA operacional e ~30% dos custos de infraestrutura.',
             'Implementei sistema de unificação de dados de múltiplos fornecedores, reduzindo churn em ~20% QoQ.',
@@ -214,7 +214,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Vivo (Telefônica Brasil) · Portal Terra',
           d: 'Gerência das verticais Terra Byte e Terra Game On no portal Terra, coordenando operação e estratégia de produto.',
           cta: 'case ↗',
-          tags: ['Senior PM', 'Content Strategy', 'Audience Growth', 'SEO', 'Brand Partnerships', 'B2C', 'Media', 'Games'],
+          tags: ['Senior PM', 'Estratégia de Conteúdo', 'Crescimento de Audiência', 'SEO', 'Parcerias com Marcas', 'Tech & Science', 'Mídia', 'Games'],
           full: [
             'Terra Byte: criei o produto do zero e escalei para 8M pageviews mensais.',
             'Executei campanhas com marcas (BGS, CES, Black Friday) e expandi o portfólio audiovisual (videocasts, webstories).',
@@ -228,7 +228,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'CNN Brasil',
           d: 'Liderança da equipe editorial de Saúde, Tecnologia e Ciência no site, com conteúdo aproveitado também pela TV.',
           cta: 'case ↗',
-          tags: ['Liderança Editorial', 'Gestão de Equipes', 'Breaking News', 'Cross-platform', 'Saúde & Ciência'],
+          tags: ['Liderança Editorial', 'Gestão de Equipes', 'Breaking News', 'Multiplataforma', 'Tech & Science', 'Saúde'],
           full: [
             'Liderei equipe e rede de freelancers produzindo cobertura essencial de COVID-19, vacinas e políticas públicas.',
             'Estabeleci editorias como campeãs de audiência durante a pandemia, com rigor jornalístico e fact-checking.',
@@ -242,7 +242,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Gizmodo Brasil',
           d: 'Liderança editorial e de produto de um dos principais blogs de tecnologia do Brasil.',
           cta: 'case ↗',
-          tags: ['Editor-in-Chief', 'Estratégia Editorial', 'SEO', 'Crescimento de Receita', 'Gestão de Equipe', 'Branded Content', 'P&L'],
+          tags: ['Editor-Chefe', 'Estratégia Editorial', 'SEO', 'Crescimento de Receita', 'Gestão de Equipe', 'Branded Content', 'Liderança Editorial'],
           full: [
             'Crescimento de pageviews em 40% QoQ via estratégia editorial data-driven e otimização de SEO.',
             'Aumentei receita em 70% desenvolvendo projetos editoriais em parceria com o time comercial.',
@@ -284,7 +284,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'SumUp',
           d: 'Comunicação corporativa, relações públicas e branded content em fintech alemã global.',
           cta: 'case ↗',
-          tags: ['Comunicação Corporativa', 'PR', 'Media Training', 'Branded Content', 'Fintech', 'Comunicação Executiva'],
+          tags: ['Comunicação Corporativa', 'Relações Públicas', 'Media Training', 'Branded Content', 'Fintech', 'Comunicação Executiva'],
           full: [
             'Desenvolvi e lancei site de branded content alcançando 500 mil acessos em 3 meses, posicionando a marca e gerando leads qualificados.',
             'Colaborei no desenvolvimento de campanhas integradas (online e offline) com orçamento multimilionário.',

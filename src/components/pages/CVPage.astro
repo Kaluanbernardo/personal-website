@@ -36,33 +36,37 @@ const langHeading = lang === 'en' ? '>> LANGUAGES' : '>> IDIOMAS';
 const whereLabel = 'WHERE';
 const statusLabel = 'STATUS';
 const whereVal = 'São Paulo / -3 GMT';
-const statusVal = lang === 'en' ? '● open to freelance' : '● aceitando freelas';
+const statusVal = lang === 'en' ? '● PM @ SENAI · PhD @ ESPM' : '● PM @ SENAI · doutorando ESPM';
 
 const formationItems = lang === 'en'
   ? [
-      { p: '2023 →', r: 'PhD in Communication', o: 'PUC-SP · in progress' },
-      { p: '2018—21', r: 'MA in Communication', o: 'PUC-SP · concluded' },
-      { p: '2014—17', r: 'BA in Journalism', o: 'USP · concluded' },
+      { p: '2024 →', r: 'PhD in Communication & Consumption', o: 'ESPM · in progress' },
+      { p: '2014—16', r: 'MA in Communication', o: 'Faculdade Cásper Líbero' },
+      { p: '2010—13', r: 'BA in Journalism', o: 'Faculdade Cásper Líbero' },
     ]
   : [
-      { p: '2023 →', r: 'Doutorado em Comunicação', o: 'PUC-SP · em curso' },
-      { p: '2018—21', r: 'Mestrado em Comunicação', o: 'PUC-SP · concluído' },
-      { p: '2014—17', r: 'Bacharel em Jornalismo', o: 'USP · concluído' },
+      { p: '2024 →', r: 'Doutorado em Comunicação e Consumo', o: 'ESPM · em curso' },
+      { p: '2014—16', r: 'Mestrado em Comunicação', o: 'Faculdade Cásper Líbero' },
+      { p: '2010—13', r: 'Bacharelado em Jornalismo', o: 'Faculdade Cásper Líbero' },
     ];
 
 const langs = lang === 'en'
   ? [
       { l: 'PT-BR', n: 'native' },
       { l: 'EN', n: 'fluent' },
-      { l: 'ES', n: 'reading' },
+      { l: 'ES', n: 'professional' },
+      { l: 'FR', n: 'basic' },
     ]
   : [
       { l: 'PT-BR', n: 'nativo' },
       { l: 'EN', n: 'fluente' },
-      { l: 'ES', n: 'leitura' },
+      { l: 'ES', n: 'profissional' },
+      { l: 'FR', n: 'básico' },
     ];
 
-const skillTags = ['discovery', 'pesquisa qualitativa', 'métricas', 'SQL', 'Python', 'escrita', 'edição', 'reportagem', 'Notion', 'Figma', 'Astro', 'markdown', 'entrevistas', 'roadmap'];
+const skillTags = lang === 'en'
+  ? ['product management', 'product discovery', 'JTBD', 'double diamond', 'design sprints', 'UX research', 'OKRs', 'A/B testing', 'SQL', 'SEO', 'content strategy', 'editing', 'reporting', 'team leadership', 'Notion', 'Figma']
+  : ['product management', 'product discovery', 'JTBD', 'double diamond', 'design sprints', 'UX research', 'OKRs', 'testes A/B', 'SQL', 'SEO', 'estratégia de conteúdo', 'edição', 'reportagem', 'gestão de times', 'Notion', 'Figma'];
 const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
 ---
 

@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import { ui, type Lang, formatDate, formatLongDate, tagDisplay } from '../../i18n/ui';
+import { ui, type Lang, formatDate, tagDisplay } from '../../i18n/ui';
 import { link } from '../../lib/links';
 
 interface Props {
@@ -79,11 +79,6 @@ const heroTags = lang === 'en'
   ? ['Product', 'Journalism', 'Content', 'Technology', 'Games', 'Culture', 'Strategy', 'AI', 'Education', 'Anything_You_Want_Just_Dream']
   : ['Produto', 'Jornalismo', 'Conteúdo', 'Tecnologia', 'Games', 'Cultura', 'Estratégia', 'IA', 'Educação', 'Tudo_O_Que_Você_Quiser_Basta_Sonhar'];
 
-const now = new Date();
-const [dateDay, dateMon, dateYr] = formatLongDate(now, lang).split(' ');
-const locationLabel = lang === 'en'
-  ? 'SÃO PAULO, BRAZIL, SOUTH AMERICA, EARTH'
-  : 'SÃO PAULO, BRASIL, AMÉRICA DO SUL, TERRA';
 const indexHeading = lang === 'en' ? 'INDEX / RAW NAVIGATION' : 'ÍNDICE / NAVEGAÇÃO RAW';
 const entriesLabel = lang === 'en' ? `0${indexEntries.length}_ENTRIES` : `0${indexEntries.length}_ENTRADAS`;
 
@@ -126,13 +121,6 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
   </div>
 
   <div class="hero-main">
-    <div class="hero-eyebrow">
-      <span class="hf-mono kicker" data-live-date data-lang={lang}>
-        <span class="d-day">{dateDay}</span> · <span class="d-mon">{dateMon.toUpperCase()}</span> · <span class="d-yr">{dateYr}</span> · {locationLabel}
-      </span>
-      <span class="rec ed-blink">● REC</span>
-    </div>
-
     <h1 class="hero-title ed-bungee">
       <span class="t-fg">{firstName.toUpperCase()}</span><br />
       <span class="t-stroke">{lastName.toUpperCase()}</span><span class="ed-blink t-cyan">_</span>
@@ -244,25 +232,6 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     .hero-intro { display: none; }
   }
 
-  .hero-eyebrow {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    margin-bottom: 14px;
-  }
-  .hero-eyebrow .kicker {
-    font-size: 11px;
-    color: var(--acid);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-  }
-  .rec {
-    color: var(--hot);
-    font-size: 11px;
-    font-family: var(--mono);
-    letter-spacing: 0.1em;
-  }
-
   .hero-title {
     font-size: clamp(56px, 12vw, 168px);
     margin: 0;
@@ -280,9 +249,12 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
 
   .hero-intro {
     font-size: 16px;
-    max-width: 600px;
+    max-width: 680px;
     margin-top: 24px;
-    line-height: 1.4;
+    line-height: 1.7;
+  }
+  .hero-intro :global([class^="ed-mark"]) {
+    padding: 0 2px;
   }
 
   .hero-cta {
@@ -433,23 +405,3 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     .fb-title { font-size: 28px; }
   }
 </style>
-
-<script>
-  const monthsByLang: Record<string, string[]> = {
-    pt: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
-    en: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
-  };
-  const update = () => {
-    const now = new Date();
-    document.querySelectorAll<HTMLElement>('[data-live-date]').forEach((el) => {
-      const lang = el.dataset.lang === 'en' ? 'en' : 'pt';
-      const day = el.querySelector<HTMLElement>('.d-day');
-      const mon = el.querySelector<HTMLElement>('.d-mon');
-      const yr = el.querySelector<HTMLElement>('.d-yr');
-      if (day) day.textContent = String(now.getDate()).padStart(2, '0');
-      if (mon) mon.textContent = monthsByLang[lang][now.getMonth()].toUpperCase();
-      if (yr) yr.textContent = String(now.getFullYear());
-    });
-  };
-  update();
-</script>

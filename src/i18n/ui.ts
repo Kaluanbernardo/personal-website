@@ -173,7 +173,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'SENAI São Paulo',
           d: 'Desenvolvimento end-to-end de produtos tecnológicos e soluções para a indústria, combinando visão estratégica com pesquisa aplicada.',
           cta: 'case ↗',
-          tags: ['product management', 'discovery', 'JTBD', 'design sprints', 'OKR', 'IA', 'educação'],
+          tags: ['Product Management', 'Product Discovery', 'OKRs', 'A/B Testing', 'JTBD', 'AI', 'EdTech', 'Stakeholder Mgmt'],
           full: [
             'Liderei desenvolvimento de 12+ produtos digitais impactando 1M+ alunos/profissionais, usando Lean Product Management, Stage-Gate e Scrum/Kanban, com NPS médio 80+.',
             'Estruturei programa de IA para indústria com 100+ parcerias estratégicas, reduzindo tempo de processos em até 50%.',
@@ -187,7 +187,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'FAPCOM — Faculdade Paulus de Comunicação',
           d: 'Docente em 7 disciplinas de Jornalismo e Comunicação, com metodologias ativas e aprendizagem baseada em projetos.',
           cta: 'case ↗',
-          tags: ['docência', 'jornalismo', 'metodologias ativas', 'TCC'],
+          tags: ['Ensino Superior', 'Design de Currículo', 'Jornalismo de Dados', 'Mentoria', 'Aprendizado Ativo'],
           full: [
             'Lecionei Jornalismo de Dados, Jornalismo Cultural, Redação para TV/Áudio, Teorias do Jornalismo, Técnicas de Reportagem e Jornalismo Comunitário.',
             'Impactei ~200 alunos combinando aulas expositivas e projetos práticos para desenvolver pensamento crítico.',
@@ -200,7 +200,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Cortex',
           d: 'Plataforma de monitoramento de reputação. Ponte entre times de estratégia e técnico, responsável por qualidade de dados.',
           cta: 'case ↗',
-          tags: ['data', 'product owner', 'datalake', 'SQL', 'data quality'],
+          tags: ['Data Product', 'Product Owner', 'B2B SaaS', 'SQL', 'Data Quality', 'KPIs', 'Discovery'],
           full: [
             'Migrei fluxos de dados para datalake, reduzindo 50% do SLA operacional e ~30% dos custos de infraestrutura.',
             'Implementei sistema de unificação de dados de múltiplos fornecedores, reduzindo churn em ~20% QoQ.',
@@ -214,7 +214,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Vivo (Telefônica Brasil) · Portal Terra',
           d: 'Gerência das verticais Terra Byte e Terra Game On no portal Terra, coordenando operação e estratégia de produto.',
           cta: 'case ↗',
-          tags: ['conteúdo', 'mídia', 'audiência', 'games', 'SEO', 'campanhas'],
+          tags: ['Senior PM', 'Content Strategy', 'Audience Growth', 'SEO', 'Brand Partnerships', 'B2C', 'Media', 'Games'],
           full: [
             'Terra Byte: criei o produto do zero e escalei para 8M pageviews mensais.',
             'Executei campanhas com marcas (BGS, CES, Black Friday) e expandi o portfólio audiovisual (videocasts, webstories).',
@@ -228,7 +228,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'CNN Brasil',
           d: 'Liderança da equipe editorial de Saúde, Tecnologia e Ciência no site, com conteúdo aproveitado também pela TV.',
           cta: 'case ↗',
-          tags: ['editorial', 'breaking news', 'saúde', 'ciência', 'multiplataforma'],
+          tags: ['Liderança Editorial', 'Gestão de Equipes', 'Breaking News', 'Cross-platform', 'Saúde & Ciência'],
           full: [
             'Liderei equipe e rede de freelancers produzindo cobertura essencial de COVID-19, vacinas e políticas públicas.',
             'Estabeleci editorias como campeãs de audiência durante a pandemia, com rigor jornalístico e fact-checking.',
@@ -242,7 +242,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Gizmodo Brasil',
           d: 'Liderança editorial e de produto de um dos principais blogs de tecnologia do Brasil.',
           cta: 'case ↗',
-          tags: ['editorial', 'SEO', 'crescimento', 'monetização', 'gestão'],
+          tags: ['Editor-in-Chief', 'Estratégia Editorial', 'SEO', 'Crescimento de Receita', 'Gestão de Equipe', 'Branded Content', 'P&L'],
           full: [
             'Crescimento de pageviews em 40% QoQ via estratégia editorial data-driven e otimização de SEO.',
             'Aumentei receita em 70% desenvolvendo projetos editoriais em parceria com o time comercial.',
@@ -257,7 +257,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Centro Universitário FMU | FIAM-FAAM',
           d: 'Docência, coordenação e orientação em cursos de Jornalismo, Publicidade, Rádio/TV e Relações Públicas.',
           cta: 'case ↗',
-          tags: ['docência', 'coordenação', 'orientação', 'TCC'],
+          tags: ['Ensino Superior', 'Coordenação de Curso', 'Design de Currículo', 'Mentoria'],
           full: [
             'Professor de disciplinas como "Política e Economia", "Comunicação Multiplataforma", "Jornalismo de Dados" e "Cultura da Convergência".',
             'Vice-coordenação interina do curso de Jornalismo.',
@@ -271,7 +271,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'UOL — Universo Online',
           d: 'Reportagens de alto impacto na editoria de especiais e multimídia (UOL Tab), que cresceu 40% em audiência e 20% em receita.',
           cta: 'case ↗',
-          tags: ['reportagem', 'multimídia', 'longread', 'storytelling'],
+          tags: ['Reportagem Investigativa', 'Longread', 'Jornalismo Multimídia', 'Data Storytelling'],
           full: [
             'Storytelling com dados para grandes reportagens.',
             'Apuração, edição e redação de grandes reportagens sobre política, comportamento, cultura e tecnologia.',
@@ -284,7 +284,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'SumUp',
           d: 'Comunicação corporativa, relações públicas e branded content em fintech alemã global.',
           cta: 'case ↗',
-          tags: ['comunicação corporativa', 'PR', 'branded content', 'media training'],
+          tags: ['Comunicação Corporativa', 'PR', 'Media Training', 'Branded Content', 'Fintech', 'Comunicação Executiva'],
           full: [
             'Desenvolvi e lancei site de branded content alcançando 500 mil acessos em 3 meses, posicionando a marca e gerando leads qualificados.',
             'Colaborei no desenvolvimento de campanhas integradas (online e offline) com orçamento multimilionário.',
@@ -300,7 +300,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Green Park Content',
           d: 'Estratégia de conteúdo SEO para grandes marcas como Nestlé, Unilever, Pepsico, Danone e Intel.',
           cta: 'case ↗',
-          tags: ['SEO', 'estratégia de conteúdo', 'gestão global', 'analytics'],
+          tags: ['SEO', 'Estratégia de Conteúdo', 'Account Management', 'Analytics', 'Times Globais', 'Clientes Enterprise'],
           full: [
             'Gerenciei 10+ projetos simultâneos com 100M+ pageviews mensais e R$ 15M+ em receita anual.',
             'Coordenei equipes de 50+ pessoas em diversos países (redatores, designers, analistas).',
@@ -316,7 +316,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Nexo Jornal',
           d: 'Um dos primeiros repórteres do Nexo, participando da formulação do jornal antes do lançamento.',
           cta: 'case ↗',
-          tags: ['reportagem', 'ciência', 'tecnologia', 'roteiro'],
+          tags: ['Time Fundador', 'Reportagem', 'Jornalismo Científico', 'Roteiro de Vídeo'],
           full: [
             'Reportagens diárias sobre ciência, tecnologia, música, segurança pública, meio ambiente e saúde.',
             'Reportagens especiais nas mesmas áreas.',
@@ -330,7 +330,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Projeto Draft',
           d: 'Cobertura diária do ecossistema de inovação e startups.',
           cta: 'case ↗',
-          tags: ['reportagem', 'startups', 'inovação', 'perfis'],
+          tags: ['Cobertura de Startups', 'Longread', 'Entrevistas', 'Curadoria Editorial'],
           full: [
             'Curadoria e redação da compilação diária de notícias mais importantes.',
             'Entrevista e redação da editoria "Acelerados", que apresentava startups em early stage.',
@@ -344,7 +344,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Startupi',
           d: 'Edição em portal especializado em startups durante a fase de rápida expansão do setor no Brasil.',
           cta: 'case ↗',
-          tags: ['edição', 'startups', 'audiência', 'eventos'],
+          tags: ['Edição', 'Startups', 'Gestão de Audiência', 'Cobertura de Eventos'],
           full: [
             'Gestão de audiência.',
             'Redação e edição de reportagens.',
@@ -358,7 +358,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Olhar Digital',
           d: 'Redação no então segundo maior site de tecnologia do país e único programa do tema em TV aberta.',
           cta: 'case ↗',
-          tags: ['redação', 'tecnologia', 'ciência', 'TV'],
+          tags: ['Jornalismo de Tecnologia', 'Redação Científica', 'Roteiro para TV', 'Hard News'],
           full: [
             'Redação de hard news sobre tecnologia e ciência.',
             'Redação de reportagens especiais.',
@@ -548,7 +548,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'SENAI São Paulo',
           d: 'End-to-end development of tech products and solutions for industry, blending strategic vision with applied research.',
           cta: 'case ↗',
-          tags: ['product management', 'discovery', 'JTBD', 'design sprints', 'OKR', 'AI', 'education'],
+          tags: ['Product Management', 'Product Discovery', 'OKRs', 'A/B Testing', 'JTBD', 'AI', 'EdTech', 'Stakeholder Mgmt'],
           full: [
             'Led 12+ digital products reaching 1M+ learners/professionals using Lean Product Management, Stage-Gate and Scrum/Kanban, with an average NPS of 80+.',
             'Structured an AI program for industry with 100+ strategic partnerships, cutting process time by up to 50%.',
@@ -562,7 +562,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'FAPCOM — Faculdade Paulus de Comunicação',
           d: 'Taught 7 courses in Journalism and Communication using active learning and project-based methodologies.',
           cta: 'case ↗',
-          tags: ['teaching', 'journalism', 'active learning', 'thesis advising'],
+          tags: ['Higher Education', 'Curriculum Design', 'Data Journalism', 'Mentoring', 'Active Learning'],
           full: [
             'Taught Data Journalism, Cultural Journalism, Writing for TV/Audio, Journalism Theory, Reporting Techniques and Community Journalism.',
             'Reached ~200 students combining lectures and practical projects to build critical thinking.',
@@ -575,7 +575,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Cortex',
           d: 'Reputation-monitoring platform. Bridge between strategy and technical teams, responsible for data quality.',
           cta: 'case ↗',
-          tags: ['data', 'product owner', 'datalake', 'SQL', 'data quality'],
+          tags: ['Data Product', 'Product Owner', 'B2B SaaS', 'SQL', 'Data Quality', 'KPIs', 'Discovery'],
           full: [
             'Migrated data pipelines to a datalake, cutting operational SLA by 50% and infra cost by ~30%.',
             'Implemented a system unifying data from multiple vendors, reducing churn ~20% QoQ.',
@@ -589,7 +589,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Vivo (Telefónica Brasil) · Terra portal',
           d: 'Managed the Terra Byte and Terra Game On verticals on the Terra portal, owning operation and product strategy.',
           cta: 'case ↗',
-          tags: ['content', 'media', 'audience', 'games', 'SEO', 'campaigns'],
+          tags: ['Senior PM', 'Content Strategy', 'Audience Growth', 'SEO', 'Brand Partnerships', 'B2C', 'Media', 'Games'],
           full: [
             'Terra Byte: built the product from scratch and scaled it to 8M monthly pageviews.',
             'Ran campaigns with brands (BGS, CES, Black Friday) and expanded the audiovisual portfolio (videocasts, web stories).',
@@ -603,7 +603,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'CNN Brasil',
           d: 'Led the Health, Tech and Science editorial team for the site, with content reused by TV.',
           cta: 'case ↗',
-          tags: ['editorial', 'breaking news', 'health', 'science', 'multiplatform'],
+          tags: ['Editorial Leadership', 'Team Management', 'Breaking News', 'Cross-platform', 'Health & Science'],
           full: [
             'Led the team and freelance network producing essential COVID-19, vaccine and public-policy coverage.',
             'Made the team audience leaders during the pandemic with strict journalism standards and fact-checking.',
@@ -617,7 +617,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Gizmodo Brasil',
           d: 'Editorial and product leadership of one of the largest technology blogs in Brazil.',
           cta: 'case ↗',
-          tags: ['editorial', 'SEO', 'growth', 'monetization', 'leadership'],
+          tags: ['Editor-in-Chief', 'Editorial Strategy', 'SEO', 'Revenue Growth', 'Team Building', 'Branded Content', 'P&L'],
           full: [
             'Grew pageviews +40% QoQ via data-driven editorial strategy and SEO optimization.',
             'Grew revenue +70% by developing editorial projects with the commercial team.',
@@ -632,7 +632,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Centro Universitário FMU | FIAM-FAAM',
           d: 'Teaching, coordination and advising across Journalism, Advertising, Radio/TV and Public Relations programs.',
           cta: 'case ↗',
-          tags: ['teaching', 'coordination', 'advising', 'thesis'],
+          tags: ['Higher Education', 'Program Coordination', 'Curriculum Design', 'Mentoring'],
           full: [
             'Taught courses such as "Politics and Economy", "Multiplatform Communication", "Data Journalism" and "Convergence Culture".',
             'Interim deputy coordinator of the Journalism program.',
@@ -646,7 +646,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'UOL — Universo Online',
           d: 'High-impact reporting on the specials and multimedia desk (UOL Tab), which grew 40% in audience and 20% in revenue.',
           cta: 'case ↗',
-          tags: ['reporting', 'multimedia', 'longreads', 'storytelling'],
+          tags: ['Investigative Reporting', 'Longform', 'Multimedia Journalism', 'Data Storytelling'],
           full: [
             'Data-driven storytelling for major stories.',
             'Researched, edited and wrote in-depth pieces on politics, behavior, culture and technology.',
@@ -659,7 +659,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'SumUp',
           d: 'Corporate communications, public relations and branded content at a global German fintech.',
           cta: 'case ↗',
-          tags: ['corporate comms', 'PR', 'branded content', 'media training'],
+          tags: ['Corporate Comms', 'PR', 'Media Training', 'Branded Content', 'Fintech', 'Executive Comms'],
           full: [
             'Built and launched a branded-content website that reached 500k visits in 3 months, positioning the brand and generating qualified leads.',
             'Collaborated on integrated campaigns (online and offline) with multimillion-dollar budgets.',
@@ -675,7 +675,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Green Park Content',
           d: 'SEO-driven content strategy for major brands like Nestlé, Unilever, Pepsico, Danone and Intel.',
           cta: 'case ↗',
-          tags: ['SEO', 'content strategy', 'global teams', 'analytics'],
+          tags: ['SEO', 'Content Strategy', 'Account Management', 'Analytics', 'Global Teams', 'Enterprise Clients'],
           full: [
             'Managed 10+ simultaneous projects with 100M+ monthly pageviews and R$15M+ in annual revenue.',
             'Coordinated 50+ people across countries (writers, designers, analysts).',
@@ -691,7 +691,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Nexo Jornal',
           d: 'One of the first reporters at Nexo, joining the project before launch.',
           cta: 'case ↗',
-          tags: ['reporting', 'science', 'technology', 'scripting'],
+          tags: ['Founding Team', 'Reporting', 'Science Journalism', 'Video Scripting'],
           full: [
             'Daily reporting on science, technology, music, public safety, environment and health.',
             'Feature reporting on the same areas.',
@@ -705,7 +705,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Projeto Draft',
           d: 'Daily coverage of the innovation and startup ecosystem.',
           cta: 'case ↗',
-          tags: ['reporting', 'startups', 'innovation', 'profiles'],
+          tags: ['Startup Coverage', 'Longform', 'Interviewing', 'Editorial Curation'],
           full: [
             'Curated and wrote the daily roundup of top news.',
             'Interviewed and wrote the "Acelerados" column, featuring early-stage startups.',
@@ -719,7 +719,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Startupi',
           d: 'Editing at a startup-focused outlet during the sector’s rapid expansion in Brazil.',
           cta: 'case ↗',
-          tags: ['editing', 'startups', 'audience', 'events'],
+          tags: ['Editing', 'Startups', 'Audience Management', 'Event Coverage'],
           full: [
             'Audience management.',
             'Writing and editing of articles.',
@@ -733,7 +733,7 @@ export const ui: Record<Lang, Dict> = {
           o: 'Olhar Digital',
           d: 'Writing at what was then the second-largest tech outlet in Brazil and the only TV show on the topic on free-to-air TV.',
           cta: 'case ↗',
-          tags: ['writing', 'technology', 'science', 'TV'],
+          tags: ['Tech Journalism', 'Science Writing', 'TV Scripting', 'Hard News'],
           full: [
             'Hard news on technology and science.',
             'Feature reporting.',

@@ -19,7 +19,6 @@ const allProjects = await getCollection('projects', ({ data }) => data.lang === 
 const prefix = lang === 'en' ? '/en' : '';
 const postHref = (slug: string) => link(`${prefix}/blog/${slug}`);
 const blogHref = link(`${prefix}/blog`);
-const cvPdfHref = link(lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf');
 
 const indexEntries = [
   {
@@ -94,8 +93,6 @@ const allPostsLabel = lang === 'en' ? 'ALL POSTS →' : 'TODOS OS POSTS →';
 const heroTitle = (t.brand || '').split(' ');
 const firstName = heroTitle[0] || 'NOME';
 const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
-const lastFirstHalf = lastName.slice(0, Math.ceil(lastName.length / 2)) || 'SOBRE';
-const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
 ---
 
 <section class="hero">
@@ -138,7 +135,7 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
 
     <h1 class="hero-title ed-bungee">
       <span class="t-fg">{firstName.toUpperCase()}</span><br />
-      <span class="t-stroke">{lastFirstHalf.toUpperCase()}</span><span class="t-hot">{lastSecondHalf.toUpperCase()}</span><span class="ed-blink t-cyan">_</span>
+      <span class="t-stroke">{lastName.toUpperCase()}</span><span class="ed-blink t-cyan">_</span>
     </h1>
 
     <p class="hero-intro ed-mono">
@@ -153,10 +150,6 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
       )}
     </p>
 
-    <div class="hero-cta">
-      <a class="ed-btn acid" href={blogHref}>{t.home.ctaBlog}</a>
-      <a class="ed-btn ylw" href={cvPdfHref} download>↓ {t.home.ctaCV}</a>
-    </div>
   </div>
 
   <div class="hero-tags">
@@ -247,7 +240,7 @@ const lastSecondHalf = lastName.slice(Math.ceil(lastName.length / 2)) || 'NOME';
     .ai-seal { width: 150px; height: 150px; top: 24px; }
   }
   @media (max-width: 720px) {
-    .ai-seal { width: 78px; height: 78px; top: 8px; right: 0; }
+    .ai-seal { width: 78px; height: 78px; top: 28px; right: 0; }
   }
 
   .hero-eyebrow {

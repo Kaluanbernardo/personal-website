@@ -12,7 +12,7 @@ const t = ui[lang];
 const allPosts = await getCollection('posts', ({ data }) => !data.draft && data.lang === lang);
 const recentPosts = allPosts
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 3);
+  .slice(0, 6);
 
 const allProjects = await getCollection('projects', ({ data }) => data.lang === lang);
 
@@ -133,7 +133,7 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
         </>
       ) : (
         <>
-          Crio <span class="ed-mark-hot">produtos</span>, desenvolvo <span class="ed-mark-cyan">estratégias</span>, faço pesquisas e <span class="ed-mark-acid">análises</span>, dou <span class="ed-mark-vio">aulas</span>, penso e executo <span class="ed-mark-ylw">ideias</span> — tudo com um tiquinho de <span class="ed-mark-orng">molho</span>. Gosto de tecnologia, cultura, games, música e jornalismo. Também gosto de batata e de <span class="ed-mark-blue">estudar</span>.
+          Crio <span class="ed-mark-hot">produtos</span>, desenvolvo <span class="ed-mark-cyan">estratégias</span>, faço pesquisas e <span class="ed-mark-acid">análises</span>, dou <span class="ed-mark-vio">aulas</span>, penso e executo <span class="ed-mark-ylw">ideias</span> — tudo com um tiquinho de <span class="ed-mark-orng">carimbó</span>. Gosto de tecnologia, cultura, games, música e jornalismo. Também gosto de batata e de <span class="ed-mark-blue">estudar</span>.
         </>
       )}
     </p>
@@ -142,7 +142,7 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
 
   <div class="hero-tags">
     {heroTags.map((tag, i) => (
-      <span class={`ed-tag t-${i % 3}`}>#{tag}</span>
+      <span class={`ed-tag t-${i % 6}`}>#{tag}</span>
     ))}
   </div>
 </section>
@@ -209,7 +209,7 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
 
   .ai-seal {
     position: absolute;
-    top: 40px;
+    top: 120px;
     right: 0;
     width: 200px;
     height: 200px;
@@ -225,7 +225,7 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     50%      { transform: rotate(-4deg); }
   }
   @media (max-width: 960px) {
-    .ai-seal { width: 150px; height: 150px; top: 24px; }
+    .ai-seal { width: 150px; height: 150px; top: 80px; }
   }
   @media (max-width: 720px) {
     .ai-seal { display: none; }
@@ -277,8 +277,11 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     letter-spacing: 0.1em;
   }
   .hero-tags .t-0 { background: var(--hot); color: #000; border-color: #000; }
-  .hero-tags .t-1 { background: transparent; color: var(--fg); border-color: var(--fg); }
+  .hero-tags .t-1 { background: var(--acid); color: #000; border-color: #000; }
   .hero-tags .t-2 { background: var(--cyan); color: #000; border-color: #000; }
+  .hero-tags .t-3 { background: var(--ylw); color: #000; border-color: #000; }
+  .hero-tags .t-4 { background: var(--vio); color: #fff; border-color: #000; }
+  .hero-tags .t-5 { background: var(--orng); color: #000; border-color: #000; }
 
   .brutal-index { margin: 12px 0 0; }
   .bi-head {

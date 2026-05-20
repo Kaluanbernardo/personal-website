@@ -2,7 +2,6 @@
 import Base from './Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import StatusBar from '../components/StatusBar.astro';
 import type { Lang } from '../i18n/ui';
 
 type Active = 'home' | 'sobre' | 'cv' | 'academico' | 'blog' | 'projetos' | 'contato';
@@ -52,6 +51,5 @@ const themeMap: Record<Active, string> = {
       <slot />
     </main>
     <Footer lang={lang} />
-    <StatusBar />
   </div>
 </Base>

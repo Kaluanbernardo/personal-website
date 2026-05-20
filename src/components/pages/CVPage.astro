@@ -196,6 +196,13 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
     gap: 32px;
     align-items: flex-start;
   }
+  .cv-aside {
+    position: sticky;
+    top: 24px;
+    align-self: start;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+  }
   .aside-kicker {
     font-family: var(--mono);
     font-size: 10px;
@@ -415,6 +422,7 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
 
   @media (max-width: 900px) {
     .cv-grid { grid-template-columns: 1fr; }
+    .cv-aside { position: static; max-height: none; overflow: visible; }
     .form-row { grid-template-columns: 1fr; gap: 8px; }
     .exp-summary { grid-template-columns: 1fr 44px; gap: 10px; }
     .exp-period { grid-column: 1 / -1; }

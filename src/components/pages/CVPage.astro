@@ -50,13 +50,13 @@ const formationItems = lang === 'en'
 
 const langs = lang === 'en'
   ? [
-      { l: 'Portuguese', n: 'native' },
-      { l: 'English', n: 'fluent' },
-      { l: 'Spanish', n: 'basic' },
+      { l: 'Portuguese', n: 'native', g: 'Olá', mark: '●' },
+      { l: 'English', n: 'fluent', g: 'Hello', mark: '▲' },
+      { l: 'Spanish', n: 'basic', g: '¡Hola!', mark: '■' },
     ]
   : [
-      { l: 'Inglês', n: 'fluente' },
-      { l: 'Espanhol', n: 'básico' },
+      { l: 'Inglês', n: 'fluente', g: 'Hello', mark: '▲' },
+      { l: 'Espanhol', n: 'básico', g: '¡Hola!', mark: '■' },
     ];
 
 const skillTags = lang === 'en'
@@ -164,6 +164,7 @@ const tagBgs = ['var(--hot)', 'var(--cyan)', 'var(--ylw)', 'transparent'];
       <div class="langs">
         {langs.map((id) => (
           <div class="lang-cell">
+            <div class="lang-greet">{id.g} <span class="lang-mark">{id.mark}</span></div>
             <div class="ed-bungee lang-l">{id.l}</div>
             <div class="lang-n">{id.n}</div>
           </div>
@@ -455,14 +456,34 @@ const tagBgs = ['var(--hot)', 'var(--cyan)', 'var(--ylw)', 'transparent'];
   .skill-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
   .skill-tags .ed-tag { font-size: 11px; padding: 4px 8px; }
 
-  .langs { display: flex; gap: 18px; flex-wrap: wrap; }
-  .lang-l { font-size: 30px; }
+  .langs {
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .lang-cell {
+    min-width: 160px;
+  }
+  .lang-greet {
+    font-size: 22px;
+    line-height: 1;
+    color: var(--vio);
+    margin-bottom: 6px;
+  }
+  .lang-mark {
+    display: inline-block;
+    margin-left: 4px;
+    color: var(--fg);
+  }
+  .lang-l { font-size: 32px; line-height: 1; }
   .lang-n {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 11px;
     opacity: 0.7;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    margin-top: 6px;
   }
 
   .serif { font-family: var(--serif); }

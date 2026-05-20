@@ -8,10 +8,8 @@ const { lang } = Astro.props;
 const t = ui[lang];
 const pdfHref = link(lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf');
 
-const eyebrow = '02 / CV.PROFISSIONAL.PDF';
-const updatedLabel = lang === 'en'
-  ? 'updated 04/2026 · also in [PT] · written in markdown'
-  : 'atualizado 04/2026 · também em [EN] · feito em markdown';
+const eyebrow = '02 / CV.PROFISSIONAL';
+const updatedLabel = '';
 
 const sections = lang === 'en'
   ? [
@@ -67,7 +65,7 @@ const langs = lang === 'en'
 const skillTags = lang === 'en'
   ? ['product management', 'product discovery', 'JTBD', 'double diamond', 'design sprints', 'UX research', 'OKRs', 'A/B testing', 'SQL', 'SEO', 'content strategy', 'editing', 'reporting', 'team leadership', 'Notion', 'Figma']
   : ['product management', 'product discovery', 'JTBD', 'double diamond', 'design sprints', 'UX research', 'OKRs', 'testes A/B', 'SQL', 'SEO', 'estratégia de conteúdo', 'edição', 'reportagem', 'gestão de times', 'Notion', 'Figma'];
-const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
+const tagBgs = ['var(--hot)', 'var(--cyan)', 'var(--ylw)', 'transparent'];
 ---
 
 <div class="cv-head" id="cv-top">
@@ -75,7 +73,6 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   <h1 class="ed-bungee headline">
     {lang === 'en' ? 'RESUME' : 'CURRÍCULO'} <span class="arr">↓</span>
   </h1>
-  <div class="updated">{updatedLabel}</div>
 </div>
 
 <div class="cv-grid">
@@ -103,7 +100,6 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
         <span class="section-kicker">{expHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
       </summary>
-      <hr class="section-rule ylw" />
       {t.cv.experience.map((e, i) => {
         const colors = ['ylw', 'hot', 'cyan', 'acid', 'vio', 'orng'];
         const c = colors[i % colors.length];
@@ -136,7 +132,6 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
         <span class="section-kicker cyan">{formHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
       </summary>
-      <hr class="section-rule cyan" />
       {formationItems.map((e) => (
         <div class="form-row">
           <div class="form-period">{e.p}</div>
@@ -148,9 +143,9 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
       ))}
     </details>
 
-    <details class="section c-acid" id="skills">
+    <details class="section c-hot" id="skills">
       <summary class="section-summary">
-        <span class="section-kicker acid">{skillsHeading}</span>
+        <span class="section-kicker hot">{skillsHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
       </summary>
       <div class="skill-tags">
@@ -274,8 +269,12 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
     list-style: none;
     cursor: pointer;
     padding: 6px 0;
-    border-bottom: 2px solid var(--fg);
+    border-bottom: 2px solid currentColor;
   }
+  .section.c-ylw .section-summary { color: var(--ylw); }
+  .section.c-cyan .section-summary { color: var(--cyan); }
+  .section.c-hot .section-summary { color: var(--hot); }
+  .section.c-vio .section-summary { color: var(--vio); }
   .section-summary::-webkit-details-marker { display: none; }
   .section-summary::marker { content: ''; }
   .section-summary:hover .section-kicker { color: var(--ylw); }
@@ -295,11 +294,11 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   .section[open] .section-toggle { transform: rotate(45deg); }
   .section.c-ylw .section-toggle { color: var(--ylw); border-color: var(--ylw); }
   .section.c-cyan .section-toggle { color: var(--cyan); border-color: var(--cyan); }
-  .section.c-acid .section-toggle { color: var(--acid); border-color: var(--acid); }
+  .section.c-hot .section-toggle { color: var(--hot); border-color: var(--hot); }
   .section.c-vio .section-toggle { color: var(--vio); border-color: var(--vio); }
   .section[open].c-ylw .section-toggle { background: var(--ylw); color: #000; }
   .section[open].c-cyan .section-toggle { background: var(--cyan); color: #000; }
-  .section[open].c-acid .section-toggle { background: var(--acid); color: #000; }
+  .section[open].c-hot .section-toggle { background: var(--hot); color: #000; }
   .section[open].c-vio .section-toggle { background: var(--vio); color: #fff; }
 
   .section-kicker {
@@ -312,7 +311,7 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
     margin: 0;
   }
   .section-kicker.cyan { color: var(--cyan); }
-  .section-kicker.acid { color: var(--acid); }
+  .section-kicker.hot { color: var(--hot); }
   .section-kicker.vio { color: var(--vio); }
 
   .section-rule { border-top: 2px solid var(--ylw); margin-bottom: 14px; }
@@ -500,13 +499,20 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   }
   openFromHash();
   window.addEventListener('hashchange', openFromHash);
-  document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
-    a.addEventListener('click', () => {
+  document.querySelectorAll<HTMLAnchorElement>('a.section-link[href^="#"]').forEach((a) => {
+    a.addEventListener('click', (ev) => {
       const id = a.getAttribute('href')?.slice(1);
       if (!id) return;
       const el = document.getElementById(id);
       if (el && el.tagName.toLowerCase() === 'details') {
-        (el as HTMLDetailsElement).open = true;
+        ev.preventDefault();
+        const det = el as HTMLDetailsElement;
+        if (det.open) {
+          det.open = false;
+        } else {
+          det.open = true;
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
     });
   });

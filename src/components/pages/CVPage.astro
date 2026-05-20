@@ -98,68 +98,87 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   </aside>
 
   <main>
-    <div class="section-kicker" id="experience">{expHeading}</div>
-    <hr class="section-rule ylw" />
-
-    {t.cv.experience.map((e, i) => {
-      const colors = ['ylw', 'hot', 'cyan', 'acid', 'vio', 'orng'];
-      const c = colors[i % colors.length];
-      return (
-        <details class={`exp-row c-${c}`}>
-          <summary class="exp-summary">
-            <div class={`exp-period c-${c}`}>{e.p}</div>
-            <div class="exp-body">
-              <div class="ed-bungee exp-role">{e.r}</div>
-              <div class={`exp-org c-${c}`}>{e.o}</div>
-              <p class="exp-desc">{e.d}</p>
-              <div class="exp-tags">
-                {e.tags.map((tg) => <span class={`ed-tag c-${c}`}>{tg}</span>)}
+    <details class="section c-ylw" id="experience">
+      <summary class="section-summary">
+        <span class="section-kicker">{expHeading}</span>
+        <span class="section-toggle" aria-hidden="true">+</span>
+      </summary>
+      <hr class="section-rule ylw" />
+      {t.cv.experience.map((e, i) => {
+        const colors = ['ylw', 'hot', 'cyan', 'acid', 'vio', 'orng'];
+        const c = colors[i % colors.length];
+        return (
+          <details class={`exp-row c-${c}`}>
+            <summary class="exp-summary">
+              <div class={`exp-period c-${c}`}>{e.p}</div>
+              <div class="exp-body">
+                <div class="ed-bungee exp-role">{e.r}</div>
+                <div class={`exp-org c-${c}`}>{e.o}</div>
+                <p class="exp-desc">{e.d}</p>
+                <div class="exp-tags">
+                  {e.tags.map((tg) => <span class={`ed-tag c-${c}`}>{tg}</span>)}
+                </div>
               </div>
+              <span class={`exp-plus c-${c}`} aria-hidden="true">+</span>
+            </summary>
+            <div class="exp-details">
+              <ul>
+                {e.full.map((line) => <li>{line}</li>)}
+              </ul>
             </div>
-            <span class={`exp-plus c-${c}`} aria-hidden="true">+</span>
-          </summary>
-          <div class="exp-details">
-            <ul>
-              {e.full.map((line) => <li>{line}</li>)}
-            </ul>
-          </div>
-        </details>
-      );
-    })}
-
-    <div class="section-kicker cyan" id="education">{formHeading}</div>
-    <hr class="section-rule cyan" />
-    {formationItems.map((e) => (
-      <div class="form-row">
-        <div class="form-period">{e.p}</div>
-        <div>
-          <div class="ed-bungee form-role">{e.r}</div>
-          <div class="form-org">{e.o}</div>
-        </div>
-      </div>
-    ))}
-
-    <div class="section-kicker acid" id="skills">{skillsHeading}</div>
-    <div class="skill-tags">
-      {skillTags.map((s, i) => {
-        const bg = tagBgs[i % 4];
-        const transparent = bg === 'transparent';
-        const style = transparent
-          ? 'background:transparent;color:var(--fg);border-color:var(--fg)'
-          : `background:${bg};color:#000;border-color:#000`;
-        return <span class="ed-tag" style={style}>{s}</span>;
+          </details>
+        );
       })}
-    </div>
+    </details>
 
-    <div class="section-kicker vio" id="languages">{langHeading}</div>
-    <div class="langs">
-      {langs.map((id) => (
-        <div class="lang-cell">
-          <div class="ed-bungee lang-l">{id.l}</div>
-          <div class="lang-n">{id.n}</div>
+    <details class="section c-cyan" id="education">
+      <summary class="section-summary">
+        <span class="section-kicker cyan">{formHeading}</span>
+        <span class="section-toggle" aria-hidden="true">+</span>
+      </summary>
+      <hr class="section-rule cyan" />
+      {formationItems.map((e) => (
+        <div class="form-row">
+          <div class="form-period">{e.p}</div>
+          <div>
+            <div class="ed-bungee form-role">{e.r}</div>
+            <div class="form-org">{e.o}</div>
+          </div>
         </div>
       ))}
-    </div>
+    </details>
+
+    <details class="section c-acid" id="skills">
+      <summary class="section-summary">
+        <span class="section-kicker acid">{skillsHeading}</span>
+        <span class="section-toggle" aria-hidden="true">+</span>
+      </summary>
+      <div class="skill-tags">
+        {skillTags.map((s, i) => {
+          const bg = tagBgs[i % 4];
+          const transparent = bg === 'transparent';
+          const style = transparent
+            ? 'background:transparent;color:var(--fg);border-color:var(--fg)'
+            : `background:${bg};color:#000;border-color:#000`;
+          return <span class="ed-tag" style={style}>{s}</span>;
+        })}
+      </div>
+    </details>
+
+    <details class="section c-vio" id="languages">
+      <summary class="section-summary">
+        <span class="section-kicker vio">{langHeading}</span>
+        <span class="section-toggle" aria-hidden="true">+</span>
+      </summary>
+      <div class="langs">
+        {langs.map((id) => (
+          <div class="lang-cell">
+            <div class="ed-bungee lang-l">{id.l}</div>
+            <div class="lang-n">{id.n}</div>
+          </div>
+        ))}
+      </div>
+    </details>
   </main>
 </div>
 
@@ -225,7 +244,7 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   .section-link.on { color: var(--ylw); font-weight: 700; }
   .section-link:hover { background: var(--ylw); color: #000; }
 
-  .section-kicker[id], .cv-head[id] { scroll-margin-top: 24px; }
+  .section[id], .cv-head[id] { scroll-margin-top: 24px; }
 
   .info-box {
     margin-top: 24px;
@@ -245,6 +264,44 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   .info-val.acid { color: var(--acid); }
   .download-btn { margin-top: 18px; }
 
+  .section { margin-top: 32px; }
+  .section[open] { margin-bottom: 8px; }
+  .section-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    list-style: none;
+    cursor: pointer;
+    padding: 6px 0;
+    border-bottom: 2px solid var(--fg);
+  }
+  .section-summary::-webkit-details-marker { display: none; }
+  .section-summary::marker { content: ''; }
+  .section-summary:hover .section-kicker { color: var(--ylw); }
+  .section-toggle {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--fg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--bungee);
+    font-size: 22px;
+    line-height: 1;
+    color: var(--fg);
+    transition: transform 0.18s ease, background 0.12s linear, color 0.12s linear;
+  }
+  .section[open] .section-toggle { transform: rotate(45deg); }
+  .section.c-ylw .section-toggle { color: var(--ylw); border-color: var(--ylw); }
+  .section.c-cyan .section-toggle { color: var(--cyan); border-color: var(--cyan); }
+  .section.c-acid .section-toggle { color: var(--acid); border-color: var(--acid); }
+  .section.c-vio .section-toggle { color: var(--vio); border-color: var(--vio); }
+  .section[open].c-ylw .section-toggle { background: var(--ylw); color: #000; }
+  .section[open].c-cyan .section-toggle { background: var(--cyan); color: #000; }
+  .section[open].c-acid .section-toggle { background: var(--acid); color: #000; }
+  .section[open].c-vio .section-toggle { background: var(--vio); color: #fff; }
+
   .section-kicker {
     font-family: var(--mono);
     font-size: 28px;
@@ -252,8 +309,7 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
     letter-spacing: 0.04em;
     color: var(--ylw);
     text-transform: uppercase;
-    margin-top: 32px;
-    margin-bottom: 10px;
+    margin: 0;
   }
   .section-kicker.cyan { color: var(--cyan); }
   .section-kicker.acid { color: var(--acid); }
@@ -431,3 +487,27 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
     .exp-details { padding-left: 0; }
   }
 </style>
+
+<script>
+  function openFromHash() {
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+    const el = document.getElementById(hash);
+    if (el && el.tagName.toLowerCase() === 'details') {
+      (el as HTMLDetailsElement).open = true;
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+  openFromHash();
+  window.addEventListener('hashchange', openFromHash);
+  document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
+    a.addEventListener('click', () => {
+      const id = a.getAttribute('href')?.slice(1);
+      if (!id) return;
+      const el = document.getElementById(id);
+      if (el && el.tagName.toLowerCase() === 'details') {
+        (el as HTMLDetailsElement).open = true;
+      }
+    });
+  });
+</script>

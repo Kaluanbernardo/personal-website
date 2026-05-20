@@ -15,18 +15,18 @@ const updatedLabel = lang === 'en'
 
 const sections = lang === 'en'
   ? [
-      { l: 'Current', c: 'ylw' },
-      { l: 'Experience', c: 'fg' },
-      { l: 'Education', c: 'fg' },
-      { l: 'Skills', c: 'fg' },
-      { l: 'Languages', c: 'fg' },
+      { l: 'Current', c: 'ylw', h: '#cv-top' },
+      { l: 'Experience', c: 'fg', h: '#experience' },
+      { l: 'Education', c: 'fg', h: '#education' },
+      { l: 'Skills', c: 'fg', h: '#skills' },
+      { l: 'Languages', c: 'fg', h: '#languages' },
     ]
   : [
-      { l: 'Atual', c: 'ylw' },
-      { l: 'Experiência', c: 'fg' },
-      { l: 'Formação', c: 'fg' },
-      { l: 'Skills', c: 'fg' },
-      { l: 'Idiomas', c: 'fg' },
+      { l: 'Atual', c: 'ylw', h: '#cv-top' },
+      { l: 'Experiência', c: 'fg', h: '#experience' },
+      { l: 'Formação', c: 'fg', h: '#education' },
+      { l: 'Skills', c: 'fg', h: '#skills' },
+      { l: 'Idiomas', c: 'fg', h: '#languages' },
     ];
 
 const expHeading = lang === 'en' ? '>> EXPERIENCE' : '>> EXPERIÊNCIA';
@@ -70,7 +70,7 @@ const skillTags = lang === 'en'
 const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
 ---
 
-<div class="cv-head">
+<div class="cv-head" id="cv-top">
   <div class="kicker">{eyebrow}</div>
   <h1 class="ed-bungee headline">
     {lang === 'en' ? 'RESUME' : 'CURRÍCULO'} <span class="arr">↓</span>
@@ -82,9 +82,9 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   <aside class="cv-aside">
     <div class="aside-kicker">{lang === 'en' ? 'SECTIONS' : 'SEÇÕES'}</div>
     {sections.map((s, i) => (
-      <div class={`section-link ${s.c === 'ylw' ? 'on' : ''}`}>
+      <a class={`section-link ${s.c === 'ylw' ? 'on' : ''}`} href={s.h}>
         {i === 0 ? '▶ ' : '· '}{s.l}
-      </div>
+      </a>
     ))}
 
     <div class="info-box">
@@ -98,7 +98,7 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   </aside>
 
   <main>
-    <div class="section-kicker">{expHeading}</div>
+    <div class="section-kicker" id="experience">{expHeading}</div>
     <hr class="section-rule ylw" />
 
     {t.cv.experience.map((e, i) => {
@@ -127,7 +127,7 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
       );
     })}
 
-    <div class="section-kicker cyan">{formHeading}</div>
+    <div class="section-kicker cyan" id="education">{formHeading}</div>
     <hr class="section-rule cyan" />
     {formationItems.map((e) => (
       <div class="form-row">
@@ -139,7 +139,7 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
       </div>
     ))}
 
-    <div class="section-kicker acid">{skillsHeading}</div>
+    <div class="section-kicker acid" id="skills">{skillsHeading}</div>
     <div class="skill-tags">
       {skillTags.map((s, i) => {
         const bg = tagBgs[i % 4];
@@ -151,7 +151,7 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
       })}
     </div>
 
-    <div class="section-kicker vio">{langHeading}</div>
+    <div class="section-kicker vio" id="languages">{langHeading}</div>
     <div class="langs">
       {langs.map((id) => (
         <div class="lang-cell">
@@ -211,7 +211,14 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
     padding: 4px 0;
     color: var(--fg);
   }
+  .section-link {
+    display: block;
+    text-decoration: none;
+  }
   .section-link.on { color: var(--ylw); font-weight: 700; }
+  .section-link:hover { background: var(--ylw); color: #000; }
+
+  .section-kicker[id], .cv-head[id] { scroll-margin-top: 24px; }
 
   .info-box {
     margin-top: 24px;

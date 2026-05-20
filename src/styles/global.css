@@ -302,6 +302,19 @@ button { font: inherit; }
 .ed-blink { animation: ed-blink 1.05s steps(2) infinite; }
 @keyframes ed-blink { 50% { opacity: 0; } }
 
+.ed-cursor {
+  display: inline-block;
+  animation: ed-blink 1.05s steps(2) infinite, ed-cursor-rainbow 4.2s steps(1) infinite;
+}
+@keyframes ed-cursor-rainbow {
+  0%   { color: var(--hot); }
+  17%  { color: var(--ylw); }
+  34%  { color: var(--acid); }
+  51%  { color: var(--cyan); }
+  68%  { color: var(--vio); }
+  85%  { color: var(--orng); }
+}
+
 .ed-cursor::after {
   content: '_';
   animation: ed-blink 1.05s steps(2) infinite;

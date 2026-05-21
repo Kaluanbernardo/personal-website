@@ -69,9 +69,7 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
   <article>
     <div class="kicker hf-mono">{eyebrow}</div>
     <h1 class="ed-bungee headline">
-      <span class="t-cyan">{lang === 'en' ? 'ABOUT' : 'SOBRE'}</span><br />
-      <span>{lang === 'en' ? 'ME' : 'MIM'}</span>
-      <span class="ed-blink mark mark-cyan" aria-hidden="true">●</span>
+      <span class="t-cyan">{lang === 'en' ? 'ABOUT' : 'SOBRE'}</span> <span>{lang === 'en' ? 'ME' : 'MIM'}</span> <span class="ed-blink mark mark-cyan" aria-hidden="true">●</span>
     </h1>
 
     <div class="serif body">
@@ -147,20 +145,24 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
     letter-spacing: 0.18em;
     color: var(--cyan);
     text-transform: uppercase;
-    margin-bottom: 14px;
+    margin-bottom: 28px;
+    position: relative;
+    z-index: 1;
   }
 
   .headline {
-    font-size: clamp(48px, 9vw, 96px);
+    font-size: clamp(40px, 7vw, 80px);
     margin: 0 0 24px;
-    line-height: 0.85;
+    line-height: 1;
     text-transform: uppercase;
-    letter-spacing: -0.05em;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
   }
   .headline .t-cyan {
     background: var(--cyan);
     color: #000;
-    padding: 0 8px;
+    padding: 4px 10px 2px;
+    display: inline-block;
   }
   .headline .t-hot { color: var(--hot); }
 
@@ -264,5 +266,6 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
   @media (max-width: 900px) {
     .sobre-grid { grid-template-columns: 1fr; }
     .boxes { grid-template-columns: 1fr; }
+    .headline { white-space: normal; font-size: clamp(40px, 12vw, 72px); }
   }
 </style>

@@ -307,6 +307,14 @@ button { font: inherit; }
   animation: ed-blink 1.05s steps(2) infinite;
 }
 
+.mark { display: inline-block; }
+.mark-hot { color: var(--hot); }
+.mark-ylw { color: var(--ylw); }
+.mark-acid { color: var(--acid); }
+.mark-cyan { color: var(--cyan); }
+.mark-vio { color: var(--vio); }
+.mark-orng { color: var(--orng); }
+
 .ed-cursor::after {
   content: '_';
   animation: ed-blink 1.05s steps(2) infinite;

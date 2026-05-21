@@ -15,14 +15,13 @@ const publications = allPubs
 
 const eyebrow = '03 / LATTES.CNPQ.BR';
 const linesHeading = lang === 'en' ? '>> RESEARCH LINES' : '>> LINHAS DE PESQUISA';
-const formationHeading = lang === 'en' ? '>> EDUCATION' : '>> FORMAÇÃO';
 const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕES SELECIONADAS';
 ---
 
 <header class="head">
   <div class="kicker">{eyebrow}</div>
   <h1 class="ed-bungee headline">
-    {lang === 'en' ? 'RESEARCH' : 'PESQUISA'} <span class="amp">&amp;</span> {lang === 'en' ? 'PUBLICATIONS' : 'PUBLICAÇÕES'}<span class="ed-cursor">_</span>
+    {lang === 'en' ? 'RESEARCH' : 'PESQUISA'} <span class="amp">&amp;</span> {lang === 'en' ? 'PUBLICATIONS' : 'PUBLICAÇÕES'} <span class="ed-blink mark mark-acid" aria-hidden="true">◆</span>
   </h1>
   <div class="scholar-row">
     {t.academico.scholarIds.map((s) => (
@@ -49,46 +48,28 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
   </div>
 </section>
 
-<section class="main-grid">
-  <aside class="formation">
-    <div class="section-kicker cyan">{formationHeading}</div>
-    <hr class="ed-rule" style="border-top-color: var(--cyan)" />
-    <ol class="timeline">
-      {t.academico.formation.map((e) => (
-        <li class="tl-item">
-          <span class="tl-dot" aria-hidden="true"></span>
-          <span class="tl-period">{e.p}</span>
-          <h3 class="ed-bungee tl-role">{e.r}</h3>
-          <div class="tl-org">{e.o}</div>
-          {e.d && <p class="tl-desc">{e.d}</p>}
-        </li>
+<section class="pubs">
+  <div class="section-kicker vio">{pubsHeading}</div>
+  <hr class="ed-rule" style="border-top-color: var(--vio)" />
+  {publications.length === 0 ? (
+    <div class="empty">
+      <span class="ed-blink">[ ]</span> {lang === 'en' ? 'no publications listed yet.' : 'sem publicações listadas ainda.'}
+    </div>
+  ) : (
+    <div class="pub-list">
+      {publications.map((p) => (
+        <a class="pub-row" href={p.url ?? '#'} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
+          <span class="pub-year">{p.year}</span>
+          <div class="pub-body">
+            <h3 class="ed-bungee pub-title">{p.title}</h3>
+            <div class="pub-venue">{p.venue}</div>
+          </div>
+          <span class="pub-tag">#{tagDisplay[lang][p.kind] ?? p.kind}</span>
+          <span class="pub-arrow">↗</span>
+        </a>
       ))}
-    </ol>
-  </aside>
-
-  <div class="pubs">
-    <div class="section-kicker vio">{pubsHeading}</div>
-    <hr class="ed-rule" style="border-top-color: var(--vio)" />
-    {publications.length === 0 ? (
-      <div class="empty">
-        <span class="ed-blink">[ ]</span> {lang === 'en' ? 'no publications listed yet.' : 'sem publicações listadas ainda.'}
-      </div>
-    ) : (
-      <div class="pub-list">
-        {publications.map((p) => (
-          <a class="pub-row" href={p.url ?? '#'} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
-            <span class="pub-year">{p.year}</span>
-            <div class="pub-body">
-              <h3 class="ed-bungee pub-title">{p.title}</h3>
-              <div class="pub-venue">{p.venue}</div>
-            </div>
-            <span class="pub-tag">#{tagDisplay[lang][p.kind] ?? p.kind}</span>
-            <span class="pub-arrow">↗</span>
-          </a>
-        ))}
-      </div>
-    )}
-  </div>
+    </div>
+  )}
 </section>
 
 <style>

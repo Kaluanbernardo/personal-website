@@ -8,25 +8,23 @@ const { lang } = Astro.props;
 const t = ui[lang];
 const pdfHref = link(lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf');
 
-const eyebrow = '02 / CV.PROFISSIONAL.PDF';
-const updatedLabel = lang === 'en'
-  ? 'updated 04/2026 · also in [PT] · written in markdown'
-  : 'atualizado 04/2026 · também em [EN] · feito em markdown';
+const eyebrow = '02 / CV.PROFISSIONAL';
+const updatedLabel = '';
 
 const sections = lang === 'en'
   ? [
-      { l: 'Current', c: 'ylw' },
-      { l: 'Experience', c: 'fg' },
-      { l: 'Education', c: 'fg' },
-      { l: 'Skills', c: 'fg' },
-      { l: 'Languages', c: 'fg' },
+      { l: 'Current', c: 'ylw', h: '#cv-top' },
+      { l: 'Experience', c: 'fg', h: '#experience' },
+      { l: 'Education', c: 'fg', h: '#education' },
+      { l: 'Skills', c: 'fg', h: '#skills' },
+      { l: 'Languages', c: 'fg', h: '#languages' },
     ]
   : [
-      { l: 'Atual', c: 'ylw' },
-      { l: 'Experiência', c: 'fg' },
-      { l: 'Formação', c: 'fg' },
-      { l: 'Skills', c: 'fg' },
-      { l: 'Idiomas', c: 'fg' },
+      { l: 'Atual', c: 'ylw', h: '#cv-top' },
+      { l: 'Experiência', c: 'fg', h: '#experience' },
+      { l: 'Formação', c: 'fg', h: '#education' },
+      { l: 'Skills', c: 'fg', h: '#skills' },
+      { l: 'Idiomas', c: 'fg', h: '#languages' },
     ];
 
 const expHeading = lang === 'en' ? '>> EXPERIENCE' : '>> EXPERIÊNCIA';
@@ -36,51 +34,51 @@ const langHeading = lang === 'en' ? '>> LANGUAGES' : '>> IDIOMAS';
 const whereLabel = 'WHERE';
 const statusLabel = 'STATUS';
 const whereVal = 'São Paulo / -3 GMT';
-const statusVal = lang === 'en' ? '● open to freelance' : '● aceitando freelas';
+const statusVal = lang === 'en' ? '● PM @ SENAI · PhD @ ESPM' : '● PM @ SENAI · doutorando ESPM';
 
 const formationItems = lang === 'en'
   ? [
-      { p: '2023 →', r: 'PhD in Communication', o: 'PUC-SP · in progress' },
-      { p: '2018—21', r: 'MA in Communication', o: 'PUC-SP · concluded' },
-      { p: '2014—17', r: 'BA in Journalism', o: 'USP · concluded' },
+      { p: '2024 →', r: 'PhD in Communication & Consumption', o: 'ESPM · in progress' },
+      { p: '2014—16', r: 'MA in Communication', o: 'Faculdade Cásper Líbero' },
+      { p: '2010—13', r: 'BA in Journalism', o: 'Faculdade Cásper Líbero' },
     ]
   : [
-      { p: '2023 →', r: 'Doutorado em Comunicação', o: 'PUC-SP · em curso' },
-      { p: '2018—21', r: 'Mestrado em Comunicação', o: 'PUC-SP · concluído' },
-      { p: '2014—17', r: 'Bacharel em Jornalismo', o: 'USP · concluído' },
+      { p: '2024 →', r: 'Doutorado em Comunicação e Consumo', o: 'ESPM · em curso' },
+      { p: '2014—16', r: 'Mestrado em Comunicação', o: 'Faculdade Cásper Líbero' },
+      { p: '2010—13', r: 'Bacharelado em Jornalismo', o: 'Faculdade Cásper Líbero' },
     ];
 
 const langs = lang === 'en'
   ? [
-      { l: 'PT-BR', n: 'native' },
-      { l: 'EN', n: 'fluent' },
-      { l: 'ES', n: 'reading' },
+      { l: 'Portuguese', n: 'native', g: 'Olá', mark: '●' },
+      { l: 'English', n: 'fluent', g: 'Hello', mark: '▲' },
+      { l: 'Spanish', n: 'basic', g: '¡Hola!', mark: '■' },
     ]
   : [
-      { l: 'PT-BR', n: 'nativo' },
-      { l: 'EN', n: 'fluente' },
-      { l: 'ES', n: 'leitura' },
+      { l: 'Inglês', n: 'fluente', g: 'Hello', mark: '▲' },
+      { l: 'Espanhol', n: 'básico', g: '¡Hola!', mark: '■' },
     ];
 
-const skillTags = ['discovery', 'pesquisa qualitativa', 'métricas', 'SQL', 'Python', 'escrita', 'edição', 'reportagem', 'Notion', 'Figma', 'Astro', 'markdown', 'entrevistas', 'roadmap'];
-const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
+const skillTags = lang === 'en'
+  ? ['product management', 'product discovery', 'JTBD', 'double diamond', 'design sprints', 'UX research', 'OKRs', 'A/B testing', 'SQL', 'SEO', 'content strategy', 'editing', 'reporting', 'team leadership', 'Notion', 'Figma']
+  : ['product management', 'product discovery', 'JTBD', 'double diamond', 'design sprints', 'UX research', 'OKRs', 'testes A/B', 'SQL', 'SEO', 'estratégia de conteúdo', 'edição', 'reportagem', 'gestão de times', 'Notion', 'Figma'];
+const tagBgs = ['var(--hot)', 'var(--cyan)', 'var(--ylw)', 'transparent'];
 ---
 
-<div class="cv-head">
+<div class="cv-head" id="cv-top">
   <div class="kicker">{eyebrow}</div>
   <h1 class="ed-bungee headline">
-    {lang === 'en' ? 'RESUME' : 'CURRÍCULO'} <span class="arr">↓</span>
+    {lang === 'en' ? 'RESUME' : 'CURRÍCULO'} <span class="ed-blink mark mark-ylw" aria-hidden="true">▲</span>
   </h1>
-  <div class="updated">{updatedLabel}</div>
 </div>
 
 <div class="cv-grid">
   <aside class="cv-aside">
     <div class="aside-kicker">{lang === 'en' ? 'SECTIONS' : 'SEÇÕES'}</div>
     {sections.map((s, i) => (
-      <div class={`section-link ${s.c === 'ylw' ? 'on' : ''}`}>
+      <a class={`section-link ${s.c === 'ylw' ? 'on' : ''}`} href={s.h}>
         {i === 0 ? '▶ ' : '· '}{s.l}
-      </div>
+      </a>
     ))}
 
     <div class="info-box">
@@ -94,63 +92,85 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   </aside>
 
   <main>
-    <div class="section-kicker">{expHeading}</div>
-    <hr class="section-rule ylw" />
-
-    {t.cv.experience.map((e, i) => {
-      const colors = ['ylw', 'hot', 'cyan'];
-      const c = colors[i % 3];
-      const tags = lang === 'en'
-        ? ['discovery', 'metrics', 'specs', 'SQL']
-        : ['discovery', 'métricas', 'specs', 'SQL'];
-      return (
-        <div class="exp-row">
-          <div class={`exp-period c-${c}`}>{e.p}</div>
-          <div>
-            <div class="ed-bungee exp-role">{e.r}</div>
-            <div class="exp-org">{e.o}</div>
-            <p class="exp-desc serif">{e.d}</p>
-            <div class="exp-tags">
-              {tags.map((tg) => <span class={`ed-tag c-${c}`}>{tg}</span>)}
+    <details class="section c-ylw" id="experience">
+      <summary class="section-summary">
+        <span class="section-kicker">{expHeading}</span>
+        <span class="section-toggle" aria-hidden="true">+</span>
+      </summary>
+      {t.cv.experience.map((e) => {
+        const c = 'ylw';
+        return (
+          <details class={`exp-row c-${c}`}>
+            <summary class="exp-summary">
+              <div class={`exp-period c-${c}`}>{e.p}</div>
+              <div class="exp-body">
+                <div class="ed-bungee exp-role">{e.r}</div>
+                <div class={`exp-org c-${c}`}>{e.o}</div>
+                <p class="exp-desc">{e.d}</p>
+                <div class="exp-tags">
+                  {e.tags.map((tg) => <span class={`ed-tag c-${c}`}>{tg}</span>)}
+                </div>
+              </div>
+              <span class={`exp-plus c-${c}`} aria-hidden="true">+</span>
+            </summary>
+            <div class="exp-details">
+              <ul>
+                {e.full.map((line) => <li>{line}</li>)}
+              </ul>
             </div>
+          </details>
+        );
+      })}
+    </details>
+
+    <details class="section c-cyan" id="education">
+      <summary class="section-summary">
+        <span class="section-kicker cyan">{formHeading}</span>
+        <span class="section-toggle" aria-hidden="true">+</span>
+      </summary>
+      {formationItems.map((e) => (
+        <div class="form-row">
+          <div class="form-period">{e.p}</div>
+          <div>
+            <div class="ed-bungee form-role">{e.r}</div>
+            <div class="form-org">{e.o}</div>
           </div>
         </div>
-      );
-    })}
-
-    <div class="section-kicker cyan">{formHeading}</div>
-    <hr class="section-rule cyan" />
-    {formationItems.map((e) => (
-      <div class="form-row">
-        <div class="form-period">{e.p}</div>
-        <div>
-          <div class="ed-bungee form-role">{e.r}</div>
-          <div class="form-org">{e.o}</div>
-        </div>
-      </div>
-    ))}
-
-    <div class="section-kicker acid">{skillsHeading}</div>
-    <div class="skill-tags">
-      {skillTags.map((s, i) => {
-        const bg = tagBgs[i % 4];
-        const transparent = bg === 'transparent';
-        const style = transparent
-          ? 'background:transparent;color:var(--fg);border-color:var(--fg)'
-          : `background:${bg};color:#000;border-color:#000`;
-        return <span class="ed-tag" style={style}>{s}</span>;
-      })}
-    </div>
-
-    <div class="section-kicker vio">{langHeading}</div>
-    <div class="langs">
-      {langs.map((id) => (
-        <div class="lang-cell">
-          <div class="ed-bungee lang-l">{id.l}</div>
-          <div class="lang-n">{id.n}</div>
-        </div>
       ))}
-    </div>
+    </details>
+
+    <details class="section c-hot" id="skills">
+      <summary class="section-summary">
+        <span class="section-kicker hot">{skillsHeading}</span>
+        <span class="section-toggle" aria-hidden="true">+</span>
+      </summary>
+      <div class="skill-tags">
+        {skillTags.map((s, i) => {
+          const bg = tagBgs[i % 4];
+          const transparent = bg === 'transparent';
+          const style = transparent
+            ? 'background:transparent;color:var(--fg);border-color:var(--fg)'
+            : `background:${bg};color:#000;border-color:#000`;
+          return <span class="ed-tag" style={style}>{s}</span>;
+        })}
+      </div>
+    </details>
+
+    <details class="section c-vio" id="languages">
+      <summary class="section-summary">
+        <span class="section-kicker vio">{langHeading}</span>
+        <span class="section-toggle" aria-hidden="true">+</span>
+      </summary>
+      <div class="langs">
+        {langs.map((id) => (
+          <div class="lang-cell">
+            <div class="lang-greet">{id.g} <span class="lang-mark">{id.mark}</span></div>
+            <div class="ed-bungee lang-l">{id.l}</div>
+            <div class="lang-n">{id.n}</div>
+          </div>
+        ))}
+      </div>
+    </details>
   </main>
 </div>
 
@@ -187,6 +207,13 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
     gap: 32px;
     align-items: flex-start;
   }
+  .cv-aside {
+    position: sticky;
+    top: 24px;
+    align-self: start;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+  }
   .aside-kicker {
     font-family: var(--mono);
     font-size: 10px;
@@ -202,17 +229,24 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
     padding: 4px 0;
     color: var(--fg);
   }
+  .section-link {
+    display: block;
+    text-decoration: none;
+  }
   .section-link.on { color: var(--ylw); font-weight: 700; }
+  .section-link:hover { background: var(--ylw); color: #000; }
+
+  .section[id], .cv-head[id] { scroll-margin-top: 24px; }
 
   .info-box {
     margin-top: 24px;
-    border: 2px solid var(--hot);
+    border: 2px solid var(--acid);
     padding: 10px 12px;
     font-family: var(--mono);
   }
   .info-kicker {
     font-size: 9px;
-    color: var(--hot);
+    color: var(--acid);
     letter-spacing: 0.15em;
     text-transform: uppercase;
     margin-top: 6px;
@@ -222,17 +256,59 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   .info-val.acid { color: var(--acid); }
   .download-btn { margin-top: 18px; }
 
+  .section { margin-top: 32px; }
+  .section[open] { margin-bottom: 8px; }
+  .section-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    list-style: none;
+    cursor: pointer;
+    padding: 6px 0;
+    border-bottom: 2px solid currentColor;
+  }
+  .section.c-ylw .section-summary { color: var(--ylw); }
+  .section.c-cyan .section-summary { color: var(--cyan); }
+  .section.c-hot .section-summary { color: var(--hot); }
+  .section.c-vio .section-summary { color: var(--vio); }
+  .section-summary::-webkit-details-marker { display: none; }
+  .section-summary::marker { content: ''; }
+  .section-summary:hover .section-kicker { color: var(--ylw); }
+  .section-toggle {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--fg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--bungee);
+    font-size: 22px;
+    line-height: 1;
+    color: var(--fg);
+    transition: transform 0.18s ease, background 0.12s linear, color 0.12s linear;
+  }
+  .section[open] .section-toggle { transform: rotate(45deg); }
+  .section.c-ylw .section-toggle { color: var(--ylw); border-color: var(--ylw); }
+  .section.c-cyan .section-toggle { color: var(--cyan); border-color: var(--cyan); }
+  .section.c-hot .section-toggle { color: var(--hot); border-color: var(--hot); }
+  .section.c-vio .section-toggle { color: var(--vio); border-color: var(--vio); }
+  .section[open].c-ylw .section-toggle { background: var(--ylw); color: #000; }
+  .section[open].c-cyan .section-toggle { background: var(--cyan); color: #000; }
+  .section[open].c-hot .section-toggle { background: var(--hot); color: #000; }
+  .section[open].c-vio .section-toggle { background: var(--vio); color: #fff; }
+
   .section-kicker {
     font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
     color: var(--ylw);
     text-transform: uppercase;
-    margin-top: 24px;
-    margin-bottom: 8px;
+    margin: 0;
   }
   .section-kicker.cyan { color: var(--cyan); }
-  .section-kicker.acid { color: var(--acid); }
+  .section-kicker.hot { color: var(--hot); }
   .section-kicker.vio { color: var(--vio); }
 
   .section-rule { border-top: 2px solid var(--ylw); margin-bottom: 14px; }
@@ -240,12 +316,21 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   .section-rule.acid { border-top-color: var(--acid); }
 
   .exp-row {
-    display: grid;
-    grid-template-columns: 120px 1fr;
-    gap: 18px;
     padding: 14px 0;
     border-bottom: 1.5px dashed var(--fg);
   }
+  .exp-row:hover { background: rgba(255,255,255,0.02); }
+  .exp-summary {
+    display: grid;
+    grid-template-columns: 120px 1fr 56px;
+    gap: 18px;
+    align-items: start;
+    list-style: none;
+    cursor: pointer;
+  }
+  .exp-summary::-webkit-details-marker { display: none; }
+  .exp-summary::marker { content: ''; }
+  .exp-body { min-width: 0; }
   .exp-period {
     font-family: var(--mono);
     font-size: 11px;
@@ -255,30 +340,91 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   .exp-period.c-ylw { color: var(--ylw); }
   .exp-period.c-hot { color: var(--hot); }
   .exp-period.c-cyan { color: var(--cyan); }
+  .exp-period.c-acid { color: var(--acid); }
+  .exp-period.c-vio { color: var(--vio); }
+  .exp-period.c-orng { color: var(--orng); }
   .exp-role {
-    font-size: 24px;
+    font-size: 22px;
     line-height: 1.05;
     text-transform: uppercase;
     letter-spacing: -0.02em;
   }
   .exp-org {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    opacity: 0.7;
-    margin-bottom: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 4px 0 8px;
   }
+  .exp-org.c-ylw { color: var(--ylw); }
+  .exp-org.c-hot { color: var(--hot); }
+  .exp-org.c-cyan { color: var(--cyan); }
+  .exp-org.c-acid { color: var(--acid); }
+  .exp-org.c-vio { color: var(--vio); }
+  .exp-org.c-orng { color: var(--orng); }
   .exp-desc {
     font-size: 14px;
     margin: 0 0 8px;
     line-height: 1.5;
   }
-  .exp-tags { display: flex; gap: 4px; flex-wrap: wrap; }
-  .exp-tags .ed-tag { font-size: 9px; padding: 2px 6px; }
-  .exp-tags .ed-tag.c-ylw { color: var(--ylw); border-color: var(--ylw); }
-  .exp-tags .ed-tag.c-hot { color: var(--hot); border-color: var(--hot); }
-  .exp-tags .ed-tag.c-cyan { color: var(--cyan); border-color: var(--cyan); }
+  .exp-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .exp-tags .ed-tag {
+    font-size: 11px;
+    padding: 3px 8px;
+    background: transparent;
+    color: #fff;
+    border-color: var(--ylw);
+    font-weight: 700;
+  }
+
+  .exp-plus {
+    justify-self: end;
+    align-self: center;
+    width: 44px;
+    height: 44px;
+    border: 2px solid var(--fg);
+    background: var(--bg);
+    color: var(--fg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--bungee);
+    font-size: 26px;
+    line-height: 1;
+    transition: transform 0.18s ease, background 0.12s linear, color 0.12s linear;
+  }
+  .exp-row:hover .exp-plus { transform: rotate(90deg); }
+  .exp-plus.c-ylw { color: var(--ylw); border-color: var(--ylw); }
+  .exp-plus.c-hot { color: var(--hot); border-color: var(--hot); }
+  .exp-plus.c-cyan { color: var(--cyan); border-color: var(--cyan); }
+  .exp-plus.c-acid { color: var(--acid); border-color: var(--acid); }
+  .exp-plus.c-vio { color: var(--vio); border-color: var(--vio); }
+  .exp-plus.c-orng { color: var(--orng); border-color: var(--orng); }
+  .exp-row:hover .exp-plus.c-ylw { background: var(--ylw); color: #000; }
+  .exp-row:hover .exp-plus.c-hot { background: var(--hot); color: #000; }
+  .exp-row:hover .exp-plus.c-cyan { background: var(--cyan); color: #000; }
+  .exp-row:hover .exp-plus.c-acid { background: var(--acid); color: #000; }
+  .exp-row:hover .exp-plus.c-vio { background: var(--vio); color: #fff; }
+  .exp-row:hover .exp-plus.c-orng { background: var(--orng); color: #000; }
+  .exp-row[open] .exp-plus {
+    transform: rotate(45deg);
+  }
+  .exp-row[open] .exp-plus.c-ylw { background: var(--ylw); color: #000; }
+  .exp-row[open] .exp-plus.c-hot { background: var(--hot); color: #000; }
+  .exp-row[open] .exp-plus.c-cyan { background: var(--cyan); color: #000; }
+  .exp-row[open] .exp-plus.c-acid { background: var(--acid); color: #000; }
+  .exp-row[open] .exp-plus.c-vio { background: var(--vio); color: #fff; }
+  .exp-row[open] .exp-plus.c-orng { background: var(--orng); color: #000; }
+
+  .exp-details {
+    padding: 14px 0 4px 138px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .exp-details ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+  .exp-details li { margin-bottom: 6px; }
 
   .form-row {
     display: grid;
@@ -310,20 +456,76 @@ const tagBgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'transparent'];
   .skill-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
   .skill-tags .ed-tag { font-size: 11px; padding: 4px 8px; }
 
-  .langs { display: flex; gap: 18px; flex-wrap: wrap; }
-  .lang-l { font-size: 30px; }
+  .langs {
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .lang-cell {
+    min-width: 160px;
+  }
+  .lang-greet {
+    font-size: 22px;
+    line-height: 1;
+    color: var(--fg);
+    margin-bottom: 6px;
+  }
+  .lang-mark {
+    display: inline-block;
+    margin-left: 4px;
+    color: var(--vio);
+  }
+  .lang-l { font-size: 32px; line-height: 1; }
   .lang-n {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 11px;
     opacity: 0.7;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    margin-top: 6px;
   }
 
   .serif { font-family: var(--serif); }
 
   @media (max-width: 900px) {
     .cv-grid { grid-template-columns: 1fr; }
-    .exp-row, .form-row { grid-template-columns: 1fr; gap: 8px; }
+    .cv-aside { position: static; max-height: none; overflow: visible; }
+    .form-row { grid-template-columns: 1fr; gap: 8px; }
+    .exp-summary { grid-template-columns: 1fr 44px; gap: 10px; }
+    .exp-period { grid-column: 1 / -1; }
+    .exp-plus { width: 40px; height: 40px; font-size: 22px; }
+    .exp-details { padding-left: 0; }
   }
 </style>
+
+<script>
+  function openFromHash() {
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+    const el = document.getElementById(hash);
+    if (el && el.tagName.toLowerCase() === 'details') {
+      (el as HTMLDetailsElement).open = true;
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+  openFromHash();
+  window.addEventListener('hashchange', openFromHash);
+  document.querySelectorAll<HTMLAnchorElement>('a.section-link[href^="#"]').forEach((a) => {
+    a.addEventListener('click', (ev) => {
+      const id = a.getAttribute('href')?.slice(1);
+      if (!id) return;
+      const el = document.getElementById(id);
+      if (el && el.tagName.toLowerCase() === 'details') {
+        ev.preventDefault();
+        const det = el as HTMLDetailsElement;
+        if (det.open) {
+          det.open = false;
+        } else {
+          det.open = true;
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+  });
+</script>

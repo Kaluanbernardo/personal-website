@@ -7,80 +7,45 @@ const { lang } = Astro.props;
 const t = ui[lang];
 
 const eyebrow = '06 / ECHO $EMAIL';
-const fillEnviar = lang === 'en' ? '>> SEND' : '>> ENVIAR';
-const formKicker = lang === 'en' ? '> CONTACT_FORM.PHP' : '> FORM_DE_CONTATO.PHP';
-const motivos = lang === 'en'
-  ? ['// reason: freelance', '// reason: chat', '// reason: paper', '// reason: other']
-  : ['// motivo: freela', '// motivo: papo', '// motivo: paper', '// motivo: outro'];
-const placeholders = lang === 'en'
-  ? { name: '// name', email: '// email', msg: '// message (max 500 chars)' }
-  : { name: '// nome', email: '// e-mail', msg: '// mensagem (max 500 char)' };
-const botCheck = lang === 'en' ? 'not a bot · maybe' : 'não sou bot · talvez';
 const directLabel = lang === 'en' ? 'OR DIRECT:' : 'OU DIRETO:';
 
-const socialColors = ['var(--ylw)', 'var(--orng)', 'var(--cyan)', 'var(--blue)', 'var(--acid)', 'var(--vio)'];
+const socialColors = ['var(--ylw)', 'var(--cyan)', 'var(--acid)', 'var(--vio)'];
 
 const helloLine1 = lang === 'en' ? "LET'S" : 'FALA';
 const helloLine2 = lang === 'en' ? 'TALK' : 'COMIGO';
+
+const socialLinks: Record<string, string> = {
+  Substack: 'https://kaluanbernardo.substack.com',
+  LinkedIn: 'https://www.linkedin.com/in/kaluanbernardo/',
+};
 ---
 
-<div class="contato-grid">
-  <div class="left">
-    <div class="kicker">{eyebrow}</div>
-    <h1 class="ed-bungee headline">
-      <span class="t-hot">{helloLine1}</span><br />
-      <span class="ed-bungee-s">{helloLine2}</span><span class="ed-blink t-hot">.</span>
-    </h1>
-    <p class="intro serif">{t.contato.intro}</p>
+<div class="contato">
+  <div class="kicker">{eyebrow}</div>
+  <h1 class="ed-bungee headline">
+    <span class="t-hot">{helloLine1}</span> <span>{helloLine2}</span> <span class="ed-blink mark mark-hot" aria-hidden="true">✦</span>
+  </h1>
+  <p class="intro">{t.contato.intro}</p>
 
-    <div class="form-box">
-      <div class="form-kicker">{formKicker}</div>
-      <form class="form" onsubmit="return false">
-        <input class="ed-input" placeholder={placeholders.name} />
-        <input class="ed-input" type="email" placeholder={placeholders.email} />
-        <select class="ed-input">
-          {motivos.map((m) => <option>{m}</option>)}
-        </select>
-        <textarea class="ed-input" placeholder={placeholders.msg} rows={4}></textarea>
-        <div class="form-foot">
-          <label class="bot-check">
-            <input type="checkbox" /> {botCheck}
-          </label>
-          <button class="ed-btn hot">{fillEnviar}</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <aside class="right">
-    <div class="direct-kicker">{directLabel}</div>
-    <a class="email-row" href={`mailto:${t.contato.email}`}>
-      <span class="er-l">E-MAIL</span>
-      <span class="er-v">{t.contato.email}</span>
-      <span class="er-arr">↗</span>
+  <div class="direct-kicker">{directLabel}</div>
+  <div class="cards">
+    <a class="card" href={`mailto:${t.contato.email}`} style="--er-c: var(--hot)">
+      <span class="c-name">E-MAIL</span>
+      <span class="c-handle">{t.contato.email}</span>
+      <span class="c-arr">↗</span>
     </a>
     {t.contato.socials.map((s, i) => (
-      <a class="email-row" href="#" style={`--er-c:${socialColors[i % socialColors.length]}`}>
-        <span class="er-l">{s.n.toUpperCase()}</span>
-        <span class="er-v">{s.h}</span>
-        <span class="er-arr">↗</span>
+      <a class="card" href={socialLinks[s.n] ?? '#'} target="_blank" rel="noreferrer noopener" style={`--er-c:${socialColors[i % socialColors.length]}`}>
+        <span class="c-name">{s.n.toUpperCase()}</span>
+        <span class="c-handle">{s.h}</span>
+        <span class="c-arr">↗</span>
       </a>
     ))}
-
-    <div class="pgp">
-      <div class="pgp-kicker">★ ASSINATURA PGP</div>
-      <div class="pgp-key">FF42 9C8B 0D71 5E3A · 8B2C 4F1E 7D90 A3C5</div>
-    </div>
-  </aside>
+  </div>
 </div>
 
 <style>
-  .contato-grid {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 32px;
-    padding-top: 6px;
-  }
+  .contato { padding-top: 6px; }
 
   .kicker {
     font-family: var(--mono);
@@ -91,55 +56,20 @@ const helloLine2 = lang === 'en' ? 'TALK' : 'COMIGO';
     margin-bottom: 10px;
   }
   .headline {
-    font-size: clamp(48px, 11vw, 120px);
-    margin: 0 0 14px;
-    line-height: 0.82;
+    font-size: clamp(56px, 13vw, 160px);
+    margin: 0 0 18px;
+    line-height: 0.86;
     letter-spacing: -0.05em;
     text-transform: uppercase;
   }
-  .headline .t-hot {
-    background: var(--hot);
-    color: #000;
-    padding: 0 8px;
-  }
+  .headline .t-hot { color: var(--hot); }
   .intro {
-    font-family: var(--serif);
-    font-size: 18px;
+    font-size: 20px;
     line-height: 1.5;
-    max-width: 520px;
-    margin: 0 0 20px;
+    margin: 0 0 36px;
+    max-width: 720px;
   }
-  .serif { font-family: var(--serif); }
 
-  .form-box {
-    border: 2.5px solid var(--fg);
-    padding: 18px 20px;
-  }
-  .form-kicker {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--hot);
-    margin-bottom: 10px;
-  }
-  .form { display: grid; gap: 10px; }
-  .form-foot {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .bot-check {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  .bot-check input { accent-color: var(--hot); margin-right: 4px; }
-
-  .right { display: flex; flex-direction: column; gap: 10px; }
   .direct-kicker {
     font-family: var(--mono);
     font-size: 10px;
@@ -147,58 +77,52 @@ const helloLine2 = lang === 'en' ? 'TALK' : 'COMIGO';
     color: var(--fg);
     opacity: 0.6;
     text-transform: uppercase;
+    margin-bottom: 10px;
   }
-  .email-row {
+  .cards {
     display: grid;
-    grid-template-columns: 100px 1fr 24px;
-    gap: 10px;
-    align-items: center;
-    padding: 10px 12px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  .card {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 8px;
+    padding: 22px 22px 18px;
     border: 2px solid var(--fg);
+    border-left: none;
     color: var(--fg);
+    min-height: 200px;
+    position: relative;
   }
-  .email-row:hover {
-    background: var(--bg-2);
-    color: var(--fg);
+  .card:first-child { border-left: 2px solid var(--fg); }
+  .card:hover {
+    background: var(--er-c);
+    color: #000;
   }
-  .er-l {
+  .card:hover .c-name, .card:hover .c-arr { color: #000; }
+  .c-name {
     font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.15em;
+    font-size: 11px;
+    letter-spacing: 0.18em;
     color: var(--er-c, var(--hot));
   }
-  .er-v {
-    font-family: var(--mono);
-    font-size: 13px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  .c-handle {
+    font-family: var(--bungee);
+    font-size: 22px;
+    line-height: 1.05;
+    align-self: end;
+    word-break: break-word;
   }
-  .er-arr {
+  .c-arr {
+    font-size: 22px;
     color: var(--er-c, var(--hot));
-    text-align: right;
-  }
-
-  .pgp {
-    margin-top: 8px;
-    padding: 10px 14px;
-    border: 2px solid var(--acid);
-    color: var(--acid);
-  }
-  .pgp-kicker {
-    font-family: var(--tiny);
-    font-size: 9px;
-    margin-bottom: 4px;
-  }
-  .pgp-key {
-    font-family: var(--mono);
-    font-size: 10px;
-    line-height: 1.5;
-    word-break: break-all;
-    opacity: 0.85;
+    justify-self: end;
   }
 
   @media (max-width: 900px) {
-    .contato-grid { grid-template-columns: 1fr; }
+    .cards { grid-template-columns: 1fr; }
+    .card { border-left: 2px solid var(--fg); border-top: none; }
+    .card:first-child { border-top: 2px solid var(--fg); }
   }
 </style>

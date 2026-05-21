@@ -69,9 +69,7 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
   <article>
     <div class="kicker hf-mono">{eyebrow}</div>
     <h1 class="ed-bungee headline">
-      <span class="t-cyan">{lang === 'en' ? 'ABOUT' : 'SOBRE'}</span><br />
-      <span class="ed-bungee-s">{lang === 'en' ? 'ME' : 'MIM,'}</span>
-      <span class="ed-blink t-hot">_</span>
+      <span class="t-cyan">{lang === 'en' ? 'ABOUT' : 'SOBRE'}</span> <span>{lang === 'en' ? 'ME' : 'MIM'}</span> <span class="ed-blink mark mark-cyan" aria-hidden="true">●</span>
     </h1>
 
     <div class="serif body">
@@ -82,7 +80,6 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
     <div class="cta-row">
       <a class="ed-btn cyan" href={link(`${lang === 'en' ? '/en' : ''}/cv`)}>{ctaCV}</a>
       <a class="ed-btn hot" href={link(`${lang === 'en' ? '/en' : ''}/contato`)}>{ctaEmail}</a>
-      <a class="ed-btn" href="#">{ctaRSS}</a>
     </div>
 
     <hr class="ed-rule-dashed sep" />
@@ -122,16 +119,6 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
       </div>
     </div>
 
-    <div class="barcode">
-      <div class="bars" aria-hidden="true">
-        {Array.from({ length: 60 }).map((_, i) => {
-          const isOne = i % 2 === 0 || i % 5 === 0 || i % 7 === 0;
-          return <span class={isOne ? 'b-1' : 'b-0'}></span>;
-        })}
-      </div>
-      <span class="barcode-label">NS-2026-04-ABT</span>
-    </div>
-
     <div class="kicker socials-kicker">{t.sobre.socialsHeading.toUpperCase()}</div>
     <div class="socials">
       {t.sobre.socials.map((s) => (
@@ -158,20 +145,24 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
     letter-spacing: 0.18em;
     color: var(--cyan);
     text-transform: uppercase;
-    margin-bottom: 14px;
+    margin-bottom: 28px;
+    position: relative;
+    z-index: 1;
   }
 
   .headline {
-    font-size: clamp(48px, 9vw, 96px);
+    font-size: clamp(32px, 7vw, 80px);
     margin: 0 0 24px;
-    line-height: 0.85;
+    line-height: 1;
     text-transform: uppercase;
-    letter-spacing: -0.05em;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
   }
   .headline .t-cyan {
     background: var(--cyan);
     color: #000;
-    padding: 0 8px;
+    padding: 4px 10px 2px;
+    display: inline-block;
   }
   .headline .t-hot { color: var(--hot); }
 
@@ -275,5 +266,6 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
   @media (max-width: 900px) {
     .sobre-grid { grid-template-columns: 1fr; }
     .boxes { grid-template-columns: 1fr; }
+    .headline { font-size: clamp(28px, 9vw, 56px); letter-spacing: -0.05em; }
   }
 </style>

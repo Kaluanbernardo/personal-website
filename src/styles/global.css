@@ -40,7 +40,7 @@
 
 * { box-sizing: border-box; }
 
-html, body { margin: 0; padding: 0; overflow-x: hidden; }
+html, body { margin: 0; padding: 0; overflow-x: clip; }
 
 body {
   background: var(--bg);
@@ -301,6 +301,19 @@ button { font: inherit; }
 /* blink */
 .ed-blink { animation: ed-blink 1.05s steps(2) infinite; }
 @keyframes ed-blink { 50% { opacity: 0; } }
+
+.ed-cursor {
+  display: inline-block;
+  animation: ed-blink 1.05s steps(2) infinite;
+}
+
+.mark { display: inline-block; }
+.mark-hot { color: var(--hot); }
+.mark-ylw { color: var(--ylw); }
+.mark-acid { color: var(--acid); }
+.mark-cyan { color: var(--cyan); }
+.mark-vio { color: var(--vio); }
+.mark-orng { color: var(--orng); }
 
 .ed-cursor::after {
   content: '_';

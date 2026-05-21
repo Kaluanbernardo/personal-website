@@ -15,16 +15,13 @@ const publications = allPubs
 
 const eyebrow = '03 / LATTES.CNPQ.BR';
 const linesHeading = lang === 'en' ? '>> RESEARCH LINES' : '>> LINHAS DE PESQUISA';
-const formationHeading = lang === 'en' ? '>> EDUCATION' : '>> FORMAÇÃO';
 const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕES SELECIONADAS';
 ---
 
 <header class="head">
   <div class="kicker">{eyebrow}</div>
   <h1 class="ed-bungee headline">
-    <span class="t-acid">{t.academico.title.line1.toUpperCase()}</span>
-    <span class="ed-bungee-s">{t.academico.title.emph.toUpperCase()}</span>
-    <span class="ed-blink">_</span>
+    {lang === 'en' ? 'PUBLICATIONS' : 'PUBLICAÇÕES'} <span class="ed-blink mark mark-acid" aria-hidden="true">◆</span>
   </h1>
   <div class="scholar-row">
     {t.academico.scholarIds.map((s) => (
@@ -51,45 +48,28 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
   </div>
 </section>
 
-<section class="main-grid">
-  <aside class="formation">
-    <div class="section-kicker cyan">{formationHeading}</div>
-    <hr class="ed-rule" style="border-top-color: var(--cyan)" />
-    <div class="formation-list">
-      {t.academico.formation.map((e) => (
-        <article class="formation-row">
-          <span class="period">{e.p}</span>
-          <h3 class="ed-bungee role">{e.r}</h3>
-          <div class="org">{e.o}</div>
-          <p class="desc">{e.d}</p>
-        </article>
+<section class="pubs">
+  <div class="section-kicker vio">{pubsHeading}</div>
+  <hr class="ed-rule" style="border-top-color: var(--vio)" />
+  {publications.length === 0 ? (
+    <div class="empty">
+      <span class="ed-blink">[ ]</span> {lang === 'en' ? 'no publications listed yet.' : 'sem publicações listadas ainda.'}
+    </div>
+  ) : (
+    <div class="pub-list">
+      {publications.map((p) => (
+        <a class="pub-row" href={p.url ?? '#'} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
+          <span class="pub-year">{p.year}</span>
+          <div class="pub-body">
+            <h3 class="ed-bungee pub-title">{p.title}</h3>
+            <div class="pub-venue">{p.venue}</div>
+          </div>
+          <span class="pub-tag">#{tagDisplay[lang][p.kind] ?? p.kind}</span>
+          <span class="pub-arrow">↗</span>
+        </a>
       ))}
     </div>
-  </aside>
-
-  <div class="pubs">
-    <div class="section-kicker vio">{pubsHeading}</div>
-    <hr class="ed-rule" style="border-top-color: var(--vio)" />
-    {publications.length === 0 ? (
-      <div class="empty">
-        <span class="ed-blink">[ ]</span> {lang === 'en' ? 'no publications listed yet.' : 'sem publicações listadas ainda.'}
-      </div>
-    ) : (
-      <div class="pub-list">
-        {publications.map((p) => (
-          <a class="pub-row" href={p.url ?? '#'} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
-            <span class="pub-year">{p.year}</span>
-            <div class="pub-body">
-              <h3 class="ed-bungee pub-title">{p.title}</h3>
-              <div class="pub-venue">{p.venue}</div>
-            </div>
-            <span class="pub-tag">#{tagDisplay[lang][p.kind] ?? p.kind}</span>
-            <span class="pub-arrow">↗</span>
-          </a>
-        ))}
-      </div>
-    )}
-  </div>
+  )}
 </section>
 
 <style>
@@ -109,11 +89,7 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
     letter-spacing: -0.04em;
     text-transform: uppercase;
   }
-  .headline .t-acid {
-    background: var(--acid);
-    color: #000;
-    padding: 0 8px;
-  }
+  .headline .amp { color: var(--acid); }
   .scholar-row {
     display: flex;
     flex-wrap: wrap;
@@ -126,14 +102,16 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
 
   .section-kicker {
     font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
     color: var(--acid);
     text-transform: uppercase;
-    margin-bottom: 8px;
+    margin: 0 0 6px;
   }
   .section-kicker.cyan { color: var(--cyan); }
   .section-kicker.vio { color: var(--vio); }
+  .ed-rule { border: none; border-top: 2px solid currentColor; margin: 0 0 20px; }
 
   .lines { margin-bottom: 36px; }
   .line-tags {
@@ -151,36 +129,59 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
     align-items: flex-start;
   }
 
-  .formation-list { margin-top: 14px; }
-  .formation-row {
-    padding: 14px 0;
-    border-bottom: 1.5px dashed var(--fg);
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 28px;
+    position: relative;
   }
-  .period {
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    left: 7px;
+    width: 2px;
+    background: var(--cyan);
+  }
+  .tl-item {
+    position: relative;
+    padding: 0 0 28px;
+  }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-dot {
+    position: absolute;
+    left: -28px;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 3px solid var(--cyan);
+  }
+  .tl-period {
     display: inline-block;
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.1em;
     color: var(--cyan);
     text-transform: uppercase;
     margin-bottom: 6px;
   }
-  .role {
-    font-size: 18px;
+  .tl-role {
+    font-size: 22px;
+    line-height: 1.05;
     text-transform: uppercase;
     letter-spacing: -0.02em;
     margin: 0 0 4px;
   }
-  .org {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    color: var(--fg-2);
-    text-transform: uppercase;
+  .tl-org {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--cyan);
     margin-bottom: 6px;
   }
-  .desc {
-    font-family: var(--serif);
+  .tl-desc {
     font-size: 14px;
     margin: 0;
     line-height: 1.5;

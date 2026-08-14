@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import { ui, type Lang, formatDate, tagDisplay } from '../../i18n/ui';
 import { link } from '../../lib/links';
+import { sections } from '../../lib/sections';
 
 interface Props {
   lang: Lang;
@@ -22,56 +23,56 @@ const blogHref = link(`${prefix}/blog`);
 
 const indexEntries = [
   {
-    n: '01',
+    n: sections.sobre.number,
     t: lang === 'en' ? 'ABOUT' : 'SOBRE',
     sub: '> who_is_this.txt',
     meta: lang === 'en' ? '2 min' : '2 min',
     href: link(`${prefix}/sobre`),
-    color: 'var(--cyan)',
+    color: sections.sobre.accent,
   },
   {
-    n: '02',
+    n: sections.cv.number,
     t: lang === 'en' ? 'PROFESSIONAL CV' : 'CV PROFISSIONAL',
     sub: '> work_history.pdf',
     meta: 'PDF',
     href: link(`${prefix}/cv`),
-    color: 'var(--ylw)',
+    color: sections.cv.accent,
   },
   {
-    n: '03',
+    n: sections.academico.number,
     t: lang === 'en' ? 'ACADEMIC CV' : 'CV ACADÊMICO',
     sub: '> lattes.cnpq.br',
     meta: 'CV',
     href: link(`${prefix}/academico`),
-    color: 'var(--acid)',
+    color: sections.academico.accent,
   },
   {
-    n: '04',
+    n: sections.projetos.number,
     t: lang === 'en' ? 'PROJECTS' : 'PROJETOS',
     sub: '> ./output/*',
     meta: lang === 'en'
       ? `${allProjects.length} ${allProjects.length === 1 ? 'item' : 'items'}`
       : `${allProjects.length} ${allProjects.length === 1 ? 'item' : 'itens'}`,
     href: link(`${prefix}/projetos`),
-    color: 'var(--orng)',
+    color: sections.projetos.accent,
   },
   {
-    n: '05',
+    n: sections.blog.number,
     t: 'BLOG',
     sub: '> cat *.md',
     meta: lang === 'en'
       ? `${allPosts.length} ${allPosts.length === 1 ? 'post' : 'posts'}`
       : `${allPosts.length} posts`,
     href: blogHref,
-    color: 'var(--vio)',
+    color: sections.blog.accent,
   },
   {
-    n: '06',
+    n: sections.contato.number,
     t: lang === 'en' ? 'CONTACT' : 'CONTATO',
     sub: '> echo $EMAIL',
     meta: '@',
     href: link(`${prefix}/contato`),
-    color: 'var(--hot)',
+    color: sections.contato.accent,
   },
 ];
 
@@ -126,18 +127,23 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
       <span class="t-stroke">{lastName.toUpperCase()}</span><span class="ed-blink t-cyan">_</span>
     </h1>
 
-    <p class="hero-intro ed-mono">
+    <p class="hero-intro hero-intro-long ed-mono">
       {lang === 'en' ? (
         <>
-          I create <span class="ed-mark-hot">products</span>, develop <span class="ed-mark-cyan">strategies</span>, do research and <span class="ed-mark-acid">analysis</span>, teach <span class="ed-mark-vio">classes</span>, think up and execute <span class="ed-mark-ylw">ideas</span> — all with a touch of <span class="ed-mark-orng">groove</span>. I like technology, culture, games, music and journalism. I also like potatoes and <span class="ed-mark-blue">studying</span>.
+          I create <span class="ed-mark-hot">products</span>, develop <span class="ed-mark-cyan">strategies</span>, do research and <span class="ed-mark-acid">analysis</span>, teach <span class="ed-mark-vio">classes</span>, think up and execute <span class="ed-mark-ylw">ideas</span>, all with a touch of <span class="ed-mark-orng">groove</span>. I like technology, culture, games, music and journalism. I also like potatoes and <span class="ed-mark-blue">studying</span>.
         </>
       ) : (
         <>
-          Crio <span class="ed-mark-hot">produtos</span>, desenvolvo <span class="ed-mark-cyan">estratégias</span>, faço pesquisas e <span class="ed-mark-acid">análises</span>, dou <span class="ed-mark-vio">aulas</span>, penso e executo <span class="ed-mark-ylw">ideias</span> — tudo com um tiquinho de <span class="ed-mark-orng">carimbó</span>. Gosto de tecnologia, cultura, games, música e jornalismo. Também gosto de batata e de <span class="ed-mark-blue">estudar</span>.
+          Crio <span class="ed-mark-hot">produtos</span>, desenvolvo <span class="ed-mark-cyan">estratégias</span>, faço pesquisas e <span class="ed-mark-acid">análises</span>, dou <span class="ed-mark-vio">aulas</span>, penso e executo <span class="ed-mark-ylw">ideias</span>, tudo com um tiquinho de <span class="ed-mark-orng">carimbó</span>. Gosto de tecnologia, cultura, games, música e jornalismo. Também gosto de batata e de <span class="ed-mark-blue">estudar</span>.
         </>
       )}
     </p>
 
+    <p class="hero-intro hero-intro-short ed-mono">
+      {lang === 'en'
+        ? 'I create products and strategies, research, teach, and turn curiosity into work, with a touch of Brazilian groove.'
+        : 'Crio produtos e estratégias, faço pesquisa, dou aulas e transformo curiosidade em trabalho, com um tiquinho de carimbó.'}
+    </p>
   </div>
 
   <div class="hero-tags">
@@ -229,12 +235,21 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
   }
   @media (max-width: 720px) {
     .ai-seal { display: none; }
-    .hero-intro { display: none; }
+    .hero-intro-long { display: none; }
+    .hero-intro-short {
+      display: block;
+      font-size: 14px;
+      line-height: 1.55;
+      margin-top: 16px;
+      max-width: 34ch;
+    }
   }
 
   .hero-title {
     font-size: clamp(56px, 12vw, 168px);
     margin: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
     line-height: 0.82;
     letter-spacing: -0.06em;
     text-transform: uppercase;
@@ -253,6 +268,7 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     margin-top: 24px;
     line-height: 1.7;
   }
+  .hero-intro-short { display: none; }
   .hero-intro :global([class^="ed-mark"]) {
     padding: 0;
   }
@@ -269,12 +285,16 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     display: flex;
     gap: 6px;
     margin-top: 14px;
+    max-width: 100%;
     flex-wrap: wrap;
   }
   .hero-tags .ed-tag {
     font-size: 13px;
     padding: 6px 10px;
     letter-spacing: 0.1em;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
   .hero-tags .t-0 { background: var(--hot); color: #000; border-color: #000; }
   .hero-tags .t-1 { background: var(--acid); color: #000; border-color: #000; }
@@ -300,7 +320,7 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
 
   .bi-row {
     display: grid;
-    grid-template-columns: 50px 1fr 220px 90px 28px;
+    grid-template-columns: 50px minmax(0, 1fr) 220px 90px 28px;
     align-items: center;
     padding: 14px 0;
     border-bottom: 1.5px solid var(--fg);
@@ -308,6 +328,7 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     color: var(--fg);
     transition: padding-left 0.12s linear, background 0.05s linear;
   }
+  .bi-row > * { min-width: 0; }
   .bi-row:hover {
     background: transparent;
     padding-left: 8px;
@@ -323,6 +344,7 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     font-size: clamp(24px, 4vw, 42px);
     letter-spacing: -0.03em;
     color: var(--fg);
+    overflow-wrap: anywhere;
   }
   .bi-row:hover .bi-title { color: var(--row-c); }
   .bi-row .bi-sub {
@@ -400,18 +422,29 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
 
   @media (max-width: 960px) {
     .bi-row {
-      grid-template-columns: 40px 1fr 60px 24px;
+      grid-template-columns: 36px minmax(0, 1fr) 60px 22px;
       gap: 10px;
     }
+    .bi-row .bi-title { font-size: clamp(22px, 5vw, 34px); }
     .bi-row .bi-sub { display: none; }
     .fb-grid { grid-template-columns: 1fr; }
     .fb-card { border-left: 2px solid var(--fg); border-top: none; }
     .fb-card:first-child { border-top: 2px solid var(--fg); }
   }
   @media (max-width: 720px) {
-    .hero-title { font-size: clamp(40px, 14vw, 80px); }
+    .hero-title { font-size: clamp(40px, 13vw, 80px); }
     .fb-title { font-size: 28px; }
     .hero-tags { margin-top: 10px; }
     .brutal-index { margin-top: 4px; }
+    .bi-row {
+      grid-template-columns: 30px minmax(0, 1fr) 52px 18px;
+      gap: 7px;
+    }
+    .bi-row .bi-title { font-size: clamp(19px, 6vw, 28px); }
+    .bi-row .bi-meta { font-size: 8px; }
+    .bi-row .bi-arr { font-size: 18px; }
+  }
+  @media (max-width: 380px) {
+    .hero-title { font-size: clamp(36px, 12vw, 80px); }
   }
 </style>

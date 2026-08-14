@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import { ui, type Lang, tagDisplay } from '../../i18n/ui';
+import { sections } from '../../lib/sections';
 
 interface Props {
   lang: Lang;
@@ -18,7 +19,7 @@ t.projetos.filters.forEach((label, i) => {
   kindByFilter[label] = i === 0 ? null : kindOrder[i - 1] ?? null;
 });
 
-const eyebrow = '04 / ./OUTPUT/*';
+const eyebrow = `${sections.projetos.number} / ./OUTPUT/*`;
 const kindColor: Record<string, string> = {
   jornalismo: 'var(--hot)',
   produto: 'var(--cyan)',
@@ -36,15 +37,21 @@ const kindColor: Record<string, string> = {
   <div class="sub">{t.projetos.sub}</div>
 </header>
 
-<div class="filters" role="group" aria-label="filters">
+<div class="filters" role="group" aria-label={lang === 'en' ? 'Filter projects' : 'Filtrar projetos'}>
   {t.projetos.filters.map((label, i) => (
-    <button type="button" class={`ed-tag filter-btn ${i === 0 ? 'is-active' : ''}`} data-kind={kindByFilter[label] ?? ''}>
+    <button
+      type="button"
+      class={`ed-tag filter-btn ${i === 0 ? 'is-active' : ''}`}
+      data-kind={kindByFilter[label] ?? ''}
+      aria-pressed={i === 0 ? 'true' : 'false'}
+      aria-controls="project-grid"
+    >
       #{label}
     </button>
   ))}
 </div>
 
-<div class="grid">
+<div id="project-grid" class="grid">
   {projects.map((p, i) => {
     const c = kindColor[p.kind] ?? 'var(--fg)';
     const rotate = i % 2 === 0 ? 'rotate(0.4deg)' : 'rotate(-0.4deg)';
@@ -70,11 +77,14 @@ const kindColor: Record<string, string> = {
   const cells = document.querySelectorAll<HTMLElement>('.cell');
   buttons.forEach((btn) => {
     btn.addEventListener('click', () => {
-      buttons.forEach((b) => b.classList.remove('is-active'));
-      btn.classList.add('is-active');
+      buttons.forEach((button) => {
+        const active = button === btn;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
       const kind = btn.dataset.kind ?? '';
       cells.forEach((cell) => {
-        cell.style.display = !kind || cell.dataset.kind === kind ? '' : 'none';
+        cell.hidden = Boolean(kind && cell.dataset.kind !== kind);
       });
     });
   });
@@ -113,7 +123,22 @@ const kindColor: Record<string, string> = {
     margin-bottom: 24px;
     flex-wrap: wrap;
   }
-  .filter-btn { font-size: 11px; padding: 4px 10px; }
+  .filter-btn {
+    font-size: 11px;
+    padding: 4px 10px;
+    background: var(--bg);
+    color: var(--fg);
+    border-color: var(--fg);
+  }
+  .filter-btn:hover {
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .filter-btn:focus-visible {
+    outline: 3px solid var(--orng);
+    outline-offset: 2px;
+  }
+  .filter-btn:active { transform: translateY(1px); }
   .filter-btn.is-active {
     background: var(--orng);
     color: #000;

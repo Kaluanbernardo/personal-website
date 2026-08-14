@@ -3,14 +3,13 @@ import Base from './Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import type { Lang } from '../i18n/ui';
-
-type Active = 'home' | 'sobre' | 'cv' | 'academico' | 'blog' | 'projetos' | 'contato';
+import { sections, type SectionKey } from '../lib/sections';
 
 interface Props {
   title: string;
   description?: string;
   lang: Lang;
-  active?: Active;
+  active?: SectionKey;
   navVariant?: 'full' | 'back';
   backLabel?: string;
   backHref?: string;
@@ -26,19 +25,36 @@ const {
 } = Astro.props;
 const pathname = Astro.url.pathname;
 
-const themeMap: Record<Active, string> = {
-  home: 'theme-home',
-  sobre: 'theme-sobre',
-  cv: 'theme-cv',
-  academico: 'theme-academ',
-  blog: 'theme-blog',
-  projetos: 'theme-projetos',
-  contato: 'theme-contato',
+const defaultDescriptions: Record<Lang, Record<SectionKey, string>> = {
+  pt: {
+    home: 'Portfólio de Kaluan Bernardo: produto, jornalismo, conteúdo, tecnologia, pesquisa, estratégia e educação.',
+    sobre: 'Conheça Kaluan Bernardo e sua trajetória entre jornalismo, produto, conteúdo, educação, pesquisa e estratégia.',
+    cv: 'Experiência profissional, formação, competências e idiomas de Kaluan Bernardo.',
+    academico: 'Pesquisa acadêmica, linhas de investigação e publicações selecionadas de Kaluan Bernardo.',
+    projetos: 'Projetos selecionados de Kaluan Bernardo em jornalismo, produto, academia, palestras e iniciativas pessoais.',
+    blog: 'Ensaios e notas de Kaluan Bernardo sobre produto, jornalismo, tecnologia, cultura, educação e atenção.',
+    contato: 'Entre em contato com Kaluan Bernardo para pautas de jornalismo, projetos de produto e parcerias acadêmicas.',
+  },
+  en: {
+    home: 'Kaluan Bernardo’s portfolio: product, journalism, content, technology, research, strategy, and education.',
+    sobre: 'Meet Kaluan Bernardo and his work across journalism, product, content, education, research, and strategy.',
+    cv: 'Professional experience, education, skills, and languages of Kaluan Bernardo.',
+    academico: 'Academic research, research interests, and selected publications by Kaluan Bernardo.',
+    projetos: 'Selected projects by Kaluan Bernardo in journalism, product, academia, talks, and personal initiatives.',
+    blog: 'Essays and notes by Kaluan Bernardo on product, journalism, technology, culture, education, and attention.',
+    contato: 'Contact Kaluan Bernardo about journalism, product work, and academic collaborations.',
+  },
 };
+const pageDescription = description ?? defaultDescriptions[lang][active];
 ---
 
-<Base title={title} description={description} lang={lang}>
-  <div class={`page ${themeMap[active]}`}>
+<Base
+  title={title}
+  description={pageDescription}
+  lang={lang}
+  ogType={navVariant === 'back' ? 'article' : 'website'}
+>
+  <div class={`page ${sections[active].theme}`}>
     <Nav
       lang={lang}
       active={active}

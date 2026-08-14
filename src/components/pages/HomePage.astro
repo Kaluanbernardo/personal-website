@@ -236,13 +236,6 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
   @media (max-width: 720px) {
     .ai-seal { display: none; }
     .hero-intro-long { display: none; }
-    .hero-intro-short {
-      display: block;
-      font-size: 14px;
-      line-height: 1.55;
-      margin-top: 16px;
-      max-width: 34ch;
-    }
   }
 
   .hero-title {
@@ -433,6 +426,13 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
   }
   @media (max-width: 720px) {
     .hero-title { font-size: clamp(40px, 13vw, 80px); }
+    .hero-intro-short {
+      display: block;
+      font-size: 14px;
+      line-height: 1.55;
+      margin-top: 16px;
+      max-width: 34ch;
+    }
     .fb-title { font-size: 28px; }
     .hero-tags { margin-top: 10px; }
     .brutal-index { margin-top: 4px; }

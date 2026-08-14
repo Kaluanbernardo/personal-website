@@ -1,12 +1,13 @@
 ---
 import { ui, type Lang } from '../i18n/ui';
 import { link } from '../lib/links';
+import { primaryNavOrder, sections, type SectionKey } from '../lib/sections';
 import Monogram from './Monogram.astro';
 import LangToggle from './LangToggle.astro';
 
 interface Props {
   lang: Lang;
-  active?: 'home' | 'sobre' | 'cv' | 'academico' | 'blog' | 'projetos' | 'contato';
+  active?: SectionKey;
   variant?: 'full' | 'back';
   backLabel?: string;
   backHref?: string;
@@ -22,28 +23,18 @@ const {
 } = Astro.props;
 const t = ui[lang];
 const prefix = lang === 'en' ? '/en' : '';
-const linkFor = (key: keyof typeof t.nav) => {
-  if (key === 'home') return link(`${prefix}/`);
-  if (key === 'menu') return '#';
-  const slugs: Record<string, string> = {
-    sobre: 'sobre',
-    cv: 'cv',
-    academico: 'academico',
-    blog: 'blog',
-    projetos: 'projetos',
-    contato: 'contato',
-  };
-  return link(`${prefix}/${slugs[key]}`);
+const linkFor = (key: SectionKey) => {
+  const slug = sections[key].slug;
+  return link(slug ? `${prefix}/${slug}` : `${prefix}/`);
 };
-const items: { k: string; key: keyof typeof t.nav; active: boolean }[] = [
-  { k: '00', key: 'home', active: active === 'home' },
-  { k: '01', key: 'sobre', active: active === 'sobre' },
-  { k: '02', key: 'cv', active: active === 'cv' },
-  { k: '03', key: 'academico', active: active === 'academico' },
-  { k: '04', key: 'blog', active: active === 'blog' },
-  { k: '05', key: 'projetos', active: active === 'projetos' },
-  { k: '06', key: 'contato', active: active === 'contato' },
-];
+const items = primaryNavOrder.map((key) => ({
+  k: sections[key].number,
+  key,
+  active: active === key,
+}));
+const navLabel = lang === 'en' ? 'Primary navigation' : 'Navegação principal';
+const openLabel = lang === 'en' ? 'Open navigation' : 'Abrir navegação';
+const closeLabel = lang === 'en' ? 'Close navigation' : 'Fechar navegação';
 ---
 
 <header class="site-header">
@@ -57,9 +48,17 @@ const items: { k: string; key: keyof typeof t.nav; active: boolean }[] = [
     <a class="brand brand-back" href={backHref ?? link(`${prefix}/blog`)}>{backLabel ?? t.post.backToList}</a>
   )}
 
-  <button class="menu-toggle" type="button" aria-label="Toggle navigation">{t.nav.menu}</button>
+  <button
+    class="menu-toggle"
+    type="button"
+    aria-label={openLabel}
+    aria-expanded="false"
+    aria-controls="primary-navigation"
+    data-open-label={openLabel}
+    data-close-label={closeLabel}
+  >{t.nav.menu}</button>
 
-  <nav class="site-nav" aria-label="primary">
+  <nav id="primary-navigation" class="site-nav" aria-label={navLabel}>
     {items.map((it) => (
       <a class={it.active ? 'active' : ''} href={linkFor(it.key)} aria-current={it.active ? 'page' : undefined}>
         <span class="num">{it.k}</span>{t.nav[it.key]}
@@ -92,6 +91,21 @@ const items: { k: string; key: keyof typeof t.nav; active: boolean }[] = [
   const header = document.querySelector<HTMLElement>('.site-header');
   const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
   if (header && toggle) {
-    toggle.addEventListener('click', () => header.classList.toggle('is-open'));
+    const setOpen = (open: boolean) => {
+      header.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute(
+        'aria-label',
+        open ? toggle.dataset.closeLabel ?? 'Close navigation' : toggle.dataset.openLabel ?? 'Open navigation',
+      );
+    };
+
+    toggle.addEventListener('click', () => setOpen(!header.classList.contains('is-open')));
+    header.querySelectorAll<HTMLAnchorElement>('.site-nav a').forEach((item) => {
+      item.addEventListener('click', () => setOpen(false));
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') setOpen(false);
+    });
   }
 </script>

@@ -250,6 +250,7 @@ button { font: inherit; }
   color: inherit;
   cursor: pointer;
   text-decoration: none;
+  white-space: nowrap;
   position: relative;
   transition: transform 0.08s linear, box-shadow 0.08s linear;
 }

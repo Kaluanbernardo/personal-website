@@ -56,7 +56,7 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.18em;
-    color: var(--vio);
+    color: var(--accent);
     text-transform: uppercase;
     margin-bottom: 14px;
   }
@@ -110,7 +110,7 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
   }
   .prose :global(p) { margin: 0 0 20px; }
   .prose :global(blockquote) {
-    border-left: 3px solid var(--vio);
+    border-left: 3px solid var(--accent);
     padding: 4px 0 4px 24px;
     margin: 36px 0;
     font-family: var(--bungee);
@@ -121,11 +121,11 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
   }
   .prose :global(blockquote p) { margin: 0; }
   .prose :global(a) {
-    color: var(--vio);
-    border-bottom: 1.5px solid var(--vio);
+    color: var(--accent);
+    border-bottom: 1.5px solid var(--accent);
     transition: background 0.05s linear, color 0.05s linear;
   }
-  .prose :global(a:hover) { background: var(--ylw); color: #000; border-bottom-color: #000; }
+  .prose :global(a:hover) { background: var(--accent); color: var(--accent-ink); border-bottom-color: var(--accent); }
   .prose :global(code) {
     font-family: var(--mono);
     font-size: 0.85em;
@@ -162,13 +162,13 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
     border: 2px solid var(--fg);
     padding: 6px 10px;
   }
-  .nav-link:hover { background: var(--ylw); color: #000; border-color: #000; }
+  .nav-link:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
   .nav-link.accent {
-    background: var(--vio);
-    color: #fff;
-    border-color: var(--vio);
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
   }
-  .nav-link.accent:hover { background: var(--ylw); color: #000; border-color: #000; }
+  .nav-link.accent:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 
   @media (max-width: 720px) {
     .lead { font-size: 18px; }

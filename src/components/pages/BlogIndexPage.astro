@@ -26,19 +26,37 @@ t.blog.filters.forEach((label, i) => {
   tagByFilter[label] = i === 0 ? null : tagOrder[i - 1] ?? null;
 });
 
-const eyebrow = `${sections.blog.number} / *.MD`;
-const sidebarKickerNL = lang === 'en' ? '★ NEWSLETTER ★' : '★ NEWSLETTER ★';
-const archiveHeading = lang === 'en' ? './ARCHIVE' : './ARQUIVO';
-const archiveItems = lang === 'en'
-  ? ['apr/26 (4)', 'mar/26 (3)', 'feb/26 (5)', 'jan/26 (2)', 'dec/25 (4)', 'nov/25 (5)']
-  : ['abr/26 (4)', 'mar/26 (3)', 'fev/26 (5)', 'jan/26 (2)', 'dez/25 (4)', 'nov/25 (5)'];
-const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ POST EM DESTAQUE ★★';
+const sidebarKickerNL = lang === 'en' ? 'NEWSLETTER' : 'NEWSLETTER';
+const archiveHeading = lang === 'en' ? 'ARCHIVE' : 'ARQUIVO';
+
+const monthNames: Record<Lang, string[]> = {
+  pt: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
+  en: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
+};
+const archiveMap = new Map<string, number>();
+posts.forEach((p) => {
+  const d = p.data.pubDate;
+  const key = `${d.getFullYear()}-${String(d.getMonth()).padStart(2, '0')}`;
+  archiveMap.set(key, (archiveMap.get(key) ?? 0) + 1);
+});
+const archiveItems = [...archiveMap.entries()]
+  .sort((a, b) => (a[0] < b[0] ? 1 : -1))
+  .map(([key, count]) => {
+    const [y, m] = key.split('-');
+    return {
+      label: `${monthNames[lang][Number(m)]}/${y.slice(2)}`,
+      count,
+    };
+  });
+
+const featuredKicker = lang === 'en' ? 'FEATURED' : 'EM DESTAQUE';
+const newsletterUrl = 'https://kaluanbernardo.substack.com';
+const subscribeLabel = lang === 'en' ? 'Subscribe on Substack →' : 'Assinar no Substack →';
 ---
 
 <header class="head">
-  <div class="kicker">{eyebrow}</div>
   <h1 class="ed-bungee headline">
-    BLOG <span class="ed-blink mark mark-vio" aria-hidden="true">■</span>
+    BLOG
   </h1>
 </header>
 
@@ -68,7 +86,6 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
         <span class="rdate">{formatDate(p.data.pubDate, lang).toUpperCase()}</span>
         <h3 class="ed-bungee rtitle">{p.data.title}</h3>
         <span class="rtag">#{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
-        <span class="rmins">{p.data.readingTime} {minLabel}</span>
         <span class="rarr">→</span>
       </a>
     ))}
@@ -81,17 +98,14 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
         {lang === 'en' ? <>IN YOUR<br />INBOX.</> : <>NO E-MAIL.<br />SEM SPAM.</>}
       </h3>
       <p class="nl-copy">{t.blog.newsletterCopy}</p>
-      <form class="nl-form" onsubmit="return false">
-        <input class="ed-input nl-input" placeholder={t.blog.newsletterPlaceholder} type="email" />
-        <button class="ed-btn ylw nl-submit">SUBSCRIBE →</button>
-      </form>
+      <a class="ed-btn accent nl-submit" href={newsletterUrl} target="_blank" rel="noreferrer noopener">{subscribeLabel}</a>
     </div>
 
     <div class="archive">
       <div class="arch-kicker">{archiveHeading}</div>
       {archiveItems.map((m) => (
         <div class="arch-row">
-          <span>{m}</span><span class="arr">→</span>
+          <span>{m.label}</span><span class="arch-count">{m.count}</span>
         </div>
       ))}
     </div>
@@ -121,7 +135,7 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
     font-family: var(--mono);
     font-size: 11px;
     letter-spacing: 0.18em;
-    color: var(--vio);
+    color: var(--accent);
     text-transform: uppercase;
     margin-bottom: 8px;
   }
@@ -132,7 +146,7 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
     letter-spacing: -0.04em;
     text-transform: uppercase;
   }
-  .headline .t-vio { color: var(--vio); }
+  .headline .t-vio { color: var(--accent); }
   .meta {
     font-family: var(--mono);
     font-size: 11px;
@@ -150,9 +164,9 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
   }
   .filter-btn { font-size: 11px; padding: 4px 10px; }
   .filter-btn.is-active {
-    background: var(--vio);
-    color: #fff;
-    border-color: var(--vio);
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
   }
 
   .blog-grid {
@@ -164,21 +178,20 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
 
   .featured {
     display: block;
-    background: var(--vio);
-    color: #fff;
+    background: var(--accent);
+    color: var(--accent-ink);
     padding: 18px 22px;
     border: 2.5px solid var(--fg);
-    margin-bottom: 20px;
-    box-shadow: 6px 6px 0 var(--ylw);
+    margin-bottom: 24px;
     cursor: pointer;
   }
-  .featured:hover { background: var(--vio); color: #fff; }
+  .featured:hover { background: var(--accent); color: var(--accent-ink); }
   .ft-kicker {
     font-family: var(--mono);
-    font-size: 9px;
+    font-size: 10px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--ylw);
+    opacity: 0.75;
     margin-bottom: 8px;
   }
   .ft-title {
@@ -204,15 +217,15 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
 
   .post-row {
     display: grid;
-    grid-template-columns: 80px 1fr 100px 60px 24px;
+    grid-template-columns: 84px minmax(0, 1fr) 104px 24px;
     gap: 14px;
     padding: 14px 0;
     border-bottom: 1.5px solid var(--fg);
     align-items: baseline;
   }
   .post-row:hover { background: transparent; padding-left: 8px; }
-  .post-row:hover .rtitle { color: var(--vio); }
-  .post-row:hover .rarr { color: var(--vio); }
+  .post-row:hover .rtitle { color: var(--accent); }
+  .post-row:hover .rarr { color: var(--accent); }
   .rdate {
     font-family: var(--mono);
     font-size: 11px;
@@ -231,18 +244,12 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
     font-family: var(--mono);
     font-size: 9px;
     letter-spacing: 0.08em;
-    color: var(--vio);
+    color: var(--accent);
     text-transform: uppercase;
     text-align: right;
   }
-  .rmins {
-    font-family: var(--mono);
-    font-size: 11px;
-    opacity: 0.6;
-    text-align: right;
-  }
   .rarr {
-    color: var(--vio);
+    color: var(--accent);
     font-size: 18px;
     text-align: right;
   }
@@ -250,17 +257,16 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
   .aside { display: flex; flex-direction: column; gap: 18px; }
 
   .newsletter {
-    border: 3px solid var(--ylw);
+    border: 2px solid var(--accent);
     padding: 16px 18px;
-    background: #000;
-    color: var(--ylw);
-    position: relative;
+    color: var(--fg);
   }
   .nl-kicker {
-    font-family: var(--tiny);
-    font-size: 9px;
-    letter-spacing: 0.05em;
-    color: var(--ylw);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
     margin-bottom: 8px;
   }
   .nl-title {
@@ -268,24 +274,16 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
     margin: 0 0 8px;
     line-height: 0.95;
     text-transform: uppercase;
-    color: var(--ylw);
+    color: var(--fg);
   }
   .nl-copy {
     font-family: var(--mono);
     font-size: 11px;
     line-height: 1.5;
-    color: #fff;
+    color: var(--fg-2);
     margin: 0 0 12px;
   }
-  .nl-form { display: flex; flex-direction: column; gap: 8px; }
-  .nl-input {
-    width: 100%;
-    font-size: 11px;
-    color: var(--ylw);
-    border-color: var(--ylw);
-  }
-  .nl-input::placeholder { color: var(--ylw); opacity: 0.6; }
-  .nl-submit { justify-content: center; }
+  .nl-submit { justify-content: center; width: 100%; font-size: 11px; }
 
   .archive { display: flex; flex-direction: column; }
   .arch-kicker {
@@ -300,29 +298,14 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
   .arch-row {
     font-family: var(--mono);
     font-size: 12px;
-    padding: 4px 0;
-    border-bottom: 1.5px dashed var(--fg);
+    padding: 5px 0;
+    border-bottom: 1px solid var(--bg-3);
     display: flex;
     justify-content: space-between;
+    font-variant-numeric: tabular-nums;
   }
-  .arch-row .arr { color: var(--vio); }
+  .arch-count { color: var(--accent); }
 
-  .webring {
-    border: 2px solid var(--cyan);
-    color: var(--cyan);
-    padding: 10px 12px;
-  }
-  .wr-kicker {
-    font-family: var(--tiny);
-    font-size: 9px;
-    margin-bottom: 6px;
-  }
-  .wr-list {
-    font-family: var(--mono);
-    font-size: 10px;
-    line-height: 1.6;
-  }
-  .wr-list a { color: var(--cyan); }
 
   .serif { font-family: var(--serif); }
 
@@ -332,7 +315,7 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
       grid-template-columns: 60px 1fr 24px;
       gap: 8px;
     }
-    .rtag, .rmins { display: none; }
+    .rtag { display: none; }
     .ft-title { font-size: 28px; }
   }
 </style>

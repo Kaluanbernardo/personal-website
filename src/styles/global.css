@@ -1,10 +1,10 @@
 /* =========================================================
-   Site pessoal — ANTI-DESIGN / BRUTALISM / PUNK / RAVE
-   Visual ruidoso, vibrante, propositalmente quebrado.
-   Mesmo conteúdo, identidade tipográfica + neon.
+   Site pessoal — BRUTALISM / PUNK / ZINE
+   Mesma voz, com hierarquia: uma cor por seção, três
+   tipografias, um elemento animado por tela.
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Shade&family=Departure+Mono&family=Major+Mono+Display&family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=VT323&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Space+Mono:wght@400;700&display=swap');
 
 :root {
   /* base palette — neon brutalist (dark default) */
@@ -15,7 +15,7 @@
   --fg-2: #c8c6be;
   --fg-3: #8a8884;
 
-  /* neon */
+  /* neon — um por seção, ver "Per-page accent themes" */
   --hot: #ff2d55;       /* magenta */
   --cyan: #00f0ff;
   --acid: #c4ff00;      /* verde ácido */
@@ -26,16 +26,21 @@
 
   /* per-page accent (overridden) */
   --accent: var(--acid);
+  --accent-ink: #000;   /* cor de texto sobre o acento */
 
-  /* fonts */
+  /* fonts — 3 funções: display, interface, leitura.
+     'Departure Mono' não existe no Google Fonts; fica na pilha para quem
+     tem a fonte instalada, e a web font de interface é a Space Mono —
+     que é o que o site sempre renderizou de fato. */
   --mono: 'Departure Mono', 'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  --pixel: 'VT323', monospace;
-  --tiny: 'Press Start 2P', monospace;
-  --display: 'Space Grotesk', system-ui, sans-serif;
-  --major: 'Major Mono Display', monospace;
   --bungee: 'Bungee', sans-serif;
-  --bungee-s: 'Bungee Shade', sans-serif;
   --serif: 'Times New Roman', Times, serif;
+
+  /* ritmo vertical */
+  --flow: clamp(40px, 6vw, 72px);
+
+  /* animação */
+  --blink-dur: 2.4s;
 }
 
 * { box-sizing: border-box; }
@@ -58,13 +63,14 @@ a {
   text-decoration: none;
   transition: background 0.05s linear, color 0.05s linear;
 }
-a:hover { background: var(--ylw); color: #000; }
 
 img { display: block; max-width: 100%; }
 
-button { font: inherit; }
+button { font: inherit; color: inherit; }
 
-::selection { background: var(--acid); color: #000; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+::selection { background: var(--accent); color: var(--accent-ink); }
 
 /* =========================================================
    Site shell (page wrapper, header, footer)
@@ -73,11 +79,10 @@ button { font: inherit; }
 .page {
   position: relative;
   min-height: 100vh;
-  padding: 0 0 56px;   /* leave room for status bar */
 }
 
 .page-inner {
-  padding: 22px 28px 48px;
+  padding: clamp(26px, 4vw, 40px) 28px clamp(56px, 7vw, 88px);
   max-width: 1280px;
   margin: 0 auto;
 }
@@ -103,12 +108,17 @@ button { font: inherit; }
 }
 .site-header .brand-tag {
   font-family: var(--bungee);
-  background: var(--hot);
-  color: #000;
+  border: 2px solid var(--fg);
+  color: var(--fg);
   padding: 2px 8px;
   font-size: 18px;
   letter-spacing: -0.04em;
   white-space: nowrap;
+}
+.site-header .brand-link:hover .brand-tag {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
 }
 .site-header .brand-label {
   font-family: var(--mono);
@@ -120,7 +130,6 @@ button { font: inherit; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.site-header .brand-label .slash { color: var(--hot); }
 .site-header .nav-aux {
   display: flex; align-items: center; gap: 6px;
   justify-self: end;
@@ -138,6 +147,7 @@ button { font: inherit; }
   cursor: pointer;
   padding: 4px 8px;
 }
+.menu-toggle:hover { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 
 /* Numbered nav */
 .site-nav {
@@ -161,9 +171,37 @@ button { font: inherit; }
 .site-nav a .num { opacity: 0.5; margin-right: 6px; }
 .site-nav a.active {
   background: var(--accent);
-  color: #000;
+  color: var(--accent-ink);
 }
-.site-nav a:hover { background: var(--ylw); color: #000; }
+.site-nav a.active .num { opacity: 0.65; }
+.site-nav a:hover { background: var(--accent); color: var(--accent-ink); }
+
+/* Section identity: número + glifo + régua */
+.sec-id {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px 0;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.sec-id .sec-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+}
+.sec-id .sec-glyph {
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1;
+  color: var(--accent);
+}
+.sec-id .sec-rule {
+  flex: 1;
+  height: 3px;
+  background: var(--accent);
+}
 
 /* Footer */
 .site-footer {
@@ -181,41 +219,14 @@ button { font: inherit; }
   flex-wrap: wrap;
 }
 .site-footer a { color: var(--fg); border-bottom: 1.5px solid currentColor; }
-.site-footer a:hover { background: var(--ylw); color: #000; }
-
-/* =========================================================
-   Status bar
-   ========================================================= */
-.statusbar {
-  position: fixed;
-  left: 0; right: 0; bottom: 0;
-  display: flex;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  border-top: 2px solid var(--fg);
-  background: var(--bg);
-  z-index: 30;
-}
-.statusbar > div {
-  padding: 4px 10px;
-  border-right: 1px solid var(--fg);
-  display: flex; align-items: center; gap: 6px;
-  white-space: nowrap;
-}
-.statusbar > div:last-child { border-right: none; margin-left: auto; }
+.site-footer a:hover { background: var(--accent); color: var(--accent-ink); }
+.site-footer .foot-where { color: var(--fg-3); }
 
 /* =========================================================
    Common helpers (ed-*)
    ========================================================= */
 .ed-mono { font-family: var(--mono); }
-.ed-pixel { font-family: var(--pixel); }
-.ed-tiny { font-family: var(--tiny); font-size: 9px; line-height: 1.6; letter-spacing: 0.05em; }
-.ed-display { font-family: var(--display); font-weight: 700; letter-spacing: -0.04em; line-height: 0.95; }
-.ed-major { font-family: var(--major); }
 .ed-bungee { font-family: var(--bungee); font-weight: 400; }
-.ed-bungee-s { font-family: var(--bungee-s); font-weight: 400; }
 .ed-serif { font-family: var(--serif); }
 
 /* tag / chip */
@@ -233,8 +244,8 @@ button { font: inherit; }
 .ed-tag.active,
 .ed-tag.is-active {
   background: var(--accent);
-  color: #000;
-  border-color: #000;
+  color: var(--accent-ink);
+  border-color: var(--accent);
 }
 
 /* button */
@@ -264,12 +275,9 @@ button { font: inherit; }
   box-shadow: 0 0 0 currentColor;
 }
 .ed-btn.solid { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-.ed-btn.hot { background: var(--hot); color: #000; border-color: #000; }
-.ed-btn.acid { background: var(--acid); color: #000; border-color: #000; }
-.ed-btn.cyan { background: var(--cyan); color: #000; border-color: #000; }
-.ed-btn.ylw { background: var(--ylw); color: #000; border-color: #000; }
-.ed-btn.vio { background: var(--vio); color: #fff; border-color: #000; }
-.ed-btn.orng { background: var(--orng); color: #000; border-color: #000; }
+/* variante única: o acento da seção */
+.ed-btn.accent { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.ed-btn.outline { background: transparent; color: var(--accent); border-color: var(--accent); }
 
 /* boxes */
 .ed-box {
@@ -277,67 +285,69 @@ button { font: inherit; }
   padding: 12px 14px;
 }
 
-/* mark / highlight */
-.ed-mark { background: var(--ylw); color: #000; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-hot { background: var(--hot); color: #000; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-cyan { background: var(--cyan); color: #000; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-acid { background: var(--acid); color: #000; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-ylw { background: var(--ylw); color: #000; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-orng { background: var(--orng); color: #000; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-vio { background: var(--vio); color: #fff; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-blue { background: var(--blue); color: #fff; padding: 0 4px; box-decoration-break: clone; }
+/* grifo / marca-texto — duas canetas */
+.ed-mark,
+.ed-mark-pen1 {
+  background: var(--acid);
+  color: #000;
+  padding: 0 4px;
+  box-decoration-break: clone;
+}
+.ed-mark-pen2 {
+  background: var(--ylw);
+  color: #000;
+  padding: 0 4px;
+  box-decoration-break: clone;
+}
 
 /* rules */
 .ed-rule { border: none; border-top: 2px solid var(--fg); margin: 0; }
 .ed-rule-dashed { border: none; border-top: 2px dashed var(--fg); margin: 0; }
-.ed-rule-dotted { border: none; border-top: 3px dotted var(--fg); margin: 0; }
-.ed-rule-rainbow {
+.ed-rule-accent {
   border: none;
-  height: 8px;
-  background: var(--acid);
+  height: 4px;
+  background: var(--accent);
   margin: 0;
 }
 
-/* blink */
-.ed-blink { animation: ed-blink 1.05s steps(2) infinite; }
-@keyframes ed-blink { 50% { opacity: 0; } }
+/* blink — assinatura de seção: lenta, com piso de opacidade */
+.ed-blink {
+  animation: ed-blink var(--blink-dur) ease-in-out infinite;
+}
+@keyframes ed-blink {
+  0%, 44% { opacity: 1; }
+  50%, 94% { opacity: 0.28; }
+  100% { opacity: 1; }
+}
 
 .ed-cursor {
   display: inline-block;
-  animation: ed-blink 1.05s steps(2) infinite;
+  animation: ed-blink var(--blink-dur) ease-in-out infinite;
 }
 
-.mark { display: inline-block; }
-.mark-hot { color: var(--hot); }
-.mark-ylw { color: var(--ylw); }
-.mark-acid { color: var(--acid); }
-.mark-cyan { color: var(--cyan); }
-.mark-vio { color: var(--vio); }
-.mark-orng { color: var(--orng); }
-
-.ed-cursor::after {
-  content: '_';
-  animation: ed-blink 1.05s steps(2) infinite;
-  margin-left: 0.05em;
+@media (prefers-reduced-motion: reduce) {
+  .ed-blink, .ed-cursor { animation: none; }
 }
 
-/* image frame */
+/* glifo de seção inline (headline) */
+.sec-mark {
+  font-family: var(--mono);
+  color: var(--accent);
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+/* image frame — placeholder neutro */
 .ed-imgframe {
   position: relative;
-  background: repeating-linear-gradient(
-    -45deg,
-    transparent 0,
-    transparent 8px,
-    currentColor 8px,
-    currentColor 9px
-  );
+  background: var(--bg-2);
+  border: 1px solid var(--bg-3);
   overflow: hidden;
-  color: var(--fg-2);
 }
 .ed-imgframe > .ph {
-  position: absolute; inset: 6px;
+  position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  background: var(--bg);
+  background: var(--bg-2);
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.15em;
@@ -346,27 +356,13 @@ button { font: inherit; }
 }
 .ed-imgframe > img {
   position: absolute;
-  inset: 6px;
-  width: calc(100% - 12px);
-  height: calc(100% - 12px);
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   z-index: 2;
 }
 .ed-imgframe > img + .ph { display: none; }
-
-/* grid bg */
-.ed-grid-bg {
-  background-image:
-    linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-
-/* dot bg */
-.ed-dot-bg {
-  background-image: radial-gradient(currentColor 1px, transparent 1.5px);
-  background-size: 14px 14px;
-}
 
 /* form */
 .ed-input {
@@ -379,45 +375,26 @@ button { font: inherit; }
   outline: none;
   width: 100%;
 }
-.ed-input:focus { background: var(--ylw); color: #000; border-color: #000; }
+.ed-input:focus { border-color: var(--accent); }
 .ed-input::placeholder { color: var(--fg-3); }
 
-/* sticker */
-.ed-sticker {
-  display: inline-block;
-  padding: 6px 10px;
-  border: 2px solid currentColor;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-/* glitch */
-.ed-glitch {
-  position: relative;
-  display: inline-block;
-}
-
 /* =========================================================
-   Per-page accent themes
+   Per-page accent themes — uma cor por seção
    ========================================================= */
-.theme-home    { --accent: var(--acid); }
-.theme-sobre   { --accent: var(--cyan); }
-.theme-cv      { --accent: var(--ylw); }
-.theme-academ  { --accent: var(--acid); }
-.theme-blog    { --accent: var(--vio); }
-.theme-projetos{ --accent: var(--orng); }
-.theme-contato { --accent: var(--hot); }
+.theme-home    { --accent: var(--acid);  --accent-ink: #000; }
+.theme-sobre   { --accent: var(--cyan);  --accent-ink: #000; }
+.theme-cv      { --accent: var(--ylw);   --accent-ink: #000; }
+.theme-academ  { --accent: var(--blue);  --accent-ink: #fff; }
+.theme-projetos{ --accent: var(--orng);  --accent-ink: #000; }
+.theme-blog    { --accent: var(--vio);   --accent-ink: #fff; }
+.theme-contato { --accent: var(--hot);   --accent-ink: #000; }
 
 /* =========================================================
-   Generic legacy mappings (for any leftover class usage)
+   Generic legacy mappings
    ========================================================= */
 .hf-mono { font-family: var(--mono); }
 .hf-display { font-family: var(--bungee); font-weight: 400; line-height: 0.95; letter-spacing: -0.03em; text-transform: uppercase; }
 .hf-rule { border: none; border-top: 2px solid var(--fg); }
-.hf-rule-soft { border: none; border-top: 1.5px dashed var(--fg); }
-.hf-rule-thick { border: none; border-top: 3px solid var(--fg); }
 
 /* =========================================================
    Responsive
@@ -444,11 +421,10 @@ button { font: inherit; }
     border-bottom: 1px solid var(--fg);
   }
   .site-header .nav-aux { justify-self: end; }
-  .statusbar { font-size: 9px; flex-wrap: wrap; }
-  .statusbar > div { padding: 3px 6px; }
 }
 @media (max-width: 720px) {
-  .page-inner { padding: 18px 16px 48px; }
+  .page-inner { padding: 20px 16px 56px; }
+  .sec-id { padding: 12px 16px 0; }
   .site-header { padding: 10px 16px; }
   .site-footer { padding: 14px 16px; }
 }

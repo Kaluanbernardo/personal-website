@@ -8,24 +8,19 @@ interface Props {
 const { lang } = Astro.props;
 const t = ui[lang];
 
-const eyebrow = lang === 'en' ? '01 / WHO_IS_THIS.TXT' : '01 / WHO_IS_THIS.TXT';
 
-const factsheet: [string, string, string][] = lang === 'en'
+const factsheet: [string, string][] = lang === 'en'
   ? [
-      ['NASC', '19xx', ''],
-      ['BASE', 'São Paulo', ''],
-      ['DEGR', 'PhD candidate', ''],
-      ['PRON', 'he/him', ''],
-      ['STAT', 'online', 'acid'],
-      ['MOOD', 'focused', 'ylw'],
+      ['BASE', 'São Paulo'],
+      ['DEGR', 'PhD candidate, ESPM'],
+      ['PRON', 'he/him'],
+      ['LANG', 'pt · en · es'],
     ]
   : [
-      ['NASC', '19xx', ''],
-      ['BASE', 'São Paulo', ''],
-      ['TÍTL', 'doutorando', ''],
-      ['PRON', 'ele/dele', ''],
-      ['STAT', 'online', 'acid'],
-      ['MOOD', 'focado', 'ylw'],
+      ['BASE', 'São Paulo'],
+      ['TÍTL', 'doutorando, ESPM'],
+      ['PRON', 'ele/dele'],
+      ['IDIOM', 'pt · en · es'],
     ];
 
 const currentlyHeading = lang === 'en' ? '> CURRENTLY' : '> ATUALMENTE';
@@ -47,16 +42,16 @@ const currentlyItems = lang === 'en'
 
 const notDoingItems = lang === 'en'
   ? [
-      'twitter threads about product',
+      'projects without a defined scope',
       'motivational talks',
-      'free $0.00 mentoring',
-      'NFT, onlyfans, crypto',
+      'unpaid work',
+      'growth-hacking a newsroom',
     ]
   : [
-      'thread no twitter sobre produto',
+      'projetos sem escopo definido',
       'palestras motivacionais',
-      'mentoria a R$ 0,00',
-      'NFT, onlyfans, cripto',
+      'trabalho não remunerado',
+      'growth hacking em redação',
     ];
 
 const ctaCV = lang === 'en' ? 'See CV →' : 'Ver CV →';
@@ -67,9 +62,8 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
 
 <div class="sobre-grid">
   <article>
-    <div class="kicker hf-mono">{eyebrow}</div>
     <h1 class="ed-bungee headline">
-      <span class="t-cyan">{lang === 'en' ? 'ABOUT' : 'SOBRE'}</span> <span>{lang === 'en' ? 'ME' : 'MIM'}</span> <span class="ed-blink mark mark-cyan" aria-hidden="true">●</span>
+      <span class="t-cyan">{lang === 'en' ? 'ABOUT' : 'SOBRE'}</span> <span>{lang === 'en' ? 'ME' : 'MIM'}</span>
     </h1>
 
     <div class="serif body">
@@ -78,8 +72,8 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
     </div>
 
     <div class="cta-row">
-      <a class="ed-btn cyan" href={link(`${lang === 'en' ? '/en' : ''}/cv`)}>{ctaCV}</a>
-      <a class="ed-btn hot" href={link(`${lang === 'en' ? '/en' : ''}/contato`)}>{ctaEmail}</a>
+      <a class="ed-btn accent" href={link(`${lang === 'en' ? '/en' : ''}/cv`)}>{ctaCV}</a>
+      <a class="ed-btn outline" href={link(`${lang === 'en' ? '/en' : ''}/contato`)}>{ctaEmail}</a>
     </div>
 
     <hr class="ed-rule-dashed sep" />
@@ -105,15 +99,15 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
       <img src={link('/img/portrait.png')} alt="" onerror="this.remove()" />
       <div class="ph">{photoLabel}</div>
     </div>
-    <div class="photo-credit">FOTO: ALGUM AMIGO · 2025</div>
+    <div class="photo-credit">{lang === 'en' ? 'Portrait · 2025' : 'Retrato · 2025'}</div>
 
     <div class="factsheet">
       <div class="kicker fs-kicker">FACTSHEET</div>
       <div class="fs-list">
-        {factsheet.map(([k, v, c]) => (
+        {factsheet.map(([k, v]) => (
           <div class="fs-row">
             <span class="fs-key">{k}</span>
-            <span class={`fs-val ${c ? 'c-' + c : ''}`}>{v}</span>
+            <span class="fs-val">{v}</span>
           </div>
         ))}
       </div>
@@ -143,7 +137,7 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
     font-family: var(--mono);
     font-size: 11px;
     letter-spacing: 0.18em;
-    color: var(--cyan);
+    color: var(--accent);
     text-transform: uppercase;
     margin-bottom: 28px;
     position: relative;
@@ -159,12 +153,11 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
     white-space: nowrap;
   }
   .headline .t-cyan {
-    background: var(--cyan);
-    color: #000;
+    background: var(--accent);
+    color: var(--accent-ink);
     padding: 4px 10px 2px;
     display: inline-block;
   }
-  .headline .t-hot { color: var(--hot); }
 
   .serif {
     font-family: var(--mono);
@@ -200,10 +193,10 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
     font-size: 13px;
     line-height: 1.7;
   }
-  .box-acid { border-color: var(--acid); }
-  .box-acid .box-kicker { color: var(--acid); }
-  .box-ylw { border-color: var(--ylw); }
-  .box-ylw .box-kicker { color: var(--ylw); }
+  .box-acid { border-color: var(--accent); }
+  .box-acid .box-kicker { color: var(--accent); }
+  .box-ylw { border-color: var(--fg-3); }
+  .box-ylw .box-kicker { color: var(--fg-2); }
   .box-kicker {
     font-size: 10px;
     letter-spacing: 0.15em;
@@ -222,16 +215,14 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
   }
 
   .factsheet {
-    border: 2px solid var(--hot);
+    border: 2px solid var(--fg-3);
     padding: 12px 14px;
     color: var(--fg);
   }
-  .fs-kicker { color: var(--hot); margin-bottom: 6px; font-size: 10px; }
+  .fs-kicker { color: var(--fg-2); margin-bottom: 6px; font-size: 10px; }
   .fs-list { font-family: var(--mono); font-size: 11px; line-height: 1.7; }
   .fs-row { display: flex; gap: 4px; }
-  .fs-key { width: 50px; }
-  .fs-val.c-acid { color: var(--acid); }
-  .fs-val.c-ylw { color: var(--ylw); }
+  .fs-key { width: 56px; color: var(--fg-3); }
 
   .barcode {
     display: inline-flex;
@@ -248,7 +239,7 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
   .barcode .b-0 { width: 1px; opacity: 0.45; }
   .barcode-label { opacity: 0.7; }
 
-  .socials-kicker { color: var(--cyan); margin-top: 6px; }
+  .socials-kicker { color: var(--accent); margin-top: 6px; }
   .socials { display: flex; flex-direction: column; gap: 0; }
   .social-row {
     display: flex;
@@ -261,7 +252,8 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
     text-transform: uppercase;
     letter-spacing: 0.06em;
   }
-  .social-row .s-arr { color: var(--cyan); }
+  .social-row .s-arr { color: var(--accent); }
+  .social-row:hover { color: var(--accent); }
 
   @media (max-width: 900px) {
     .sobre-grid { grid-template-columns: 1fr; }

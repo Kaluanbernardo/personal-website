@@ -2,7 +2,6 @@
 import Base from './Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import SectionId from '../components/SectionId.astro';
 import type { Lang } from '../i18n/ui';
 import { sections, type SectionKey } from '../lib/sections';
 
@@ -64,7 +63,6 @@ const pageDescription = description ?? defaultDescriptions[lang][active];
       backHref={backHref}
       pathname={pathname}
     />
-    {navVariant === 'full' && <SectionId active={active} />}
     <main class="page-inner">
       <slot />
     </main>

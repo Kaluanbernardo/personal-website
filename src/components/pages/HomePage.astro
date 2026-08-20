@@ -13,7 +13,7 @@ const t = ui[lang];
 const allPosts = await getCollection('posts', ({ data }) => !data.draft && data.lang === lang);
 const recentPosts = allPosts
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 3);
+  .slice(0, 6);
 
 const allProjects = await getCollection('projects', ({ data }) => data.lang === lang);
 
@@ -25,13 +25,15 @@ const indexEntries = [
   {
     n: sections.sobre.number,
     t: lang === 'en' ? 'ABOUT' : 'SOBRE',
-    meta: '',
+    sub: '> who_is_this.txt',
+    meta: lang === 'en' ? '2 min' : '2 min',
     href: link(`${prefix}/sobre`),
     color: sections.sobre.accent,
   },
   {
     n: sections.cv.number,
     t: lang === 'en' ? 'PROFESSIONAL CV' : 'CV PROFISSIONAL',
+    sub: '> work_history.pdf',
     meta: 'PDF',
     href: link(`${prefix}/cv`),
     color: sections.cv.accent,
@@ -39,41 +41,47 @@ const indexEntries = [
   {
     n: sections.academico.number,
     t: lang === 'en' ? 'ACADEMIC CV' : 'CV ACADÊMICO',
-    meta: '',
+    sub: '> lattes.cnpq.br',
+    meta: 'CV',
     href: link(`${prefix}/academico`),
     color: sections.academico.accent,
   },
   {
     n: sections.projetos.number,
     t: lang === 'en' ? 'PROJECTS' : 'PROJETOS',
-    meta: String(allProjects.length),
+    sub: '> ./output/*',
+    meta: lang === 'en'
+      ? `${allProjects.length} ${allProjects.length === 1 ? 'item' : 'items'}`
+      : `${allProjects.length} ${allProjects.length === 1 ? 'item' : 'itens'}`,
     href: link(`${prefix}/projetos`),
     color: sections.projetos.accent,
   },
   {
     n: sections.blog.number,
     t: 'BLOG',
-    meta: String(allPosts.length),
+    sub: '> cat *.md',
+    meta: lang === 'en'
+      ? `${allPosts.length} ${allPosts.length === 1 ? 'post' : 'posts'}`
+      : `${allPosts.length} posts`,
     href: blogHref,
     color: sections.blog.accent,
   },
   {
     n: sections.contato.number,
     t: lang === 'en' ? 'CONTACT' : 'CONTATO',
-    meta: '',
+    sub: '> echo $EMAIL',
+    meta: '@',
     href: link(`${prefix}/contato`),
     color: sections.contato.accent,
   },
 ];
 
 const heroTags = lang === 'en'
-  ? ['Product', 'Journalism', 'Technology', 'Education', 'Culture']
-  : ['Produto', 'Jornalismo', 'Tecnologia', 'Educação', 'Cultura'];
+  ? ['Product', 'Journalism', 'Content', 'Technology', 'Games', 'Culture', 'Strategy', 'AI', 'Education']
+  : ['Produto', 'Jornalismo', 'Conteúdo', 'Tecnologia', 'Games', 'Cultura', 'Estratégia', 'IA', 'Educação'];
 
-const indexHeading = lang === 'en' ? 'INDEX' : 'ÍNDICE';
-const entriesLabel = lang === 'en'
-  ? `${indexEntries.length} sections`
-  : `${indexEntries.length} seções`;
+const indexHeading = lang === 'en' ? 'INDEX / RAW NAVIGATION' : 'ÍNDICE / NAVEGAÇÃO RAW';
+const entriesLabel = lang === 'en' ? `0${indexEntries.length}_ENTRIES` : `0${indexEntries.length}_ENTRADAS`;
 
 const fromBlogHeading = lang === 'en' ? 'FROM THE BLOG.' : 'DO BLOG.';
 const allPostsLabel = lang === 'en' ? 'ALL POSTS →' : 'TODOS OS POSTS →';
@@ -84,6 +92,8 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
 ---
 
 <section class="hero">
+  <div class="hero-grid-bg" aria-hidden="true"></div>
+
   <div class="hero-visual">
     <div class="hero-photo">
       <img
@@ -128,46 +138,47 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
   <div class="hero-main">
     <h1 class="hero-title ed-bungee">
       <span class="t-fg">{firstName.toUpperCase()}</span><br />
-      <span class="t-stroke">{lastName.toUpperCase()}</span><span class="ed-cursor-name">_</span>
+      <span class="t-stroke">{lastName.toUpperCase()}</span><span class="ed-blink t-cyan">_</span>
     </h1>
 
     <p class="hero-intro hero-intro-long ed-mono">
       {lang === 'en' ? (
         <>
-          I create <span class="ed-mark-pen1">products</span>, develop <span class="ed-mark-pen2">strategies</span>, do <span class="ed-mark-pen1">research</span> and analysis, teach <span class="ed-mark-pen2">classes</span>, think up and execute ideas. I like technology, culture, games, music and journalism. I also like potatoes and studying.
+          I create <span class="ed-mark-hot">products</span>, develop <span class="ed-mark-cyan">strategies</span>, do research and <span class="ed-mark-acid">analysis</span>, teach <span class="ed-mark-vio">classes</span>, think up and execute <span class="ed-mark-ylw">ideas</span>, all with a touch of <span class="ed-mark-orng">groove</span>. I like technology, culture, games, music and journalism. I also like potatoes and <span class="ed-mark-blue">studying</span>.
         </>
       ) : (
         <>
-          Crio <span class="ed-mark-pen1">produtos</span>, desenvolvo <span class="ed-mark-pen2">estratégias</span>, faço <span class="ed-mark-pen1">pesquisas</span> e análises, dou <span class="ed-mark-pen2">aulas</span>, penso e executo ideias. Gosto de tecnologia, cultura, games, música e jornalismo. Também gosto de batata e de estudar.
+          Crio <span class="ed-mark-hot">produtos</span>, desenvolvo <span class="ed-mark-cyan">estratégias</span>, faço pesquisas e <span class="ed-mark-acid">análises</span>, dou <span class="ed-mark-vio">aulas</span>, penso e executo <span class="ed-mark-ylw">ideias</span> — tudo com um tiquinho de <span class="ed-mark-orng">carimbó</span>. Gosto de tecnologia, cultura, games, música e jornalismo. Também gosto de batata e de <span class="ed-mark-blue">estudar</span>.
         </>
       )}
     </p>
 
     <p class="hero-intro hero-intro-short ed-mono">
       {lang === 'en'
-        ? 'I create products and strategies, research, teach, and turn curiosity into work.'
-        : 'Crio produtos e estratégias, faço pesquisa, dou aulas e transformo curiosidade em trabalho.'}
+        ? 'I create products and strategies, research, teach, and turn curiosity into work, with a touch of Brazilian groove.'
+        : 'Crio produtos e estratégias, faço pesquisa, dou aulas e transformo curiosidade em trabalho, com um tiquinho de carimbó.'}
     </p>
   </div>
 
   <div class="hero-tags">
-    {heroTags.map((tag) => (
-      <span class="ed-tag">#{tag}</span>
+    {heroTags.map((tag, i) => (
+      <span class={`ed-tag t-${i % 6}`}>#{tag}</span>
     ))}
   </div>
 </section>
 
 <section class="brutal-index">
   <div class="bi-head">
-    <div class="bi-kicker hf-mono">{indexHeading}</div>
-    <div class="bi-counter hf-mono">{entriesLabel}</div>
+    <div class="bi-kicker hf-mono">{'>>>'} {indexHeading}</div>
+    <div class="bi-counter ed-tiny">{entriesLabel}</div>
   </div>
-  <hr class="ed-rule-accent" />
+  <hr class="ed-rule-rainbow" />
 
   {indexEntries.map((s) => (
     <a class="bi-row" href={s.href} style={`--row-c:${s.color}`}>
-      <span class="bi-num">{s.n}</span>
+      <span class="bi-num">[{s.n}]</span>
       <span class="bi-title ed-bungee">{s.t}</span>
+      <span class="bi-sub">{s.sub}</span>
       <span class="bi-meta">{s.meta}</span>
       <span class="bi-arr">→</span>
     </a>
@@ -197,12 +208,23 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
 <style>
   .hero {
     position: relative;
-    padding: 4px 0 8px;
+    padding: 4px 0 36px;
     display: grid;
     grid-template-columns: minmax(0, 1fr) clamp(285px, 24vw, 330px);
     column-gap: clamp(24px, 3vw, 44px);
     row-gap: 24px;
     align-items: flex-start;
+  }
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
   }
   .hero-main, .hero-tags { position: relative; z-index: 1; }
   .hero-main {
@@ -244,8 +266,13 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     transform: rotate(-5deg);
     filter: drop-shadow(3px 4px 0 rgba(0, 0, 0, 0.7));
     pointer-events: none;
+    animation: ai-seal-wobble 3.4s ease-in-out infinite;
   }
   .ai-seal svg { width: 100%; height: 100%; display: block; }
+  @keyframes ai-seal-wobble {
+    0%, 100% { transform: rotate(-6deg); }
+    50% { transform: rotate(-2deg); }
+  }
   @media (max-width: 1100px) {
     .hero {
       grid-template-columns: minmax(0, 1fr) 260px;
@@ -283,6 +310,10 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     }
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .ai-seal { animation: none; }
+  }
+
   .hero-title {
     font-size: clamp(54px, 10.2vw, 144px);
     margin: 0;
@@ -294,16 +325,8 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     text-transform: uppercase;
   }
   .t-fg { color: var(--fg); }
-  .ed-cursor-name {
-    color: var(--accent);
-    font-size: 0.32em;
-    vertical-align: 0.28em;
-    margin-left: 0.12em;
-    animation: ed-blink var(--blink-dur) ease-in-out infinite;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .ed-cursor-name { animation: none; }
-  }
+  .t-hot { color: var(--hot); }
+  .t-cyan { color: var(--cyan); }
   .t-stroke {
     color: var(--bg);
     -webkit-text-stroke: 2.5px var(--fg);
@@ -344,16 +367,14 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     overflow-wrap: anywhere;
     word-break: break-word;
   }
-  .hero-tags .ed-tag {
-    color: var(--fg-2);
-    border-color: var(--fg-3);
-  }
-  .hero-tags .ed-tag:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-  }
+  .hero-tags .t-0 { background: var(--hot); color: #000; border-color: #000; }
+  .hero-tags .t-1 { background: var(--acid); color: #000; border-color: #000; }
+  .hero-tags .t-2 { background: var(--cyan); color: #000; border-color: #000; }
+  .hero-tags .t-3 { background: var(--ylw); color: #000; border-color: #000; }
+  .hero-tags .t-4 { background: var(--vio); color: #fff; border-color: #000; }
+  .hero-tags .t-5 { background: var(--orng); color: #000; border-color: #000; }
 
-  .brutal-index { margin: var(--flow) 0 0; }
+  .brutal-index { margin: 12px 0 0; }
   .bi-head {
     display: flex;
     justify-content: space-between;
@@ -364,18 +385,13 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     font-size: 11px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--accent);
+    color: var(--acid);
   }
-  .bi-counter {
-    color: var(--fg-3);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
+  .bi-counter { color: var(--fg); font-size: 9px; }
 
   .bi-row {
     display: grid;
-    grid-template-columns: 42px minmax(0, 1fr) 44px 28px;
+    grid-template-columns: 50px minmax(0, 1fr) 220px 90px 28px;
     align-items: center;
     padding: 14px 0;
     border-bottom: 1.5px solid var(--fg);
@@ -388,7 +404,7 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     background: transparent;
     padding-left: 8px;
   }
-  .bi-row:hover .bi-arr { color: var(--row-c); }
+  .bi-row:hover .bi-arr { color: var(--ylw); }
   .bi-row .bi-num {
     font-family: var(--mono);
     font-size: 11px;
@@ -396,12 +412,18 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     color: var(--row-c);
   }
   .bi-row .bi-title {
-    font-size: clamp(26px, 4.4vw, 48px);
+    font-size: clamp(24px, 4vw, 42px);
     letter-spacing: -0.03em;
     color: var(--fg);
     overflow-wrap: anywhere;
   }
   .bi-row:hover .bi-title { color: var(--row-c); }
+  .bi-row .bi-sub {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--fg);
+    opacity: 0.7;
+  }
   .bi-row .bi-meta {
     font-family: var(--mono);
     font-size: 10px;
@@ -416,7 +438,7 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     text-align: right;
   }
 
-  .from-blog { margin-top: var(--flow); }
+  .from-blog { margin-top: 56px; }
   .fb-head {
     display: flex;
     align-items: baseline;
@@ -434,7 +456,6 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     text-transform: uppercase;
     color: var(--vio);
   }
-  .fb-all:hover { background: var(--vio); color: #fff; }
   .fb-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -473,11 +494,16 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
   @media (max-width: 960px) {
     .hero-title { font-size: clamp(56px, 9vw, 96px); }
     .bi-row {
-      grid-template-columns: 34px minmax(0, 1fr) 34px 22px;
+      grid-template-columns: 36px minmax(0, 1fr) 60px 22px;
       gap: 10px;
     }
     .bi-row .bi-title { font-size: clamp(22px, 5vw, 34px); }
-    @media (max-width: 720px) {
+    .bi-row .bi-sub { display: none; }
+    .fb-grid { grid-template-columns: 1fr; }
+    .fb-card { border-left: 2px solid var(--fg); border-top: none; }
+    .fb-card:first-child { border-top: 2px solid var(--fg); }
+  }
+  @media (max-width: 720px) {
     .hero-title { font-size: clamp(40px, 13vw, 80px); }
     .hero-intro-long { display: none; }
     .hero-intro-short {
@@ -489,9 +515,9 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     }
     .fb-title { font-size: 28px; }
     .hero-tags { grid-row: 3; margin-top: 10px; }
-    .brutal-index { margin-top: 28px; }
+    .brutal-index { margin-top: 4px; }
     .bi-row {
-      grid-template-columns: 28px minmax(0, 1fr) 28px 18px;
+      grid-template-columns: 30px minmax(0, 1fr) 52px 18px;
       gap: 7px;
     }
     .bi-row .bi-title { font-size: clamp(19px, 6vw, 28px); }

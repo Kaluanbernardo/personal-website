@@ -26,37 +26,19 @@ t.blog.filters.forEach((label, i) => {
   tagByFilter[label] = i === 0 ? null : tagOrder[i - 1] ?? null;
 });
 
-const sidebarKickerNL = lang === 'en' ? 'NEWSLETTER' : 'NEWSLETTER';
-const archiveHeading = lang === 'en' ? 'ARCHIVE' : 'ARQUIVO';
-
-const monthNames: Record<Lang, string[]> = {
-  pt: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
-  en: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
-};
-const archiveMap = new Map<string, number>();
-posts.forEach((p) => {
-  const d = p.data.pubDate;
-  const key = `${d.getFullYear()}-${String(d.getMonth()).padStart(2, '0')}`;
-  archiveMap.set(key, (archiveMap.get(key) ?? 0) + 1);
-});
-const archiveItems = [...archiveMap.entries()]
-  .sort((a, b) => (a[0] < b[0] ? 1 : -1))
-  .map(([key, count]) => {
-    const [y, m] = key.split('-');
-    return {
-      label: `${monthNames[lang][Number(m)]}/${y.slice(2)}`,
-      count,
-    };
-  });
-
-const featuredKicker = lang === 'en' ? 'FEATURED' : 'EM DESTAQUE';
-const newsletterUrl = 'https://kaluanbernardo.substack.com';
-const subscribeLabel = lang === 'en' ? 'Subscribe on Substack →' : 'Assinar no Substack →';
+const eyebrow = `${sections.blog.number} / *.MD`;
+const sidebarKickerNL = lang === 'en' ? '★ NEWSLETTER ★' : '★ NEWSLETTER ★';
+const archiveHeading = lang === 'en' ? './ARCHIVE' : './ARQUIVO';
+const archiveItems = lang === 'en'
+  ? ['apr/26 (4)', 'mar/26 (3)', 'feb/26 (5)', 'jan/26 (2)', 'dec/25 (4)', 'nov/25 (5)']
+  : ['abr/26 (4)', 'mar/26 (3)', 'fev/26 (5)', 'jan/26 (2)', 'dez/25 (4)', 'nov/25 (5)'];
+const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ POST EM DESTAQUE ★★';
 ---
 
 <header class="head">
+  <div class="kicker">{eyebrow}</div>
   <h1 class="ed-bungee headline">
-    BLOG
+    BLOG <span class="ed-blink mark mark-vio" aria-hidden="true">■</span>
   </h1>
 </header>
 
@@ -86,6 +68,7 @@ const subscribeLabel = lang === 'en' ? 'Subscribe on Substack →' : 'Assinar no
         <span class="rdate">{formatDate(p.data.pubDate, lang).toUpperCase()}</span>
         <h3 class="ed-bungee rtitle">{p.data.title}</h3>
         <span class="rtag">#{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
+        <span class="rmins">{p.data.readingTime} {minLabel}</span>
         <span class="rarr">→</span>
       </a>
     ))}
@@ -98,14 +81,17 @@ const subscribeLabel = lang === 'en' ? 'Subscribe on Substack →' : 'Assinar no
         {lang === 'en' ? <>IN YOUR<br />INBOX.</> : <>NO E-MAIL.<br />SEM SPAM.</>}
       </h3>
       <p class="nl-copy">{t.blog.newsletterCopy}</p>
-      <a class="ed-btn accent nl-submit" href={newsletterUrl} target="_blank" rel="noreferrer noopener">{subscribeLabel}</a>
+      <form class="nl-form" onsubmit="return false">
+        <input class="ed-input nl-input" placeholder={t.blog.newsletterPlaceholder} type="email" />
+        <button class="ed-btn ylw nl-submit">SUBSCRIBE →</button>
+      </form>
     </div>
 
     <div class="archive">
       <div class="arch-kicker">{archiveHeading}</div>
       {archiveItems.map((m) => (
         <div class="arch-row">
-          <span>{m.label}</span><span class="arch-count">{m.count}</span>
+          <span>{m}</span><span class="arr">→</span>
         </div>
       ))}
     </div>
@@ -135,7 +121,7 @@ const subscribeLabel = lang === 'en' ? 'Subscribe on Substack →' : 'Assinar no
     font-family: var(--mono);
     font-size: 11px;
     letter-spacing: 0.18em;
-    color: var(--accent);
+    color: var(--vio);
     text-transform: uppercase;
     margin-bottom: 8px;
   }
@@ -146,7 +132,7 @@ const subscribeLabel = lang === 'en' ? 'Subscribe on Substack →' : 'Assinar no
     letter-spacing: -0.04em;
     text-transform: uppercase;
   }
-  .headline .t-vio { color: var(--accent); }
+  .headline .t-vio { color: var(--vio); }
   .meta {
     font-family: var(--mono);
     font-size: 11px;
@@ -164,9 +150,9 @@ const subscribeLabel = lang === 'en' ? 'Subscribe on Substack →' : 'Assinar no
   }
   .filter-btn { font-size: 11px; padding: 4px 10px; }
   .filter-btn.is-active {
-    background: var(--accent);
-    color: var(--accent-ink);
-    border-color: var(--accent);
+    background: var(--vio);
+    color: #fff;
+    border-color: var(--vio);
   }
 
   .blog-grid {
@@ -178,20 +164,21 @@ const subscribeLabel = lang === 'en' ? 'Subscribe on Substack →' : 'Assinar no
 
   .featured {
     display: block;
-    background: var(--accent);
-    color: var(--accent-ink);
+    background: var(--vio);
+    color: #fff;
     padding: 18px 22px;
     border: 2.5px solid var(--fg);
-    margin-bottom: 24px;
+    margin-bottom: 20px;
+    box-shadow: 6px 6px 0 var(--ylw);
     cursor: pointer;
   }
-  .featured:hover { background: var(--accent); color: var(--accent-ink); }
+  .featured:hover { background: var(--vio); color: #fff; }
   .ft-kicker {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 9px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    opacity: 0.75;
+    color: var(--ylw);
     margin-bottom: 8px;
   }
   .ft-title {
@@ -217,15 +204,15 @@ const subscribeLabel = lang === 'en' ? 'Subscribe on Substack →' : 'Assinar no
 
   .post-row {
     display: grid;
-    grid-template-columns: 84px minmax(0, 1fr) 104px 24px;
+    grid-template-columns: 80px 1fr 100px 60px 24px;
     gap: 14px;
     padding: 14px 0;
     border-bottom: 1.5px solid var(--fg);
     align-items: baseline;
   }
   .post-row:hover { background: transparent; padding-left: 8px; }
-  .post-row:hover .rtitle { color: var(--accent); }
-  .post-row:hover .rarr { color: var(--accent); }
+  .post-row:hover .rtitle { color: var(--vio); }
+  .post-row:hover .rarr { color: var(--vio); }
   .rdate {
     font-family: var(--mono);
     font-size: 11px;
@@ -244,12 +231,18 @@ const subscribeLabel = lang === 'en' ? 'Subscribe on Substack →' : 'Assinar no
     font-family: var(--mono);
     font-size: 9px;
     letter-spacing: 0.08em;
-    color: var(--accent);
+    color: var(--vio);
     text-transform: uppercase;
     text-align: right;
   }
+  .rmins {
+    font-family: var(--mono);
+    font-size: 11px;
+    opacity: 0.6;
+    text-align: right;
+  }
   .rarr {
-    color: var(--accent);
+    color: var(--vio);
     font-size: 18px;
     text-align: right;
   }
@@ -257,16 +250,17 @@ const subscribeLabel = lang === 'en' ? 'Subscribe on Substack →' : 'Assinar no
   .aside { display: flex; flex-direction: column; gap: 18px; }
 
   .newsletter {
-    border: 2px solid var(--accent);
+    border: 3px solid var(--ylw);
     padding: 16px 18px;
-    color: var(--fg);
+    background: #000;
+    color: var(--ylw);
+    position: relative;
   }
   .nl-kicker {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
+    font-family: var(--tiny);
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    color: var(--ylw);
     margin-bottom: 8px;
   }
   .nl-title {
@@ -274,16 +268,24 @@ const subscribeLabel = lang === 'en' ? 'Subscribe on Substack →' : 'Assinar no
     margin: 0 0 8px;
     line-height: 0.95;
     text-transform: uppercase;
-    color: var(--fg);
+    color: var(--ylw);
   }
   .nl-copy {
     font-family: var(--mono);
     font-size: 11px;
     line-height: 1.5;
-    color: var(--fg-2);
+    color: #fff;
     margin: 0 0 12px;
   }
-  .nl-submit { justify-content: center; width: 100%; font-size: 11px; }
+  .nl-form { display: flex; flex-direction: column; gap: 8px; }
+  .nl-input {
+    width: 100%;
+    font-size: 11px;
+    color: var(--ylw);
+    border-color: var(--ylw);
+  }
+  .nl-input::placeholder { color: var(--ylw); opacity: 0.6; }
+  .nl-submit { justify-content: center; }
 
   .archive { display: flex; flex-direction: column; }
   .arch-kicker {
@@ -298,14 +300,29 @@ const subscribeLabel = lang === 'en' ? 'Subscribe on Substack →' : 'Assinar no
   .arch-row {
     font-family: var(--mono);
     font-size: 12px;
-    padding: 5px 0;
-    border-bottom: 1px solid var(--bg-3);
+    padding: 4px 0;
+    border-bottom: 1.5px dashed var(--fg);
     display: flex;
     justify-content: space-between;
-    font-variant-numeric: tabular-nums;
   }
-  .arch-count { color: var(--accent); }
+  .arch-row .arr { color: var(--vio); }
 
+  .webring {
+    border: 2px solid var(--cyan);
+    color: var(--cyan);
+    padding: 10px 12px;
+  }
+  .wr-kicker {
+    font-family: var(--tiny);
+    font-size: 9px;
+    margin-bottom: 6px;
+  }
+  .wr-list {
+    font-family: var(--mono);
+    font-size: 10px;
+    line-height: 1.6;
+  }
+  .wr-list a { color: var(--cyan); }
 
   .serif { font-family: var(--serif); }
 
@@ -315,7 +332,7 @@ const subscribeLabel = lang === 'en' ? 'Subscribe on Substack →' : 'Assinar no
       grid-template-columns: 60px 1fr 24px;
       gap: 8px;
     }
-    .rtag { display: none; }
+    .rtag, .rmins { display: none; }
     .ft-title { font-size: 28px; }
   }
 </style>

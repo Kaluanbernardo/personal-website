@@ -8,6 +8,7 @@ const { lang } = Astro.props;
 const t = ui[lang];
 const pdfHref = link(lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf');
 
+const eyebrow = '02 / CV.PROFISSIONAL';
 const updatedLabel = '';
 
 const sections = lang === 'en'
@@ -61,12 +62,13 @@ const langs = lang === 'en'
 const skillTags = lang === 'en'
   ? ['product management', 'product discovery', 'JTBD', 'double diamond', 'design sprints', 'UX research', 'OKRs', 'A/B testing', 'SQL', 'SEO', 'content strategy', 'editing', 'reporting', 'team leadership', 'Notion', 'Figma']
   : ['product management', 'product discovery', 'JTBD', 'double diamond', 'design sprints', 'UX research', 'OKRs', 'testes A/B', 'SQL', 'SEO', 'estratégia de conteúdo', 'edição', 'reportagem', 'gestão de times', 'Notion', 'Figma'];
-
+const tagBgs = ['var(--hot)', 'var(--cyan)', 'var(--ylw)', 'transparent'];
 ---
 
 <div class="cv-head" id="cv-top">
+  <div class="kicker">{eyebrow}</div>
   <h1 class="ed-bungee headline">
-    {lang === 'en' ? 'RESUME' : 'CURRÍCULO'}
+    {lang === 'en' ? 'RESUME' : 'CURRÍCULO'} <span class="ed-blink mark mark-ylw" aria-hidden="true">▲</span>
   </h1>
 </div>
 
@@ -86,11 +88,11 @@ const skillTags = lang === 'en'
       <div class="info-val acid">{statusVal}</div>
     </div>
 
-    <a class="ed-btn accent download-btn" href={pdfHref} download>↓ {t.cv.download}</a>
+    <a class="ed-btn ylw download-btn" href={pdfHref} download>↓ {t.cv.download}</a>
   </aside>
 
   <main>
-    <details class="section c-ylw" id="experience" open>
+    <details class="section c-ylw" id="experience">
       <summary class="section-summary">
         <span class="section-kicker">{expHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
@@ -143,7 +145,14 @@ const skillTags = lang === 'en'
         <span class="section-toggle" aria-hidden="true">+</span>
       </summary>
       <div class="skill-tags">
-        {skillTags.map((s) => <span class="ed-tag skill-tag">{s}</span>)}
+        {skillTags.map((s, i) => {
+          const bg = tagBgs[i % 4];
+          const transparent = bg === 'transparent';
+          const style = transparent
+            ? 'background:transparent;color:var(--fg);border-color:var(--fg)'
+            : `background:${bg};color:#000;border-color:#000`;
+          return <span class="ed-tag" style={style}>{s}</span>;
+        })}
       </div>
     </details>
 
@@ -171,7 +180,7 @@ const skillTags = lang === 'en'
     font-family: var(--mono);
     font-size: 11px;
     letter-spacing: 0.18em;
-    color: var(--accent);
+    color: var(--ylw);
     text-transform: uppercase;
     margin-bottom: 8px;
   }
@@ -182,7 +191,7 @@ const skillTags = lang === 'en'
     letter-spacing: -0.04em;
     text-transform: uppercase;
   }
-  .headline .arr { color: var(--accent); }
+  .headline .arr { color: var(--ylw); }
   .updated {
     font-family: var(--mono);
     font-size: 11px;
@@ -224,27 +233,27 @@ const skillTags = lang === 'en'
     display: block;
     text-decoration: none;
   }
-  .section-link.on { color: var(--accent); font-weight: 700; }
-  .section-link:hover { background: var(--accent); color: var(--accent-ink); }
+  .section-link.on { color: var(--ylw); font-weight: 700; }
+  .section-link:hover { background: var(--ylw); color: #000; }
 
   .section[id], .cv-head[id] { scroll-margin-top: 24px; }
 
   .info-box {
     margin-top: 24px;
-    border: 2px solid var(--accent);
+    border: 2px solid var(--acid);
     padding: 10px 12px;
     font-family: var(--mono);
   }
   .info-kicker {
     font-size: 9px;
-    color: var(--accent);
+    color: var(--acid);
     letter-spacing: 0.15em;
     text-transform: uppercase;
     margin-top: 6px;
   }
   .info-kicker:first-child { margin-top: 0; }
   .info-val { font-size: 12px; margin-top: 4px; }
-  .info-val.acid { color: var(--accent); }
+  .info-val.acid { color: var(--acid); }
   .download-btn { margin-top: 18px; }
 
   .section { margin-top: 32px; }
@@ -259,13 +268,13 @@ const skillTags = lang === 'en'
     padding: 6px 0;
     border-bottom: 2px solid currentColor;
   }
-  .section.c-ylw .section-summary { color: var(--accent); }
-  .section.c-cyan .section-summary { color: var(--accent); }
-  .section.c-hot .section-summary { color: var(--accent); }
-  .section.c-vio .section-summary { color: var(--accent); }
+  .section.c-ylw .section-summary { color: var(--ylw); }
+  .section.c-cyan .section-summary { color: var(--cyan); }
+  .section.c-hot .section-summary { color: var(--hot); }
+  .section.c-vio .section-summary { color: var(--vio); }
   .section-summary::-webkit-details-marker { display: none; }
   .section-summary::marker { content: ''; }
-  .section-summary:hover .section-kicker { color: var(--accent); }
+  .section-summary:hover .section-kicker { color: var(--ylw); }
   .section-toggle {
     width: 40px;
     height: 40px;
@@ -280,31 +289,31 @@ const skillTags = lang === 'en'
     transition: transform 0.18s ease, background 0.12s linear, color 0.12s linear;
   }
   .section[open] .section-toggle { transform: rotate(45deg); }
-  .section.c-ylw .section-toggle { color: var(--accent); border-color: var(--accent); }
-  .section.c-cyan .section-toggle { color: var(--accent); border-color: var(--accent); }
-  .section.c-hot .section-toggle { color: var(--accent); border-color: var(--accent); }
-  .section.c-vio .section-toggle { color: var(--accent); border-color: var(--accent); }
-  .section[open].c-ylw .section-toggle { background: var(--accent); color: var(--accent-ink); }
-  .section[open].c-cyan .section-toggle { background: var(--accent); color: var(--accent-ink); }
-  .section[open].c-hot .section-toggle { background: var(--accent); color: var(--accent-ink); }
-  .section[open].c-vio .section-toggle { background: var(--accent); color: var(--accent-ink); }
+  .section.c-ylw .section-toggle { color: var(--ylw); border-color: var(--ylw); }
+  .section.c-cyan .section-toggle { color: var(--cyan); border-color: var(--cyan); }
+  .section.c-hot .section-toggle { color: var(--hot); border-color: var(--hot); }
+  .section.c-vio .section-toggle { color: var(--vio); border-color: var(--vio); }
+  .section[open].c-ylw .section-toggle { background: var(--ylw); color: #000; }
+  .section[open].c-cyan .section-toggle { background: var(--cyan); color: #000; }
+  .section[open].c-hot .section-toggle { background: var(--hot); color: #000; }
+  .section[open].c-vio .section-toggle { background: var(--vio); color: #fff; }
 
   .section-kicker {
     font-family: var(--mono);
     font-size: 28px;
     font-weight: 700;
     letter-spacing: 0.04em;
-    color: var(--accent);
+    color: var(--ylw);
     text-transform: uppercase;
     margin: 0;
   }
-  .section-kicker.cyan { color: var(--accent); }
-  .section-kicker.hot { color: var(--accent); }
-  .section-kicker.vio { color: var(--accent); }
+  .section-kicker.cyan { color: var(--cyan); }
+  .section-kicker.hot { color: var(--hot); }
+  .section-kicker.vio { color: var(--vio); }
 
-  .section-rule { border-top: 2px solid var(--accent); margin-bottom: 14px; }
-  .section-rule.cyan { border-top-color: var(--accent); }
-  .section-rule.acid { border-top-color: var(--accent); }
+  .section-rule { border-top: 2px solid var(--ylw); margin-bottom: 14px; }
+  .section-rule.cyan { border-top-color: var(--cyan); }
+  .section-rule.acid { border-top-color: var(--acid); }
 
   .exp-row {
     padding: 14px 0;
@@ -328,12 +337,12 @@ const skillTags = lang === 'en'
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
-  .exp-period.c-ylw { color: var(--accent); }
-  .exp-period.c-hot { color: var(--accent); }
-  .exp-period.c-cyan { color: var(--accent); }
-  .exp-period.c-acid { color: var(--accent); }
-  .exp-period.c-vio { color: var(--accent); }
-  .exp-period.c-orng { color: var(--accent); }
+  .exp-period.c-ylw { color: var(--ylw); }
+  .exp-period.c-hot { color: var(--hot); }
+  .exp-period.c-cyan { color: var(--cyan); }
+  .exp-period.c-acid { color: var(--acid); }
+  .exp-period.c-vio { color: var(--vio); }
+  .exp-period.c-orng { color: var(--orng); }
   .exp-role {
     font-size: 22px;
     line-height: 1.05;
@@ -346,12 +355,12 @@ const skillTags = lang === 'en'
     letter-spacing: -0.01em;
     margin: 4px 0 8px;
   }
-  .exp-org.c-ylw { color: var(--accent); }
-  .exp-org.c-hot { color: var(--accent); }
-  .exp-org.c-cyan { color: var(--accent); }
-  .exp-org.c-acid { color: var(--accent); }
-  .exp-org.c-vio { color: var(--accent); }
-  .exp-org.c-orng { color: var(--accent); }
+  .exp-org.c-ylw { color: var(--ylw); }
+  .exp-org.c-hot { color: var(--hot); }
+  .exp-org.c-cyan { color: var(--cyan); }
+  .exp-org.c-acid { color: var(--acid); }
+  .exp-org.c-vio { color: var(--vio); }
+  .exp-org.c-orng { color: var(--orng); }
   .exp-desc {
     font-size: 14px;
     margin: 0 0 8px;
@@ -362,8 +371,9 @@ const skillTags = lang === 'en'
     font-size: 11px;
     padding: 3px 8px;
     background: transparent;
-    color: var(--fg-2);
-    border-color: var(--fg-3);
+    color: #fff;
+    border-color: var(--ylw);
+    font-weight: 700;
   }
 
   .exp-plus {
@@ -383,27 +393,27 @@ const skillTags = lang === 'en'
     transition: transform 0.18s ease, background 0.12s linear, color 0.12s linear;
   }
   .exp-row:hover .exp-plus { transform: rotate(90deg); }
-  .exp-plus.c-ylw { color: var(--accent); border-color: var(--accent); }
-  .exp-plus.c-hot { color: var(--accent); border-color: var(--accent); }
-  .exp-plus.c-cyan { color: var(--accent); border-color: var(--accent); }
-  .exp-plus.c-acid { color: var(--accent); border-color: var(--accent); }
-  .exp-plus.c-vio { color: var(--accent); border-color: var(--accent); }
-  .exp-plus.c-orng { color: var(--accent); border-color: var(--accent); }
-  .exp-row:hover .exp-plus.c-ylw { background: var(--accent); color: var(--accent-ink); }
-  .exp-row:hover .exp-plus.c-hot { background: var(--accent); color: var(--accent-ink); }
-  .exp-row:hover .exp-plus.c-cyan { background: var(--accent); color: var(--accent-ink); }
-  .exp-row:hover .exp-plus.c-acid { background: var(--accent); color: var(--accent-ink); }
-  .exp-row:hover .exp-plus.c-vio { background: var(--accent); color: var(--accent-ink); }
-  .exp-row:hover .exp-plus.c-orng { background: var(--accent); color: var(--accent-ink); }
+  .exp-plus.c-ylw { color: var(--ylw); border-color: var(--ylw); }
+  .exp-plus.c-hot { color: var(--hot); border-color: var(--hot); }
+  .exp-plus.c-cyan { color: var(--cyan); border-color: var(--cyan); }
+  .exp-plus.c-acid { color: var(--acid); border-color: var(--acid); }
+  .exp-plus.c-vio { color: var(--vio); border-color: var(--vio); }
+  .exp-plus.c-orng { color: var(--orng); border-color: var(--orng); }
+  .exp-row:hover .exp-plus.c-ylw { background: var(--ylw); color: #000; }
+  .exp-row:hover .exp-plus.c-hot { background: var(--hot); color: #000; }
+  .exp-row:hover .exp-plus.c-cyan { background: var(--cyan); color: #000; }
+  .exp-row:hover .exp-plus.c-acid { background: var(--acid); color: #000; }
+  .exp-row:hover .exp-plus.c-vio { background: var(--vio); color: #fff; }
+  .exp-row:hover .exp-plus.c-orng { background: var(--orng); color: #000; }
   .exp-row[open] .exp-plus {
     transform: rotate(45deg);
   }
-  .exp-row[open] .exp-plus.c-ylw { background: var(--accent); color: var(--accent-ink); }
-  .exp-row[open] .exp-plus.c-hot { background: var(--accent); color: var(--accent-ink); }
-  .exp-row[open] .exp-plus.c-cyan { background: var(--accent); color: var(--accent-ink); }
-  .exp-row[open] .exp-plus.c-acid { background: var(--accent); color: var(--accent-ink); }
-  .exp-row[open] .exp-plus.c-vio { background: var(--accent); color: var(--accent-ink); }
-  .exp-row[open] .exp-plus.c-orng { background: var(--accent); color: var(--accent-ink); }
+  .exp-row[open] .exp-plus.c-ylw { background: var(--ylw); color: #000; }
+  .exp-row[open] .exp-plus.c-hot { background: var(--hot); color: #000; }
+  .exp-row[open] .exp-plus.c-cyan { background: var(--cyan); color: #000; }
+  .exp-row[open] .exp-plus.c-acid { background: var(--acid); color: #000; }
+  .exp-row[open] .exp-plus.c-vio { background: var(--vio); color: #fff; }
+  .exp-row[open] .exp-plus.c-orng { background: var(--orng); color: #000; }
 
   .exp-details {
     padding: 14px 0 4px 138px;
@@ -426,7 +436,7 @@ const skillTags = lang === 'en'
   .form-period {
     font-family: var(--mono);
     font-size: 11px;
-    color: var(--accent);
+    color: var(--cyan);
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
@@ -444,12 +454,7 @@ const skillTags = lang === 'en'
   }
 
   .skill-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
-  .skill-tags .ed-tag {
-    font-size: 11px;
-    padding: 4px 8px;
-    color: var(--fg-2);
-    border-color: var(--fg-3);
-  }
+  .skill-tags .ed-tag { font-size: 11px; padding: 4px 8px; }
 
   .langs {
     display: flex;
@@ -469,7 +474,7 @@ const skillTags = lang === 'en'
   .lang-mark {
     display: inline-block;
     margin-left: 4px;
-    color: var(--accent);
+    color: var(--vio);
   }
   .lang-l { font-size: 32px; line-height: 1; }
   .lang-n {

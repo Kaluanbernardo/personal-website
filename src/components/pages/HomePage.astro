@@ -216,7 +216,7 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
 
   .ai-seal {
     position: absolute;
-    top: 168px;
+    top: 50px;
     right: -28px;
     width: 260px;
     height: 260px;
@@ -232,10 +232,10 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     50%      { transform: rotate(-4deg); }
   }
   @media (max-width: 1100px) {
-    .ai-seal { width: 210px; height: 210px; top: 132px; }
+    .ai-seal { width: 210px; height: 210px; top: 40px; }
   }
   @media (max-width: 960px) {
-    .ai-seal { width: 170px; height: 170px; top: 96px; }
+    .ai-seal { width: 170px; height: 170px; top: 16px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -261,7 +261,8 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
 
   .hero-intro {
     font-size: 16px;
-    max-width: 680px;
+    /* reserva a faixa da direita ocupada pelo selo, para o texto não correr por baixo */
+    max-width: min(680px, calc(100% - 300px));
     margin-top: 24px;
     line-height: 1.7;
   }

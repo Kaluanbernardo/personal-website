@@ -1,0 +1,17 @@
+---
+import { sections, type SectionKey } from '../lib/sections';
+
+interface Props {
+  active: SectionKey;
+}
+const { active } = Astro.props;
+const { number, glyph } = sections[active];
+// na home o glifo da seção é o cursor depois do nome, no hero
+const showGlyph = active !== 'home';
+---
+
+<div class="sec-id" aria-hidden="true">
+  <span class="sec-num">{number}</span>
+  {showGlyph && <span class="sec-glyph ed-blink">{glyph}</span>}
+  <span class="sec-rule"></span>
+</div>

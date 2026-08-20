@@ -9,8 +9,11 @@ interface Props {
 const { lang } = Astro.props;
 const t = ui[lang];
 
+const stripYear = (place: string, year: number) =>
+  place.replace(new RegExp(`\\s*[·\\-–]\\s*${year}\\s*$`), '').trim();
+
 const projects = (await getCollection('projects', ({ data }) => data.lang === lang))
-  .map((p) => p.data)
+  .map((p) => ({ ...p.data, place: stripYear(p.data.place, p.data.year) }))
   .sort((a, b) => b.year - a.year);
 
 const kindOrder: string[] = ['jornalismo', 'produto', 'academia', 'palestra', 'pessoal'];
@@ -19,20 +22,11 @@ t.projetos.filters.forEach((label, i) => {
   kindByFilter[label] = i === 0 ? null : kindOrder[i - 1] ?? null;
 });
 
-const eyebrow = `${sections.projetos.number} / ./OUTPUT/*`;
-const kindColor: Record<string, string> = {
-  jornalismo: 'var(--hot)',
-  produto: 'var(--cyan)',
-  academia: 'var(--acid)',
-  palestra: 'var(--vio)',
-  pessoal: 'var(--ylw)',
-};
 ---
 
 <header class="head">
-  <div class="kicker">{eyebrow}</div>
   <h1 class="ed-bungee headline">
-    {t.projetos.title.toUpperCase()} <span class="ed-blink mark mark-orng" aria-hidden="true">▼</span>
+    {t.projetos.title.toUpperCase()}
   </h1>
   <div class="sub">{t.projetos.sub}</div>
 </header>
@@ -52,24 +46,25 @@ const kindColor: Record<string, string> = {
 </div>
 
 <div id="project-grid" class="grid">
-  {projects.map((p, i) => {
-    const c = kindColor[p.kind] ?? 'var(--fg)';
-    const rotate = i % 2 === 0 ? 'rotate(0.4deg)' : 'rotate(-0.4deg)';
-    return (
-      <article class="cell" data-kind={p.kind} style={`--card-c:${c};--rot:${rotate}`}>
-        <a class="card" href={p.url ?? '#'} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
+  {projects.map((p) => (
+    <article class="cell" data-kind={p.kind}>
+      <a class="card" href={p.url ?? '#'} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
+        {p.thumb && (
           <div class="thumb ed-imgframe">
-            <div class="ph">thumb · 4×3</div>
+            <img src={p.thumb} alt="" loading="lazy" decoding="async" />
           </div>
-          <div class="card-body">
-            <span class="card-tag">#{tagDisplay[lang][p.kind] ?? p.kind}</span>
-            <h3 class="ed-bungee card-title">{p.title}</h3>
-            <div class="card-place">{p.place} →</div>
+        )}
+        <div class="card-body">
+          <div class="card-head">
+            <span class="card-tag">{tagDisplay[lang][p.kind] ?? p.kind}</span>
+            <span class="card-year">{p.year}</span>
           </div>
-        </a>
-      </article>
-    );
-  })}
+          <h3 class="ed-bungee card-title">{p.title}</h3>
+          <div class="card-place">{p.place} →</div>
+        </div>
+      </a>
+    </article>
+  ))}
 </div>
 
 <script>
@@ -96,7 +91,7 @@ const kindColor: Record<string, string> = {
     font-family: var(--mono);
     font-size: 11px;
     letter-spacing: 0.18em;
-    color: var(--orng);
+    color: var(--accent);
     text-transform: uppercase;
     margin-bottom: 8px;
   }
@@ -107,7 +102,6 @@ const kindColor: Record<string, string> = {
     letter-spacing: -0.04em;
     text-transform: uppercase;
   }
-  .headline .dot { color: var(--orng); }
   .sub {
     font-family: var(--mono);
     font-size: 11px;
@@ -135,14 +129,14 @@ const kindColor: Record<string, string> = {
     color: var(--bg);
   }
   .filter-btn:focus-visible {
-    outline: 3px solid var(--orng);
+    outline: 3px solid var(--accent);
     outline-offset: 2px;
   }
   .filter-btn:active { transform: translateY(1px); }
   .filter-btn.is-active {
-    background: var(--orng);
-    color: #000;
-    border-color: #000;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
   }
 
   .grid {
@@ -150,9 +144,7 @@ const kindColor: Record<string, string> = {
     grid-template-columns: repeat(3, 1fr);
     gap: 18px;
   }
-  .cell {
-    transform: var(--rot, none);
-  }
+
   .card {
     display: block;
     border: 2.5px solid var(--fg);
@@ -164,20 +156,28 @@ const kindColor: Record<string, string> = {
   .thumb {
     aspect-ratio: 4/3;
     border-bottom: 2.5px solid var(--fg);
-    color: var(--card-c);
   }
   .card-body { padding: 12px 14px; }
+  .card-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
   .card-tag {
-    display: inline-block;
     font-family: var(--mono);
     font-size: 9px;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    background: var(--card-c);
-    color: #000;
-    border: 1.5px solid #000;
-    padding: 2px 6px;
-    margin-bottom: 8px;
+    color: var(--accent);
+  }
+  .card-year {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--fg-3);
+    font-variant-numeric: tabular-nums;
   }
   .card-title {
     font-size: 20px;

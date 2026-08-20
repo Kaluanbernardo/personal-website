@@ -13,13 +13,15 @@ const publications = allPubs
   .map((p) => p.data)
   .sort((a, b) => b.year - a.year);
 
+const eyebrow = '03 / LATTES.CNPQ.BR';
 const linesHeading = lang === 'en' ? '>> RESEARCH LINES' : '>> LINHAS DE PESQUISA';
 const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕES SELECIONADAS';
 ---
 
 <header class="head">
+  <div class="kicker">{eyebrow}</div>
   <h1 class="ed-bungee headline">
-    {lang === 'en' ? 'PUBLICATIONS' : 'PUBLICAÇÕES'}
+    {lang === 'en' ? 'PUBLICATIONS' : 'PUBLICAÇÕES'} <span class="ed-blink mark mark-acid" aria-hidden="true">◆</span>
   </h1>
   <div class="scholar-row">
     {t.academico.scholarIds.map((s) => (
@@ -32,17 +34,23 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
 
 <section class="lines">
   <div class="section-kicker acid">{linesHeading}</div>
-  <hr class="ed-rule" style="border-top-color: var(--accent)" />
+  <hr class="ed-rule" style="border-top-color: var(--acid)" />
   <div class="line-tags">
-    {t.academico.lines.map((l) => (
-      <span class="ed-tag line-tag is-active">{l}</span>
-    ))}
+    {t.academico.lines.map((l, i) => {
+      const bgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'var(--ylw)'];
+      const bg = bgs[i % bgs.length];
+      return (
+        <span class="ed-tag line-tag" style={`background:${bg};color:#000;border-color:#000`}>
+          {l}
+        </span>
+      );
+    })}
   </div>
 </section>
 
 <section class="pubs">
   <div class="section-kicker vio">{pubsHeading}</div>
-  <hr class="ed-rule" style="border-top-color: var(--accent)" />
+  <hr class="ed-rule" style="border-top-color: var(--vio)" />
   {publications.length === 0 ? (
     <div class="empty">
       <span class="ed-blink">[ ]</span> {lang === 'en' ? 'no publications listed yet.' : 'sem publicações listadas ainda.'}
@@ -70,7 +78,7 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
     font-family: var(--mono);
     font-size: 11px;
     letter-spacing: 0.18em;
-    color: var(--accent);
+    color: var(--acid);
     text-transform: uppercase;
     margin-bottom: 10px;
   }
@@ -81,7 +89,7 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
     letter-spacing: -0.04em;
     text-transform: uppercase;
   }
-  .headline .amp { color: var(--accent); }
+  .headline .amp { color: var(--acid); }
   .scholar-row {
     display: flex;
     flex-wrap: wrap;
@@ -97,12 +105,12 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
     font-size: 28px;
     font-weight: 700;
     letter-spacing: 0.04em;
-    color: var(--accent);
+    color: var(--acid);
     text-transform: uppercase;
     margin: 0 0 6px;
   }
-  .section-kicker.cyan { color: var(--accent); }
-  .section-kicker.vio { color: var(--accent); }
+  .section-kicker.cyan { color: var(--cyan); }
+  .section-kicker.vio { color: var(--vio); }
   .ed-rule { border: none; border-top: 2px solid currentColor; margin: 0 0 20px; }
 
   .lines { margin-bottom: 36px; }
@@ -134,8 +142,7 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
     bottom: 6px;
     left: 7px;
     width: 2px;
-    background: var(--accent);
-    color: var(--accent-ink);
+    background: var(--cyan);
   }
   .tl-item {
     position: relative;
@@ -150,14 +157,14 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
     height: 16px;
     border-radius: 50%;
     background: var(--bg);
-    border: 3px solid var(--accent);
+    border: 3px solid var(--cyan);
   }
   .tl-period {
     display: inline-block;
     font-family: var(--mono);
     font-size: 12px;
     letter-spacing: 0.1em;
-    color: var(--accent);
+    color: var(--cyan);
     text-transform: uppercase;
     margin-bottom: 6px;
   }
@@ -171,7 +178,7 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
   .tl-org {
     font-size: 16px;
     font-weight: 700;
-    color: var(--accent);
+    color: var(--cyan);
     margin-bottom: 6px;
   }
   .tl-desc {
@@ -190,12 +197,12 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
     align-items: baseline;
   }
   .pub-row:hover { background: transparent; padding-left: 8px; }
-  .pub-row:hover .pub-title { color: var(--accent); }
+  .pub-row:hover .pub-title { color: var(--vio); }
   .pub-year {
     font-family: var(--mono);
     font-size: 12px;
     letter-spacing: 0.06em;
-    color: var(--accent);
+    color: var(--vio);
   }
   .pub-title {
     font-size: 19px;
@@ -214,13 +221,13 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
     font-family: var(--mono);
     font-size: 10px;
     letter-spacing: 0.08em;
-    color: var(--accent);
+    color: var(--vio);
     text-transform: uppercase;
     text-align: right;
   }
   .pub-arrow {
     font-size: 16px;
-    color: var(--accent);
+    color: var(--vio);
     text-align: right;
   }
   .empty {

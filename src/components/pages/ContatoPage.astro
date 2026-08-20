@@ -6,9 +6,10 @@ interface Props {
 const { lang } = Astro.props;
 const t = ui[lang];
 
+const eyebrow = '06 / ECHO $EMAIL';
 const directLabel = lang === 'en' ? 'OR DIRECT:' : 'OU DIRETO:';
 
-
+const socialColors = ['var(--ylw)', 'var(--cyan)', 'var(--acid)', 'var(--vio)'];
 
 const helloLine1 = lang === 'en' ? "LET'S" : 'FALA';
 const helloLine2 = lang === 'en' ? 'TALK' : 'COMIGO';
@@ -20,20 +21,21 @@ const socialLinks: Record<string, string> = {
 ---
 
 <div class="contato">
+  <div class="kicker">{eyebrow}</div>
   <h1 class="ed-bungee headline">
-    <span class="t-hot">{helloLine1}</span> <span>{helloLine2}</span>
+    <span class="t-hot">{helloLine1}</span> <span>{helloLine2}</span> <span class="ed-blink mark mark-hot" aria-hidden="true">✦</span>
   </h1>
   <p class="intro">{t.contato.intro}</p>
 
   <div class="direct-kicker">{directLabel}</div>
   <div class="cards">
-    <a class="card" href={`mailto:${t.contato.email}`}>
+    <a class="card" href={`mailto:${t.contato.email}`} style="--er-c: var(--hot)">
       <span class="c-name">E-MAIL</span>
       <span class="c-handle">{t.contato.email}</span>
       <span class="c-arr">↗</span>
     </a>
-    {t.contato.socials.map((s) => (
-      <a class="card" href={socialLinks[s.n] ?? '#'} target="_blank" rel="noreferrer noopener">
+    {t.contato.socials.map((s, i) => (
+      <a class="card" href={socialLinks[s.n] ?? '#'} target="_blank" rel="noreferrer noopener" style={`--er-c:${socialColors[i % socialColors.length]}`}>
         <span class="c-name">{s.n.toUpperCase()}</span>
         <span class="c-handle">{s.h}</span>
         <span class="c-arr">↗</span>
@@ -49,7 +51,7 @@ const socialLinks: Record<string, string> = {
     font-family: var(--mono);
     font-size: 11px;
     letter-spacing: 0.18em;
-    color: var(--accent);
+    color: var(--hot);
     text-transform: uppercase;
     margin-bottom: 10px;
   }
@@ -60,7 +62,7 @@ const socialLinks: Record<string, string> = {
     letter-spacing: -0.05em;
     text-transform: uppercase;
   }
-  .headline .t-hot { color: var(--accent); }
+  .headline .t-hot { color: var(--hot); }
   .intro {
     font-size: 20px;
     line-height: 1.5;
@@ -95,15 +97,15 @@ const socialLinks: Record<string, string> = {
   }
   .card:first-child { border-left: 2px solid var(--fg); }
   .card:hover {
-    background: var(--accent);
-    color: var(--accent-ink);
+    background: var(--er-c);
+    color: #000;
   }
-  .card:hover .c-name, .card:hover .c-arr { color: var(--accent-ink); }
+  .card:hover .c-name, .card:hover .c-arr { color: #000; }
   .c-name {
     font-family: var(--mono);
     font-size: 11px;
     letter-spacing: 0.18em;
-    color: var(--accent);
+    color: var(--er-c, var(--hot));
   }
   .c-handle {
     font-family: var(--bungee);
@@ -114,7 +116,7 @@ const socialLinks: Record<string, string> = {
   }
   .c-arr {
     font-size: 22px;
-    color: var(--accent);
+    color: var(--er-c, var(--hot));
     justify-self: end;
   }
 

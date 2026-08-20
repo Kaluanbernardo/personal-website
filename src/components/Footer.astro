@@ -5,10 +5,18 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = ui[lang];
-const where = lang === 'en' ? 'São Paulo · GMT-3' : 'São Paulo · GMT-3';
 ---
 
 <footer class="site-footer">
   <span>{t.footer.note}</span>
-  <span class="foot-where">{where}</span>
 </footer>
+
+<style>
+  .site-footer .middle {
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+  @media (max-width: 720px) {
+    .site-footer .middle { display: none; }
+  }
+</style>

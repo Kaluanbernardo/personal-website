@@ -1,0 +1,1470 @@
+<title>Menos Ruído, Mesma Voz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Departure+Mono&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap">
+
+<style>
+  :root {
+    --ground: #0d0d0b;
+    --surface: #161613;
+    --surface-2: #1d1d19;
+    --line: #2c2c26;
+    --line-2: #3d3d35;
+    --ink: #f2f1e8;
+    --muted: #8f8d82;
+    --muted-2: #6a6862;
+    --accent: #c4ff00;
+    --flag: #ff2d55;
+
+    --mono: 'Departure Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --display: 'Bungee', 'Arial Black', system-ui, sans-serif;
+    --prose: 'Newsreader', Georgia, 'Times New Roman', serif;
+
+    --col: 66ch;
+    --pad: clamp(20px, 5vw, 64px);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--prose);
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 var(--pad) 96px;
+  }
+
+  /* ---------- shared type ---------- */
+  .lbl {
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.4;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .lbl-accent { color: var(--accent); }
+  .lbl-flag { color: var(--flag); }
+
+  h1, h2, h3 { font-family: var(--display); font-weight: 400; text-wrap: balance; }
+
+  h1 {
+    font-size: clamp(38px, 7.4vw, 82px);
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+    margin: 14px 0 0;
+    text-transform: uppercase;
+  }
+  h2 {
+    font-size: clamp(24px, 3.4vw, 34px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin: 0;
+    text-transform: uppercase;
+  }
+  h3 {
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  p { margin: 0 0 1em; }
+  .prose { max-width: var(--col); }
+  .prose strong { font-weight: 600; color: #fff; }
+  em { font-style: italic; color: var(--ink); }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.86em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    padding: 1px 5px;
+    color: var(--ink);
+  }
+
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* ---------- masthead ---------- */
+  .masthead {
+    padding: clamp(40px, 8vw, 88px) 0 clamp(28px, 4vw, 44px);
+    border-bottom: 2px solid var(--ink);
+  }
+  .masthead .thesis {
+    font-size: clamp(19px, 2.3vw, 24px);
+    line-height: 1.45;
+    max-width: 46ch;
+    margin: 26px 0 0;
+    color: var(--ink);
+  }
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 26px;
+    margin-top: 30px;
+  }
+
+  /* ---------- section frame ---------- */
+  section { padding-top: clamp(52px, 7vw, 88px); }
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line-2);
+    margin-bottom: 30px;
+  }
+  .sec-head .lbl { margin-left: auto; }
+
+  /* ---------- diagnostic tiles ---------- */
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin: 0 0 34px;
+  }
+  .tile { background: var(--surface); padding: 18px 18px 20px; }
+  .tile .n {
+    font-family: var(--display);
+    font-size: 40px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--flag);
+    font-variant-numeric: tabular-nums;
+  }
+  .tile .k { margin-top: 10px; font-size: 15px; line-height: 1.35; color: var(--ink); }
+  .tile .s { margin-top: 6px; font-family: var(--mono); font-size: 11px; color: var(--muted-2); line-height: 1.5; }
+
+  /* ---------- rules list ---------- */
+  .rules { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .rule {
+    background: var(--surface);
+    display: grid;
+    grid-template-columns: 62px minmax(0, 1fr);
+    gap: 0 20px;
+    padding: 22px 20px;
+  }
+  .rule .rn {
+    font-family: var(--display);
+    font-size: 22px;
+    color: var(--accent);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .rule h3 { margin-bottom: 8px; }
+  .rule p { margin: 0; font-size: 16px; max-width: 62ch; color: var(--ink); }
+  .rule p + p { margin-top: 8px; }
+  .rule .keep {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: 12px;
+    display: block;
+  }
+
+  /* ---------- legend ---------- */
+  .legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 18px 26px;
+    border: 1px dashed var(--line-2);
+    padding: 20px;
+    background: var(--surface);
+  }
+  .legend-item { display: flex; gap: 12px; align-items: flex-start; }
+  .legend-item .lbl { letter-spacing: 0.08em; color: var(--ink); }
+  .swatch { flex: none; width: 46px; margin-top: 3px; }
+
+  /* ---------- wireframe scaffolding ---------- */
+  .pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .pane { background: var(--ground); padding: 16px 16px 20px; min-width: 0; }
+  .pane-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .pane-head .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    border: 1px solid currentColor;
+  }
+  .tag-antes { color: var(--flag); }
+  .tag-depois { color: var(--accent); }
+  .pane-head .note { font-family: var(--mono); font-size: 10px; color: var(--muted-2); letter-spacing: 0.06em; }
+
+  /* the fake browser frame */
+  .wf {
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    padding: 9px;
+    display: grid;
+    gap: 9px;
+  }
+  .wf-row { display: grid; gap: 7px; }
+  .wf-cols { display: grid; gap: 7px; }
+
+  /* primitives */
+  .bar { height: 6px; background: var(--line-2); width: var(--w, 100%); }
+  .bar.lite { background: #26261f; }
+  .bar.tall { height: 9px; }
+  .blk {
+    background: var(--muted);
+    height: var(--h, 26px);
+    width: var(--w, 70%);
+  }
+  .blk.ghost { background: transparent; border: 1.5px solid var(--muted); }
+  .box {
+    border: 1px solid var(--line-2);
+    padding: 8px;
+    display: grid;
+    gap: 6px;
+    align-content: start;
+    min-width: 0;
+  }
+  .box.solid { background: var(--surface-2); }
+  .box.flag { border-color: var(--flag); }
+  .box.accent { border-color: var(--accent); }
+  .box.tilt { transform: rotate(-0.5deg); }
+  .box.tilt-r { transform: rotate(0.5deg); }
+  .hr { height: 1px; background: var(--line-2); }
+  .hr.thick { height: 2px; background: var(--muted); }
+  .hr.dash { height: 0; border-top: 1px dashed var(--line-2); }
+  .hr.rainbow {
+    height: 5px;
+    background: linear-gradient(90deg, #ff2d55, #ff6a00, #ffe600, #c4ff00, #00f0ff, #b400ff);
+  }
+  .hr.accent { height: 4px; background: var(--accent); }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .chip {
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 5px;
+    border: 1px solid var(--line-2);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .chip.on { border-color: var(--accent); color: var(--accent); }
+  .chip.c0 { background: #ff2d55; border-color: #ff2d55; color: #000; }
+  .chip.c1 { background: #c4ff00; border-color: #c4ff00; color: #000; }
+  .chip.c2 { background: #00f0ff; border-color: #00f0ff; color: #000; }
+  .chip.c3 { background: #ffe600; border-color: #ffe600; color: #000; }
+  .chip.c4 { background: #b400ff; border-color: #b400ff; color: #fff; }
+  .chip.c5 { background: #ff6a00; border-color: #ff6a00; color: #000; }
+  .glyph {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--flag);
+    letter-spacing: 0.1em;
+  }
+  .glyph.calm { color: var(--muted-2); }
+  .glyph.accent { color: var(--accent); }
+  .mini {
+    font-family: var(--mono);
+    font-size: 8.5px;
+    line-height: 1.5;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--muted-2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mini.ink { color: var(--ink); }
+  .mini.accent { color: var(--accent); }
+  .mini.flag { color: var(--flag); }
+  .mini.wrap { white-space: normal; }
+  .photo {
+    border: 1px solid var(--line-2);
+    background:
+      repeating-linear-gradient(-45deg, transparent 0 5px, #24241e 5px 6px),
+      var(--surface-2);
+    display: grid;
+    place-items: center;
+    aspect-ratio: var(--ar, 4 / 5);
+  }
+  .photo.plain { background: var(--surface-2); }
+  .grid-bg {
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size: 16px 16px;
+  }
+  .seal {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: conic-gradient(#ff2d55, #ff6a00, #ffe600, #c4ff00, #00f0ff, #b400ff, #ff2d55);
+    border: 1.5px solid #000;
+    display: grid;
+    place-items: center;
+    font-family: var(--mono);
+    font-size: 7px;
+    color: #000;
+    justify-self: end;
+    margin-top: -22px;
+    margin-right: -6px;
+    position: relative;
+    z-index: 2;
+  }
+  .seal.spin { box-shadow: 0 0 0 2px rgba(255,45,85,.35); }
+
+  /* index rows */
+  .irow {
+    display: grid;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .irow.wide { grid-template-columns: 18px minmax(0,1fr) 62px 26px 10px; }
+  .irow.calm { grid-template-columns: 18px minmax(0,1fr) 30px 10px; }
+
+  /* callouts under a wireframe */
+  .notes { margin-top: 22px; display: grid; gap: 14px; }
+  .note-item {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr);
+    gap: 0 14px;
+    align-items: start;
+  }
+  .note-item .pin {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    text-align: center;
+    line-height: 1.7;
+    margin-top: 3px;
+  }
+  .note-item p { margin: 0; font-size: 16px; max-width: 76ch; }
+  .note-item .from {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted-2);
+    display: block;
+    margin-top: 5px;
+  }
+  .note-item .from b { color: var(--muted); font-weight: 400; }
+
+  /* keep / drop table */
+  .kd { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .kd-col { background: var(--surface); padding: 20px; }
+  .kd-col ul { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 9px; }
+  .kd-col li { font-size: 16px; display: grid; grid-template-columns: 18px 1fr; gap: 8px; }
+  .kd-col li span.m { font-family: var(--mono); font-size: 12px; margin-top: 3px; }
+  .kd-keep li span.m { color: var(--accent); }
+  .kd-drop li span.m { color: var(--flag); }
+
+  /* phases */
+  .phases { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .phase { background: var(--surface); padding: 18px 20px; display: grid; grid-template-columns: 86px minmax(0,1fr); gap: 0 18px; }
+  .phase .lbl { margin-top: 4px; }
+  .phase p { margin: 0; font-size: 16px; max-width: 68ch; }
+
+  footer.doc {
+    margin-top: clamp(56px, 8vw, 96px);
+    border-top: 2px solid var(--ink);
+    padding-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 24px;
+  }
+
+  @media (max-width: 820px) {
+    .pair { grid-template-columns: minmax(0, 1fr); }
+    body { font-size: 16px; }
+    .rule { grid-template-columns: 40px minmax(0, 1fr); gap: 0 14px; }
+    .irow.wide { grid-template-columns: 16px minmax(0,1fr) 44px 10px; }
+    .irow.wide > :nth-child(4) { display: none; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="lbl">Proposta de design · wireframes · kaluanbernardo.com</div>
+    <h1>Menos ruído,<br>mesma voz</h1>
+    <p class="thesis">
+      O site já comunica criatividade. O problema não é a estética —
+      é que <em>tudo</em> grita no mesmo volume ao mesmo tempo.
+      A proposta mantém o punk e devolve a hierarquia.
+    </p>
+    <div class="meta-row">
+      <span class="lbl">Escopo · 7 telas + shell</span>
+      <span class="lbl">Entrega · wireframes, sem código</span>
+      <span class="lbl lbl-accent">Identidade · preservada</span>
+    </div>
+  </header>
+
+  <!-- ============ DIAGNÓSTICO ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>O que está competindo</h2>
+      <span class="lbl">Inventário do estado atual</span>
+    </div>
+
+    <div class="tiles">
+      <div class="tile">
+        <div class="n">8</div>
+        <div class="k">famílias tipográficas carregadas</div>
+        <div class="s">Bungee, Bungee Shade, Departure Mono, Major Mono, Press Start 2P, Space Grotesk, Space Mono, VT323 — 4 delas quase sem uso</div>
+      </div>
+      <div class="tile">
+        <div class="n">7</div>
+        <div class="k">neons no mesmo peso visual</div>
+        <div class="s">Nenhum é destaque porque todos são destaque</div>
+      </div>
+      <div class="tile">
+        <div class="n">7</div>
+        <div class="k">cores de marcação num só parágrafo</div>
+        <div class="s">O texto de apresentação da home vira arco-íris</div>
+      </div>
+      <div class="tile">
+        <div class="n">10</div>
+        <div class="k">elementos em movimento</div>
+        <div class="s">8 glifos piscando (um por página), relógio da statusbar, selo girando</div>
+      </div>
+      <div class="tile">
+        <div class="n">3</div>
+        <div class="k">navegações simultâneas na home</div>
+        <div class="s">Nav do topo, índice 00–06 e grid de 6 posts</div>
+      </div>
+      <div class="tile">
+        <div class="n">4</div>
+        <div class="k">blocos de conteúdo fictício</div>
+        <div class="s">Arquivo do blog inventado, newsletter que não envia, thumbs vazios, factsheet com <code>NASC 19xx</code></div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>
+        Nenhum desses itens é ruim isoladamente. O custo é cumulativo: quando cada
+        elemento reivindica atenção máxima, o visitante não encontra o caminho —
+        ele encontra textura. E num site profissional, o dado fictício é o único
+        ruído que cobra preço em credibilidade, não só em atenção.
+      </p>
+      <p>
+        As cinco regras abaixo não removem a linguagem do site. Elas dão a ela um
+        <strong>orçamento</strong>: quanta cor, quanto movimento e quanta tipografia cada
+        tela pode gastar. É o mesmo vocabulário, racionado.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ REGRAS ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>Cinco regras</h2>
+      <span class="lbl">O orçamento visual</span>
+    </div>
+
+    <div class="rules">
+      <div class="rule">
+        <div class="rn">01</div>
+        <div>
+          <h3>Um acento por tela</h3>
+          <p>
+            O cinza carrega a estrutura; o neon marca só ação, estado e o número da seção.
+            O sistema de cor por seção continua existindo — verde na home, ciano no sobre,
+            violeta no blog — mas cada página gasta <strong>uma</strong> cor viva em vez de sete.
+            É o que transforma a paleta de textura em sinal.
+          </p>
+          <span class="keep">Mantém: os 7 acentos como sistema, um por seção</span>
+        </div>
+      </div>
+
+      <div class="rule">
+        <div class="rn">02</div>
+        <div>
+          <h3>Três tipografias, três funções</h3>
+          <p>
+            Bungee para display, Departure Mono para interface e metadado, uma serifada
+            para leitura. Saem Bungee Shade, Major Mono Display, Press Start 2P e VT323 —
+            quatro famílias que aparecem em pouquíssimos lugares e custam peso de página.
+            O Bungee gigante é a assinatura; ele fica mais forte sem quatro concorrentes.
+          </p>
+          <span class="keep">Mantém: display Bungee, interface monoespaçada</span>
+        </div>
+      </div>
+
+      <div class="rule">
+        <div class="rn">03</div>
+        <div>
+          <h3>Um movimento por tela</h3>
+          <p>
+            O cursor piscando depois do nome, na home, é assinatura — fica.
+            Os glifos piscando em <em>toda</em> headline (▼ ● ▲ ■ ✦ ◆), o relógio de segundos
+            fixo no rodapé e o selo balançando são três fontes de movimento periférico
+            simultâneo, que é exatamente o que o olho não consegue ignorar.
+          </p>
+          <span class="keep">Mantém: selo I.A.S (parado), cursor da home</span>
+        </div>
+      </div>
+
+      <div class="rule">
+        <div class="rn">04</div>
+        <div>
+          <h3>Uma navegação por tela</h3>
+          <p>
+            A home oferece três caminhos para os mesmos seis destinos. A proposta mantém
+            o índice brutalista como protagonista — ele é a melhor peça do site — e alivia
+            o que está em volta: colunas de metadado decorativo saem, o grid de posts cai
+            de seis para três.
+          </p>
+          <span class="keep">Mantém: índice numerado 00–06, linhas com hover</span>
+        </div>
+      </div>
+
+      <div class="rule">
+        <div class="rn">05</div>
+        <div>
+          <h3>Zero conteúdo fictício</h3>
+          <p>
+            Arquivo mensal com contagens inventadas, formulário de newsletter que não
+            envia, miniaturas hachuradas vazias em todos os projetos, <code>MOOD: focado</code>.
+            Cada um desses ocupa espaço, pede atenção e não entrega nada — e alguns
+            levantam dúvida sobre o resto. Ou vira dado real, ou sai.
+          </p>
+          <span class="keep">Mantém: o humor do conteúdo real</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LEGENDA ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>Como ler os wireframes</h2>
+      <span class="lbl">Notação</span>
+    </div>
+    <div class="legend">
+      <div class="legend-item">
+        <div class="swatch"><div class="bar" style="--w:100%"></div></div>
+        <div class="lbl">Barra = linha de texto</div>
+      </div>
+      <div class="legend-item">
+        <div class="swatch"><div class="blk" style="--w:100%;--h:14px"></div></div>
+        <div class="lbl">Bloco cheio = tipografia display</div>
+      </div>
+      <div class="legend-item">
+        <div class="swatch"><div class="box flag" style="height:14px;padding:0"></div></div>
+        <div class="lbl lbl-flag">Contorno rosa = ruído a cortar</div>
+      </div>
+      <div class="legend-item">
+        <div class="swatch"><div class="hr accent"></div></div>
+        <div class="lbl lbl-accent">Verde = único acento permitido</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WF 00 — SHELL ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>Shell</h2>
+      <span class="lbl">Cabeçalho · rodapé · statusbar</span>
+    </div>
+
+    <div class="pair">
+      <div class="pane">
+        <div class="pane-head">
+          <span class="tag tag-antes">Antes</span>
+          <span class="note">3 camadas de moldura permanente</span>
+        </div>
+        <div class="wf">
+          <!-- header -->
+          <div class="wf-row" style="grid-template-columns:auto 1fr auto;align-items:center;border-bottom:2px solid var(--muted);padding-bottom:7px">
+            <div class="chip c0">Kalu</div>
+            <div class="chips" style="justify-content:center">
+              <span class="chip">00 home</span><span class="chip c1">01 sobre</span>
+              <span class="chip">02 cv</span><span class="chip">03 acad</span>
+              <span class="chip">04 proj</span><span class="chip">05 blog</span>
+              <span class="chip">06 cont</span>
+            </div>
+            <div class="chips"><span class="chip c1">pt</span><span class="chip">en</span></div>
+          </div>
+          <!-- body stub -->
+          <div class="wf-row" style="padding:14px 0 18px">
+            <div class="bar" style="--w:82%"></div>
+            <div class="bar" style="--w:70%"></div>
+            <div class="bar lite" style="--w:44%"></div>
+          </div>
+          <div class="hr thick"></div>
+          <div class="mini">nota do rodapé</div>
+          <div class="box flag" style="padding:5px 7px">
+            <div class="wf-row" style="grid-template-columns:auto auto 1fr;align-items:center;gap:10px">
+              <span class="mini flag">14:32:07 ◍</span>
+              <span class="mini">v0.404 · no_cookies</span>
+              <span class="mini flag" style="text-align:right">statusbar fixa · 56px sempre na tela</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane">
+        <div class="pane-head">
+          <span class="tag tag-depois">Depois</span>
+          <span class="note">1 moldura, mais ar, terminal preservado</span>
+        </div>
+        <div class="wf">
+          <div class="wf-row" style="grid-template-columns:auto 1fr auto;align-items:center;border-bottom:2px solid var(--muted);padding-bottom:7px">
+            <div class="chip" style="border-color:var(--ink);color:var(--ink)">Kalu</div>
+            <div class="chips" style="justify-content:center">
+              <span class="chip on">00 home</span><span class="chip">01 sobre</span>
+              <span class="chip">02 cv</span><span class="chip">03 acad</span>
+              <span class="chip">04 proj</span><span class="chip">05 blog</span>
+              <span class="chip">06 cont</span>
+            </div>
+            <div class="chips"><span class="chip on">pt</span><span class="chip">en</span></div>
+          </div>
+          <div class="wf-row" style="padding:22px 0 30px">
+            <div class="bar" style="--w:82%"></div>
+            <div class="bar" style="--w:70%"></div>
+            <div class="bar lite" style="--w:44%"></div>
+          </div>
+          <div class="hr thick"></div>
+          <div class="wf-row" style="grid-template-columns:1fr auto;align-items:center">
+            <span class="mini">nota do rodapé · são paulo, -3 gmt</span>
+            <span class="mini">v0.404 · no_cookies</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note-item">
+        <div class="pin">1</div>
+        <p>
+          A statusbar fixa vira uma linha estática no rodapé. O toque de terminal
+          continua; o relógio de segundos — o único elemento que se move em todas as
+          páginas, o tempo inteiro — sai, e a tela devolve 56px de altura útil.
+          <span class="from"><b>Antes:</b> barra fixa com relógio + versão &nbsp;·&nbsp; <b>Depois:</b> rodapé em uma linha</span>
+        </p>
+      </div>
+      <div class="note-item">
+        <div class="pin">2</div>
+        <p>
+          O monograma <code>Kalu</code> deixa de ser um bloco magenta permanente e passa
+          a herdar a cor do texto, com o acento da seção atual reservado para o item ativo
+          do menu. O cabeçalho para de disputar com a headline logo abaixo.
+          <span class="from"><b>Antes:</b> marca magenta + item ativo colorido + idioma colorido &nbsp;·&nbsp; <b>Depois:</b> só o item ativo colorido</span>
+        </p>
+      </div>
+      <div class="note-item">
+        <div class="pin">3</div>
+        <p>
+          O hover global que pinta qualquer link de amarelo fica restrito a menu, listas e
+          botões. Em texto corrido, link é sublinhado no acento da página — o gesto punk
+          continua onde ele orienta, e sai de onde ele interrompe a leitura.
+          <span class="from"><b>Antes:</b> <code>a:hover</code> amarelo em tudo &nbsp;·&nbsp; <b>Depois:</b> escopo em navegação</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WF 01 — HOME ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>00 · Home</h2>
+      <span class="lbl">Hero · índice · do blog</span>
+    </div>
+
+    <div class="pair">
+      <div class="pane">
+        <div class="pane-head">
+          <span class="tag tag-antes">Antes</span>
+          <span class="note">grid de fundo + 9 chips + 6 cards</span>
+        </div>
+        <div class="wf grid-bg">
+          <!-- hero -->
+          <div class="wf-cols" style="grid-template-columns:minmax(0,1fr) 88px">
+            <div class="wf-row">
+              <div class="blk" style="--w:88%;--h:30px"></div>
+              <div class="blk ghost" style="--w:74%;--h:30px"></div>
+              <div class="wf-row" style="margin-top:6px">
+                <div class="wf-row" style="grid-template-columns:repeat(6,auto) 1fr;gap:3px">
+                  <span class="chip c0">■</span><span class="chip c2">■</span><span class="chip c1">■</span>
+                  <span class="chip c4">■</span><span class="chip c3">■</span><span class="chip c5">■</span>
+                  <span class="bar" style="--w:100%;margin-top:5px"></span>
+                </div>
+                <div class="bar" style="--w:94%"></div>
+                <div class="bar" style="--w:88%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="photo"></div>
+              <div class="seal spin">I.A.S</div>
+            </div>
+          </div>
+          <!-- tags -->
+          <div class="box flag" style="padding:6px">
+            <div class="chips">
+              <span class="chip c0">produto</span><span class="chip c1">jornalismo</span>
+              <span class="chip c2">conteúdo</span><span class="chip c3">tecnologia</span>
+              <span class="chip c4">games</span><span class="chip c5">cultura</span>
+              <span class="chip c0">estratégia</span><span class="chip c1">ia</span>
+              <span class="chip c2">educação</span>
+            </div>
+          </div>
+          <!-- index -->
+          <div class="wf-row" style="grid-template-columns:1fr auto;align-items:baseline">
+            <span class="mini flag">&gt;&gt;&gt; índice / navegação raw</span>
+            <span class="mini">06_entradas</span>
+          </div>
+          <div class="hr rainbow"></div>
+          <div>
+            <div class="irow wide"><span class="mini flag">[01]</span><span class="blk" style="--w:52%;--h:13px"></span><span class="mini flag">&gt; who_is.txt</span><span class="mini flag">2 min</span><span class="glyph">→</span></div>
+            <div class="irow wide"><span class="mini flag">[02]</span><span class="blk" style="--w:64%;--h:13px"></span><span class="mini flag">&gt; work.pdf</span><span class="mini flag">pdf</span><span class="glyph">→</span></div>
+            <div class="irow wide"><span class="mini flag">[03]</span><span class="blk" style="--w:58%;--h:13px"></span><span class="mini flag">&gt; lattes.br</span><span class="mini flag">cv</span><span class="glyph">→</span></div>
+            <div class="irow wide"><span class="mini flag">[04]</span><span class="blk" style="--w:44%;--h:13px"></span><span class="mini flag">&gt; ./output/*</span><span class="mini flag">8 itens</span><span class="glyph">→</span></div>
+            <div class="irow wide"><span class="mini flag">[05]</span><span class="blk" style="--w:30%;--h:13px"></span><span class="mini flag">&gt; cat *.md</span><span class="mini flag">6 posts</span><span class="glyph">→</span></div>
+            <div class="irow wide"><span class="mini flag">[06]</span><span class="blk" style="--w:48%;--h:13px"></span><span class="mini flag">&gt; echo $EMAIL</span><span class="mini flag">@</span><span class="glyph">→</span></div>
+          </div>
+          <!-- from blog -->
+          <div class="wf-row" style="grid-template-columns:1fr auto;align-items:baseline;margin-top:4px">
+            <div class="blk" style="--w:34%;--h:15px"></div>
+            <span class="mini flag">todos os posts →</span>
+          </div>
+          <div class="wf-cols" style="grid-template-columns:repeat(3,1fr);gap:0">
+            <div class="box" style="border-right:none"><span class="mini flag">#produto</span><div class="blk" style="--w:90%;--h:11px"></div><div class="blk" style="--w:60%;--h:11px"></div><span class="mini">abr · 7 min</span></div>
+            <div class="box" style="border-right:none"><span class="mini flag">#notas</span><div class="blk" style="--w:80%;--h:11px"></div><div class="blk" style="--w:70%;--h:11px"></div><span class="mini">abr · 5 min</span></div>
+            <div class="box"><span class="mini flag">#leitura</span><div class="blk" style="--w:88%;--h:11px"></div><div class="blk" style="--w:52%;--h:11px"></div><span class="mini">abr · 9 min</span></div>
+          </div>
+          <div class="wf-cols" style="grid-template-columns:repeat(3,1fr);gap:0;margin-top:-9px">
+            <div class="box" style="border-right:none;border-top:none"><span class="mini flag">#academia</span><div class="blk" style="--w:76%;--h:11px"></div><span class="mini">mar · 6 min</span></div>
+            <div class="box" style="border-right:none;border-top:none"><span class="mini flag">#produto</span><div class="blk" style="--w:86%;--h:11px"></div><span class="mini">mar · 4 min</span></div>
+            <div class="box" style="border-top:none"><span class="mini flag">#notas</span><div class="blk" style="--w:64%;--h:11px"></div><span class="mini">mar · 8 min</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane">
+        <div class="pane-head">
+          <span class="tag tag-depois">Depois</span>
+          <span class="note">o índice como protagonista</span>
+        </div>
+        <div class="wf">
+          <!-- hero -->
+          <div class="wf-cols" style="grid-template-columns:minmax(0,1fr) 88px">
+            <div class="wf-row">
+              <div class="blk" style="--w:88%;--h:30px"></div>
+              <div class="blk ghost" style="--w:74%;--h:30px"></div>
+              <div class="wf-row" style="margin-top:12px">
+                <div class="wf-row" style="grid-template-columns:auto auto 1fr;gap:4px;align-items:center">
+                  <span class="chip c1">produtos</span><span class="chip on">estratégias</span>
+                  <span class="bar" style="--w:100%"></span>
+                </div>
+                <div class="bar" style="--w:94%"></div>
+                <div class="bar" style="--w:72%"></div>
+              </div>
+              <div class="chips" style="margin-top:14px">
+                <span class="chip">produto</span><span class="chip">jornalismo</span>
+                <span class="chip">tecnologia</span><span class="chip">educação</span>
+                <span class="chip">cultura</span>
+              </div>
+            </div>
+            <div>
+              <div class="photo plain"></div>
+              <div class="seal">I.A.S</div>
+            </div>
+          </div>
+
+          <!-- index -->
+          <div class="wf-row" style="grid-template-columns:1fr auto;align-items:baseline;margin-top:16px">
+            <span class="mini ink">índice</span>
+            <span class="mini">06 seções</span>
+          </div>
+          <div class="hr accent"></div>
+          <div>
+            <div class="irow calm"><span class="mini accent">01</span><span class="blk" style="--w:52%;--h:15px"></span><span class="mini"></span><span class="glyph calm">→</span></div>
+            <div class="irow calm"><span class="mini accent">02</span><span class="blk" style="--w:64%;--h:15px"></span><span class="mini">pdf</span><span class="glyph calm">→</span></div>
+            <div class="irow calm"><span class="mini accent">03</span><span class="blk" style="--w:58%;--h:15px"></span><span class="mini"></span><span class="glyph calm">→</span></div>
+            <div class="irow calm"><span class="mini accent">04</span><span class="blk" style="--w:44%;--h:15px"></span><span class="mini">8</span><span class="glyph calm">→</span></div>
+            <div class="irow calm"><span class="mini accent">05</span><span class="blk" style="--w:30%;--h:15px"></span><span class="mini">6</span><span class="glyph calm">→</span></div>
+            <div class="irow calm"><span class="mini accent">06</span><span class="blk" style="--w:48%;--h:15px"></span><span class="mini"></span><span class="glyph calm">→</span></div>
+          </div>
+
+          <!-- from blog -->
+          <div class="wf-row" style="grid-template-columns:1fr auto;align-items:baseline;margin-top:20px">
+            <div class="blk" style="--w:34%;--h:15px"></div>
+            <span class="mini">todos os posts →</span>
+          </div>
+          <div class="wf-cols" style="grid-template-columns:repeat(3,1fr);gap:0">
+            <div class="box" style="border-right:none"><span class="mini">#produto</span><div class="blk" style="--w:90%;--h:11px"></div><div class="blk" style="--w:60%;--h:11px"></div><span class="mini">abr · 7 min</span></div>
+            <div class="box" style="border-right:none"><span class="mini">#notas</span><div class="blk" style="--w:80%;--h:11px"></div><div class="blk" style="--w:70%;--h:11px"></div><span class="mini">abr · 5 min</span></div>
+            <div class="box"><span class="mini">#leitura</span><div class="blk" style="--w:88%;--h:11px"></div><div class="blk" style="--w:52%;--h:11px"></div><span class="mini">abr · 9 min</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note-item">
+        <div class="pin">1</div>
+        <p>
+          O parágrafo de apresentação passa de sete marcações coloridas para duas.
+          O gesto de marca-texto — que é assinatura do site — continua, aplicado às
+          duas palavras que realmente definem o trabalho; o resto do texto volta a ser
+          legível como frase.
+          <span class="from"><b>Antes:</b> produtos, estratégias, análises, aulas, ideias, carimbó, estudar &nbsp;·&nbsp; <b>Depois:</b> duas</span>
+        </p>
+      </div>
+      <div class="note-item">
+        <div class="pin">2</div>
+        <p>
+          As nove tags de assunto em seis cores viram cinco tags em contorno, com o acento
+          entrando só no hover. Elas param de brigar com o nome em Bungee logo acima —
+          que é o elemento que deveria vencer essa tela.
+          <span class="from"><b>Antes:</b> 9 chips sólidos coloridos &nbsp;·&nbsp; <b>Depois:</b> 5 chips outline</span>
+        </p>
+      </div>
+      <div class="note-item">
+        <div class="pin">3</div>
+        <p>
+          O índice perde duas colunas: os caminhos de terminal decorativos
+          (<code>&gt; who_is_this.txt</code>, <code>&gt; echo $EMAIL</code>) e os metadados
+          repetidos. Ficam número, título e um contador só onde ele é informação real —
+          quantidade de projetos e de posts. Com o ruído fora, o título pode crescer.
+          <span class="from"><b>Antes:</b> 5 colunas por linha &nbsp;·&nbsp; <b>Depois:</b> 3, título maior</span>
+        </p>
+      </div>
+      <div class="note-item">
+        <div class="pin">4</div>
+        <p>
+          A régua arco-íris sob o cabeçalho do índice vira uma régua sólida no acento da
+          página, e o grid do fundo do hero sai. São dois elementos que existem só como
+          textura atrás de conteúdo — e a textura é justamente o que está disputando
+          com o texto.
+          <span class="from"><b>Antes:</b> régua de 6 cores + grid de fundo &nbsp;·&nbsp; <b>Depois:</b> régua sólida, fundo limpo</span>
+        </p>
+      </div>
+      <div class="note-item">
+        <div class="pin">5</div>
+        <p>
+          Seis cards de blog na home viram três — a home mostra que há um blog vivo,
+          o blog mostra o blog. O selo I.A.S fica exatamente como está, só sem a animação
+          de balanço.
+          <span class="from"><b>Antes:</b> 6 cards + selo animado &nbsp;·&nbsp; <b>Depois:</b> 3 cards + selo parado</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WF 05 — BLOG ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>05 · Blog</h2>
+      <span class="lbl">Índice de posts</span>
+    </div>
+
+    <div class="pair">
+      <div class="pane">
+        <div class="pane-head">
+          <span class="tag tag-antes">Antes</span>
+          <span class="note">sidebar com 2 blocos fictícios</span>
+        </div>
+        <div class="wf">
+          <div class="wf-row" style="grid-template-columns:auto auto;justify-content:start;align-items:center;gap:8px">
+            <span class="mini flag">05 / *.MD</span>
+          </div>
+          <div class="wf-row" style="grid-template-columns:auto auto;justify-content:start;align-items:center;gap:8px">
+            <div class="blk" style="--w:110px;--h:24px"></div>
+            <span class="glyph">■ pisca</span>
+          </div>
+          <div class="chips">
+            <span class="chip c4">todos</span><span class="chip">produto</span><span class="chip">jornalismo</span>
+            <span class="chip">academia</span><span class="chip">leitura</span><span class="chip">notas</span>
+          </div>
+          <div class="wf-cols" style="grid-template-columns:minmax(0,1fr) 108px">
+            <div class="wf-row">
+              <div class="box" style="border-color:var(--muted)">
+                <span class="mini flag">★★ post em destaque ★★</span>
+                <div class="blk" style="--w:88%;--h:16px"></div>
+                <div class="bar" style="--w:96%"></div>
+                <div class="bar" style="--w:78%"></div>
+                <span class="mini flag">abr/26 · 7 min · #produto</span>
+              </div>
+              <div class="irow wide"><span class="mini">12 abr</span><span class="blk" style="--w:70%;--h:12px"></span><span class="mini flag">#notas</span><span class="mini flag">5 min</span><span class="glyph">→</span></div>
+              <div class="irow wide"><span class="mini">03 abr</span><span class="blk" style="--w:82%;--h:12px"></span><span class="mini flag">#produto</span><span class="mini flag">9 min</span><span class="glyph">→</span></div>
+              <div class="irow wide"><span class="mini">28 mar</span><span class="blk" style="--w:64%;--h:12px"></span><span class="mini flag">#leitura</span><span class="mini flag">4 min</span><span class="glyph">→</span></div>
+              <div class="irow wide"><span class="mini">20 mar</span><span class="blk" style="--w:76%;--h:12px"></span><span class="mini flag">#academia</span><span class="mini flag">6 min</span><span class="glyph">→</span></div>
+            </div>
+            <div class="wf-row">
+              <div class="box flag">
+                <span class="mini flag">★ newsletter ★</span>
+                <div class="blk" style="--w:80%;--h:13px"></div>
+                <div class="bar" style="--w:100%"></div>
+                <div class="box" style="height:14px;padding:0"></div>
+                <div class="chip c3" style="justify-self:start">subscribe →</div>
+                <span class="mini flag wrap">form não envia</span>
+              </div>
+              <div class="box flag">
+                <span class="mini flag">./arquivo</span>
+                <span class="mini flag">abr/26 (4) →</span>
+                <span class="mini flag">mar/26 (3) →</span>
+                <span class="mini flag">fev/26 (5) →</span>
+                <span class="mini flag">jan/26 (2) →</span>
+                <span class="mini flag wrap">contagens fixas no código</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane">
+        <div class="pane-head">
+          <span class="tag tag-depois">Depois</span>
+          <span class="note">uma coluna de leitura, um convite real</span>
+        </div>
+        <div class="wf">
+          <div class="wf-row" style="grid-template-columns:auto;justify-content:start">
+            <span class="mini">05 · blog</span>
+          </div>
+          <div class="wf-row" style="grid-template-columns:auto;justify-content:start">
+            <div class="blk" style="--w:110px;--h:24px"></div>
+          </div>
+          <div class="chips">
+            <span class="chip on">todos</span><span class="chip">produto</span><span class="chip">jornalismo</span>
+            <span class="chip">academia</span><span class="chip">leitura</span><span class="chip">notas</span>
+          </div>
+          <div class="wf-cols" style="grid-template-columns:minmax(0,1fr) 108px">
+            <div class="wf-row">
+              <div class="box" style="border-color:var(--muted)">
+                <span class="mini accent">em destaque</span>
+                <div class="blk" style="--w:88%;--h:16px"></div>
+                <div class="bar" style="--w:96%"></div>
+                <div class="bar" style="--w:78%"></div>
+                <span class="mini">12 abr 2026 · 7 min · #produto</span>
+              </div>
+              <div class="irow calm"><span class="mini">12 abr</span><span class="blk" style="--w:70%;--h:13px"></span><span class="mini">#notas</span><span class="glyph calm">→</span></div>
+              <div class="irow calm"><span class="mini">03 abr</span><span class="blk" style="--w:82%;--h:13px"></span><span class="mini">#produto</span><span class="glyph calm">→</span></div>
+              <div class="irow calm"><span class="mini">28 mar</span><span class="blk" style="--w:64%;--h:13px"></span><span class="mini">#leitura</span><span class="glyph calm">→</span></div>
+              <div class="irow calm"><span class="mini">20 mar</span><span class="blk" style="--w:76%;--h:13px"></span><span class="mini">#academia</span><span class="glyph calm">→</span></div>
+              <div class="irow calm"><span class="mini">11 mar</span><span class="blk" style="--w:58%;--h:13px"></span><span class="mini">#produto</span><span class="glyph calm">→</span></div>
+            </div>
+            <div class="wf-row" style="align-content:start">
+              <div class="box accent">
+                <span class="mini accent">newsletter</span>
+                <div class="blk" style="--w:80%;--h:13px"></div>
+                <div class="bar" style="--w:100%"></div>
+                <div class="chip on" style="justify-self:start">substack ↗</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note-item">
+        <div class="pin">1</div>
+        <p>
+          O arquivo mensal sai inteiro: as contagens estão escritas à mão no código e não
+          correspondem aos posts publicados. Com filtros de tag já no topo e uma lista
+          cronológica completa, ele não acrescenta um caminho novo — só afirma um número
+          que não é verdade.
+          <span class="from"><b>Antes:</b> 6 meses inventados &nbsp;·&nbsp; <b>Depois:</b> removido</span>
+        </p>
+      </div>
+      <div class="note-item">
+        <div class="pin">2</div>
+        <p>
+          O formulário de newsletter, que hoje não envia nada, vira um único bloco com
+          link para o Substack que já existe. Um convite que funciona ocupa um terço do
+          espaço e vale infinitamente mais num site profissional.
+          <span class="from"><b>Antes:</b> input + botão inertes &nbsp;·&nbsp; <b>Depois:</b> link real</span>
+        </p>
+      </div>
+      <div class="note-item">
+        <div class="pin">3</div>
+        <p>
+          As linhas de post perdem a coluna de minutos — que reaparece dentro do post,
+          onde ela ajuda a decidir — e os asteriscos de <code>★★ POST EM DESTAQUE ★★</code>
+          dão lugar a um rótulo simples no acento da seção. Cabem duas ou três linhas a
+          mais na mesma altura.
+          <span class="from"><b>Antes:</b> 5 colunas + moldura de estrelas &nbsp;·&nbsp; <b>Depois:</b> 4 colunas, rótulo sóbrio</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WF 04 — PROJETOS ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>04 · Projetos</h2>
+      <span class="lbl">Grid filtrável</span>
+    </div>
+
+    <div class="pair">
+      <div class="pane">
+        <div class="pane-head">
+          <span class="tag tag-antes">Antes</span>
+          <span class="note">cards tortos, miniaturas vazias</span>
+        </div>
+        <div class="wf">
+          <div class="wf-row" style="grid-template-columns:auto;justify-content:start">
+            <span class="mini flag">04 / ./OUTPUT/*</span>
+          </div>
+          <div class="wf-row" style="grid-template-columns:auto auto;justify-content:start;align-items:center;gap:8px">
+            <div class="blk" style="--w:150px;--h:24px"></div>
+            <span class="glyph">▼ pisca</span>
+          </div>
+          <div class="chips">
+            <span class="chip c5">todos</span><span class="chip">jornalismo</span><span class="chip">produto</span>
+            <span class="chip">academia</span><span class="chip">palestra</span><span class="chip">pessoal</span>
+          </div>
+          <div class="wf-cols" style="grid-template-columns:repeat(3,1fr);gap:10px">
+            <div class="box tilt"><div class="photo" style="--ar:4/3"><span class="mini flag">thumb · 4×3</span></div><span class="mini flag">#jornalismo</span><div class="blk" style="--w:90%;--h:11px"></div><span class="mini">veículo →</span></div>
+            <div class="box tilt-r"><div class="photo" style="--ar:4/3"><span class="mini flag">thumb · 4×3</span></div><span class="mini flag">#produto</span><div class="blk" style="--w:78%;--h:11px"></div><span class="mini">empresa →</span></div>
+            <div class="box tilt"><div class="photo" style="--ar:4/3"><span class="mini flag">thumb · 4×3</span></div><span class="mini flag">#academia</span><div class="blk" style="--w:84%;--h:11px"></div><span class="mini">revista →</span></div>
+            <div class="box tilt-r"><div class="photo" style="--ar:4/3"><span class="mini flag">thumb · 4×3</span></div><span class="mini flag">#palestra</span><div class="blk" style="--w:70%;--h:11px"></div><span class="mini">evento →</span></div>
+            <div class="box tilt"><div class="photo" style="--ar:4/3"><span class="mini flag">thumb · 4×3</span></div><span class="mini flag">#pessoal</span><div class="blk" style="--w:88%;--h:11px"></div><span class="mini">github →</span></div>
+            <div class="box tilt-r"><div class="photo" style="--ar:4/3"><span class="mini flag">thumb · 4×3</span></div><span class="mini flag">#produto</span><div class="blk" style="--w:74%;--h:11px"></div><span class="mini">empresa →</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane">
+        <div class="pane-head">
+          <span class="tag tag-depois">Depois</span>
+          <span class="note">tipográfico enquanto não houver imagem</span>
+        </div>
+        <div class="wf">
+          <div class="wf-row" style="grid-template-columns:auto;justify-content:start">
+            <span class="mini">04 · projetos</span>
+          </div>
+          <div class="wf-row" style="grid-template-columns:auto;justify-content:start">
+            <div class="blk" style="--w:150px;--h:24px"></div>
+          </div>
+          <div class="chips">
+            <span class="chip on">todos</span><span class="chip">jornalismo</span><span class="chip">produto</span>
+            <span class="chip">academia</span><span class="chip">palestra</span><span class="chip">pessoal</span>
+          </div>
+          <div class="wf-cols" style="grid-template-columns:repeat(2,1fr);gap:0">
+            <div class="box" style="border-right:none;gap:9px;padding:11px"><div class="wf-row" style="grid-template-columns:1fr auto"><span class="mini accent">jornalismo</span><span class="mini">2025</span></div><div class="blk" style="--w:92%;--h:14px"></div><div class="blk" style="--w:56%;--h:14px"></div><span class="mini">veículo →</span></div>
+            <div class="box" style="gap:9px;padding:11px"><div class="wf-row" style="grid-template-columns:1fr auto"><span class="mini accent">produto</span><span class="mini">2025</span></div><div class="blk" style="--w:80%;--h:14px"></div><div class="blk" style="--w:48%;--h:14px"></div><span class="mini">empresa →</span></div>
+            <div class="box" style="border-right:none;border-top:none;gap:9px;padding:11px"><div class="wf-row" style="grid-template-columns:1fr auto"><span class="mini accent">academia</span><span class="mini">2024</span></div><div class="blk" style="--w:86%;--h:14px"></div><div class="blk" style="--w:40%;--h:14px"></div><span class="mini">revista →</span></div>
+            <div class="box" style="border-top:none;gap:9px;padding:11px"><div class="wf-row" style="grid-template-columns:1fr auto"><span class="mini accent">palestra</span><span class="mini">2024</span></div><div class="blk" style="--w:74%;--h:14px"></div><div class="blk" style="--w:52%;--h:14px"></div><span class="mini">evento →</span></div>
+            <div class="box" style="border-right:none;border-top:none;gap:9px;padding:11px"><div class="wf-row" style="grid-template-columns:1fr auto"><span class="mini accent">pessoal</span><span class="mini">2023</span></div><div class="blk" style="--w:90%;--h:14px"></div><div class="blk" style="--w:44%;--h:14px"></div><span class="mini">github →</span></div>
+            <div class="box" style="border-top:none;gap:9px;padding:11px"><div class="wf-row" style="grid-template-columns:1fr auto"><span class="mini accent">produto</span><span class="mini">2023</span></div><div class="blk" style="--w:78%;--h:14px"></div><div class="blk" style="--w:50%;--h:14px"></div><span class="mini">empresa →</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note-item">
+        <div class="pin">1</div>
+        <p>
+          Hoje <em>todos</em> os projetos mostram a mesma miniatura hachurada com o texto
+          <code>thumb · 4×3</code>. Uma imagem ausente repetida oito vezes é oito manchas
+          de textura sem informação. Enquanto não houver imagens reais, o card fica
+          tipográfico: categoria, ano, título grande, veículo.
+          <span class="from"><b>Antes:</b> 8 placeholders hachurados &nbsp;·&nbsp; <b>Depois:</b> card tipográfico, título maior</span>
+        </p>
+      </div>
+      <div class="note-item">
+        <div class="pin">2</div>
+        <p>
+          A rotação alternada de meio grau em cada card sai. Ela lê como card mal
+          alinhado, não como colagem — e o gesto de zine já está garantido pelas bordas
+          grossas e pela tipografia. Grid alinhado com dois por linha dá ao título espaço
+          para ser lido.
+          <span class="from"><b>Antes:</b> 3 colunas com <code>rotate(±0.4deg)</code> &nbsp;·&nbsp; <b>Depois:</b> 2 colunas alinhadas</span>
+        </p>
+      </div>
+      <div class="note-item">
+        <div class="pin">3</div>
+        <p>
+          As cinco cores por categoria (magenta, ciano, verde, violeta, amarelo) viram um
+          rótulo no acento único da seção — o laranja de Projetos. A categoria continua
+          identificável, e agora pelo filtro, que é onde a pessoa realmente age.
+          <span class="from"><b>Antes:</b> 5 cores de categoria &nbsp;·&nbsp; <b>Depois:</b> 1 acento + filtros</span>
+        </p>
+      </div>
+      <div class="note-item">
+        <div class="pin">4</div>
+        <p>
+          Vale acrescentar o ano em cada card — informação que o conteúdo já tem e que
+          hoje não aparece na listagem. Num portfólio, recência é exatamente o que a
+          pessoa está tentando avaliar.
+          <span class="from"><b>Depois:</b> ano visível, ordenação por ano explícita</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WF 01 — SOBRE ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>01 · Sobre</h2>
+      <span class="lbl">Biografia · factsheet</span>
+    </div>
+
+    <div class="pair">
+      <div class="pane">
+        <div class="pane-head">
+          <span class="tag tag-antes">Antes</span>
+          <span class="note">factsheet com campos decorativos</span>
+        </div>
+        <div class="wf">
+          <div class="wf-cols" style="grid-template-columns:minmax(0,1fr) 96px">
+            <div class="wf-row">
+              <span class="mini flag">01 / WHO_IS_THIS.TXT</span>
+              <div class="wf-row" style="grid-template-columns:auto auto;justify-content:start;align-items:center;gap:8px">
+                <div class="blk" style="--w:130px;--h:22px"></div>
+                <span class="glyph">● pisca</span>
+              </div>
+              <div class="bar" style="--w:98%"></div>
+              <div class="bar" style="--w:94%"></div>
+              <div class="bar" style="--w:88%"></div>
+              <div class="bar lite" style="--w:62%"></div>
+              <div class="chips" style="margin-top:4px">
+                <span class="chip c2">ver cv →</span><span class="chip c0">mandar e-mail</span>
+              </div>
+              <div class="hr dash" style="margin:6px 0"></div>
+              <div class="wf-cols" style="grid-template-columns:1fr 1fr;gap:8px">
+                <div class="box" style="border-color:#c4ff00">
+                  <span class="mini accent">&gt; atualmente</span>
+                  <div class="bar" style="--w:90%"></div><div class="bar" style="--w:80%"></div>
+                  <div class="bar" style="--w:86%"></div><div class="bar" style="--w:70%"></div>
+                </div>
+                <div class="box flag">
+                  <span class="mini flag">&gt; não faço</span>
+                  <div class="bar" style="--w:84%"></div><div class="bar" style="--w:76%"></div>
+                  <span class="mini flag wrap">“mentoria a R$ 0,00”, “NFT, onlyfans, cripto”</span>
+                </div>
+              </div>
+            </div>
+            <div class="wf-row">
+              <div class="photo"><span class="mini flag">retrato.png</span></div>
+              <span class="mini flag">foto: algum amigo · 2025</span>
+              <div class="box flag">
+                <span class="mini">nasc · 19xx</span>
+                <span class="mini">base · são paulo</span>
+                <span class="mini">títl · doutorando</span>
+                <span class="mini">pron · ele/dele</span>
+                <span class="mini flag">stat · online</span>
+                <span class="mini flag">mood · focado</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane">
+        <div class="pane-head">
+          <span class="tag tag-depois">Depois</span>
+          <span class="note">mesmo humor, dados que sustentam</span>
+        </div>
+        <div class="wf">
+          <div class="wf-cols" style="grid-template-columns:minmax(0,1fr) 96px">
+            <div class="wf-row">
+              <span class="mini">01 · sobre</span>
+              <div class="wf-row" style="grid-template-columns:auto;justify-content:start">
+                <div class="blk" style="--w:130px;--h:22px"></div>
+              </div>
+              <div class="bar" style="--w:98%"></div>
+              <div class="bar" style="--w:94%"></div>
+              <div class="bar" style="--w:88%"></div>
+              <div class="bar lite" style="--w:62%"></div>
+              <div class="chips" style="margin-top:8px">
+                <span class="chip on">ver cv →</span><span class="chip">mandar e-mail</span>
+              </div>
+              <div class="hr" style="margin:10px 0"></div>
+              <div class="wf-cols" style="grid-template-columns:1fr 1fr;gap:8px">
+                <div class="box accent">
+                  <span class="mini accent">atualmente</span>
+                  <div class="bar" style="--w:90%"></div><div class="bar" style="--w:80%"></div>
+                  <div class="bar" style="--w:86%"></div><div class="bar" style="--w:70%"></div>
+                </div>
+                <div class="box">
+                  <span class="mini">não faço</span>
+                  <div class="bar" style="--w:84%"></div><div class="bar" style="--w:76%"></div>
+                  <div class="bar" style="--w:68%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="wf-row">
+              <div class="photo plain"></div>
+              <span class="mini">retrato · 2025</span>
+              <div class="box">
+                <span class="mini">base · são paulo</span>
+                <span class="mini">títl · doutorando espm</span>
+                <span class="mini">pron · ele/dele</span>
+                <span class="mini">idiom · pt · en · es</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note-item">
+        <div class="pin">1</div>
+        <p>
+          O factsheet mantém a forma de ficha técnica — que é ótima — e troca os campos
+          decorativos por campos que alguém realmente consulta. <code>NASC 19xx</code>,
+          <code>STAT online</code> e <code>MOOD focado</code> saem; entram idiomas e a
+          instituição. Menos linhas, todas úteis.
+          <span class="from"><b>Antes:</b> 6 campos, 3 decorativos &nbsp;·&nbsp; <b>Depois:</b> 4 campos consultáveis</span>
+        </p>
+      </div>
+      <div class="note-item">
+        <div class="pin">2</div>
+        <p>
+          A caixa “NÃO FAÇO” fica — é personalidade e filtra cliente ruim. Vale reescrever
+          os itens em chave profissional: “projetos sem escopo definido”, “palestras
+          motivacionais”, “trabalho não remunerado”. O mesmo humor seco, sem a linha que
+          um contratante pode ler como provocação.
+          <span class="from"><b>Antes:</b> “NFT, onlyfans, cripto”, “mentoria a R$ 0,00” &nbsp;·&nbsp; <b>Depois:</b> recusas com escopo</span>
+        </p>
+      </div>
+      <div class="note-item">
+        <div class="pin">3</div>
+        <p>
+          A moldura hachurada do retrato e o crédito “FOTO: ALGUM AMIGO” cedem lugar à
+          foto sem moldura e a um crédito real. Duas caixas coloridas lado a lado viram
+          uma no acento e uma neutra — a hierarquia diz qual delas é para ler primeiro.
+          <span class="from"><b>Antes:</b> hachura + 2 caixas coloridas &nbsp;·&nbsp; <b>Depois:</b> foto limpa + 1 acento</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WF 02 / 06 ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>02 · CV &nbsp;/&nbsp; 06 · Contato</h2>
+      <span class="lbl">Ajustes menores</span>
+    </div>
+
+    <div class="pair">
+      <div class="pane">
+        <div class="pane-head">
+          <span class="tag tag-antes">Antes</span>
+          <span class="note">CV: tudo fechado · Contato: já quase certo</span>
+        </div>
+        <div class="wf">
+          <span class="mini flag">02 / CV.PROFISSIONAL</span>
+          <div class="wf-row" style="grid-template-columns:auto auto;justify-content:start;align-items:center;gap:8px">
+            <div class="blk" style="--w:130px;--h:22px"></div><span class="glyph">▲ pisca</span>
+          </div>
+          <div class="wf-cols" style="grid-template-columns:78px minmax(0,1fr)">
+            <div class="wf-row">
+              <span class="mini">seções</span>
+              <span class="mini flag">▶ atual</span><span class="mini">· experiência</span>
+              <span class="mini">· formação</span><span class="mini">· skills</span>
+              <div class="box"><span class="mini">where</span><span class="mini">status</span></div>
+              <div class="chip c3">↓ pdf</div>
+            </div>
+            <div class="wf-row">
+              <div class="box flag" style="grid-template-columns:1fr auto;display:grid"><span class="mini flag">&gt;&gt; experiência</span><span class="mini flag">+</span></div>
+              <div class="box flag" style="grid-template-columns:1fr auto;display:grid"><span class="mini flag">&gt;&gt; formação</span><span class="mini flag">+</span></div>
+              <div class="box flag" style="grid-template-columns:1fr auto;display:grid"><span class="mini flag">&gt;&gt; skills</span><span class="mini flag">+</span></div>
+              <div class="box flag" style="grid-template-columns:1fr auto;display:grid"><span class="mini flag">&gt;&gt; idiomas</span><span class="mini flag">+</span></div>
+              <span class="mini flag wrap">nada visível sem clicar · 16 tags em 4 cores lá dentro</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane">
+        <div class="pane-head">
+          <span class="tag tag-depois">Depois</span>
+          <span class="note">experiência aberta por padrão</span>
+        </div>
+        <div class="wf">
+          <span class="mini">02 · cv profissional</span>
+          <div class="wf-row" style="grid-template-columns:auto;justify-content:start">
+            <div class="blk" style="--w:130px;--h:22px"></div>
+          </div>
+          <div class="wf-cols" style="grid-template-columns:78px minmax(0,1fr)">
+            <div class="wf-row">
+              <span class="mini">seções</span>
+              <span class="mini accent">▶ experiência</span><span class="mini">· formação</span>
+              <span class="mini">· skills</span><span class="mini">· idiomas</span>
+              <div class="box"><span class="mini">são paulo · -3</span><span class="mini accent">pm · doutorando</span></div>
+              <div class="chip on">↓ pdf</div>
+            </div>
+            <div class="wf-row">
+              <div class="wf-row" style="gap:5px">
+                <span class="mini accent">experiência</span>
+                <div class="hr"></div>
+                <div class="wf-cols" style="grid-template-columns:52px minmax(0,1fr)">
+                  <span class="mini">2022 →</span>
+                  <div class="wf-row"><div class="blk" style="--w:72%;--h:13px"></div><span class="mini">organização</span><div class="bar" style="--w:96%"></div><div class="bar" style="--w:84%"></div></div>
+                </div>
+                <div class="hr"></div>
+                <div class="wf-cols" style="grid-template-columns:52px minmax(0,1fr)">
+                  <span class="mini">2019—22</span>
+                  <div class="wf-row"><div class="blk" style="--w:64%;--h:13px"></div><span class="mini">organização</span><div class="bar" style="--w:90%"></div></div>
+                </div>
+              </div>
+              <div class="box" style="grid-template-columns:1fr auto;display:grid"><span class="mini">formação</span><span class="mini">+</span></div>
+              <div class="box" style="grid-template-columns:1fr auto;display:grid"><span class="mini">skills</span><span class="mini">+</span></div>
+              <div class="box" style="grid-template-columns:1fr auto;display:grid"><span class="mini">idiomas</span><span class="mini">+</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note-item">
+        <div class="pin">1</div>
+        <p>
+          Hoje o CV abre com quatro seções colapsadas: quem chega vê quatro rótulos e
+          nenhum conteúdo. Experiência abre por padrão, com as duas posições mais
+          recentes visíveis e o detalhe de cada uma ainda em <code>details</code>.
+          Formação, skills e idiomas continuam colapsados. O recurso de dobrar é ótimo —
+          só não pode esconder a resposta principal.
+          <span class="from"><b>Antes:</b> 4 seções fechadas &nbsp;·&nbsp; <b>Depois:</b> experiência aberta, 3 fechadas</span>
+        </p>
+      </div>
+      <div class="note-item">
+        <div class="pin">2</div>
+        <p>
+          As 16 tags de skill hoje ciclam entre magenta, ciano, amarelo e transparente —
+          um padrão de quatro cores que não codifica nada. Viram tags em contorno; o
+          amarelo da seção fica reservado para o botão de download do PDF, que é a ação
+          que essa página existe para oferecer.
+          <span class="from"><b>Antes:</b> 4 cores rotativas &nbsp;·&nbsp; <b>Depois:</b> contorno + amarelo só no PDF</span>
+        </p>
+      </div>
+      <div class="note-item">
+        <div class="pin">3</div>
+        <p>
+          <strong>Contato</strong> praticamente não muda — é a página mais bem resolvida do
+          site. Sai o ✦ piscando da headline, e os quatro cards ganham a mesma cor de
+          borda (o magenta da seção) em vez de quatro cores diferentes. A headline
+          gigante em Bungee fica: é o melhor momento tipográfico do site.
+          <span class="from"><b>Antes:</b> 4 cores de card + glifo piscando &nbsp;·&nbsp; <b>Depois:</b> 1 acento, headline intacta</span>
+        </p>
+      </div>
+      <div class="note-item">
+        <div class="pin">4</div>
+        <p>
+          <strong>Acadêmico</strong> segue a mesma regra: o ◆ piscando sai, o verde fica
+          para os números de citação e a lista de publicações ganha respiro entre itens.
+          <span class="from"><b>Depois:</b> mesma estrutura, um acento, mais entrelinha</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FICA / SAI ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>O que fica e o que sai</h2>
+      <span class="lbl">A identidade é a lista da esquerda</span>
+    </div>
+
+    <div class="kd">
+      <div class="kd-col kd-keep">
+        <h3 style="color:var(--accent)">Fica — é o site</h3>
+        <ul>
+          <li><span class="m">+</span><span>Bungee gigante em caixa alta como voz principal</span></li>
+          <li><span class="m">+</span><span>Interface toda monoespaçada, com metadados à mostra</span></li>
+          <li><span class="m">+</span><span>Bordas grossas, cantos retos, zero sombra suave</span></li>
+          <li><span class="m">+</span><span>Fundo escuro com neon — agora racionado</span></li>
+          <li><span class="m">+</span><span>Seções numeradas 00–06 e o índice brutalista</span></li>
+          <li><span class="m">+</span><span>Uma cor por seção, como sistema de orientação</span></li>
+          <li><span class="m">+</span><span>Marca-texto no parágrafo de apresentação</span></li>
+          <li><span class="m">+</span><span>Selo I.A.S, o cursor piscando, o humor do texto</span></li>
+          <li><span class="m">+</span><span>Botões com deslocamento e sombra sólida no hover</span></li>
+        </ul>
+      </div>
+      <div class="kd-col kd-drop">
+        <h3 style="color:var(--flag)">Sai — é sobra</h3>
+        <ul>
+          <li><span class="m">−</span><span>4 famílias tipográficas quase sem uso</span></li>
+          <li><span class="m">−</span><span>Glifos piscando em toda headline (▼ ● ▲ ■ ✦ ◆)</span></li>
+          <li><span class="m">−</span><span>Relógio de segundos e statusbar fixa</span></li>
+          <li><span class="m">−</span><span>Régua arco-íris e grid de fundo no hero</span></li>
+          <li><span class="m">−</span><span>Colunas de caminho de terminal decorativo</span></li>
+          <li><span class="m">−</span><span>Arquivo mensal fictício e newsletter que não envia</span></li>
+          <li><span class="m">−</span><span>Miniaturas hachuradas vazias nos projetos</span></li>
+          <li><span class="m">−</span><span>Rotação de meio grau nos cards</span></li>
+          <li><span class="m">−</span><span>Campos decorativos do factsheet</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ORDEM ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>Se for aplicar</h2>
+      <span class="lbl">Ordem por relação custo/efeito</span>
+    </div>
+
+    <div class="phases">
+      <div class="phase">
+        <span class="lbl lbl-accent">Fase 1</span>
+        <p>
+          Só CSS global, nenhuma mudança de estrutura: cortar as 4 famílias de fonte,
+          remover as animações de piscar, escopar o hover amarelo, aumentar o respiro
+          vertical. É a metade do resultado no menor risco possível.
+        </p>
+      </div>
+      <div class="phase">
+        <span class="lbl lbl-accent">Fase 2</span>
+        <p>
+          Racionar a cor: um acento por página, chips em contorno, marcações do hero de
+          sete para duas, réguas sólidas. Aqui a hierarquia aparece.
+        </p>
+      </div>
+      <div class="phase">
+        <span class="lbl lbl-accent">Fase 3</span>
+        <p>
+          Estrutura: simplificar as linhas do índice, statusbar para o rodapé, cards de
+          projeto tipográficos, CV com experiência aberta.
+        </p>
+      </div>
+      <div class="phase">
+        <span class="lbl lbl-accent">Fase 4</span>
+        <p>
+          Conteúdo: remover arquivo e formulário fictícios, apontar a newsletter para o
+          Substack, revisar o factsheet e a caixa “não faço”.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="doc">
+    <span class="lbl">Wireframes · proposta de design</span>
+    <span class="lbl">Nenhuma alteração aplicada ao site</span>
+    <span class="lbl lbl-accent">kaluanbernardo.com</span>
+  </footer>
+
+</div>

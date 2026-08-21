@@ -1,0 +1,950 @@
+<title>Onde o Site Mentia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;700&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap">
+
+<style>
+  /* =========================================================
+     Prancha de UX — tratamento de conjunto de desenho técnico.
+     O site é escuro e neon; este documento é FALA SOBRE o site,
+     então é papel, não tela. Wireframe em cinza para a estrutura
+     ler sem o ruído da marca; cor só codifica informação:
+       vermelho = defeito encontrado
+       azul     = correção proposta
+     ========================================================= */
+
+  :root {
+    /* papel (claro) */
+    --paper: #f2f0e9;
+    --sheet: #fbfaf6;
+    --rule: #d5d2c7;
+    --rule-2: #b8b4a6;
+    --ink: #1b1c1a;
+    --ink-2: #55574f;
+    --ink-3: #8b8d82;
+
+    /* massa dos blocos de wireframe */
+    --box: #e3e0d6;
+    --box-2: #cfccc0;
+    --box-3: #b6b2a4;
+
+    /* sinal — não é enfeite, é categoria */
+    --bug: #b3271e;
+    --bug-soft: #f6e2df;
+    --fix: #1f4fb8;
+    --fix-soft: #dfe6f7;
+
+    --display: 'Archivo', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --prose: 'Newsreader', Georgia, 'Times New Roman', serif;
+
+    --pad: clamp(20px, 4.5vw, 56px);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #14150f;
+      --sheet: #1c1e17;
+      --rule: #33362c;
+      --rule-2: #4b4f42;
+      --ink: #eeece2;
+      --ink-2: #a8ab9c;
+      --ink-3: #71746a;
+
+      --box: #262a20;
+      --box-2: #343930;
+      --box-3: #474d41;
+
+      --bug: #ff7d72;
+      --bug-soft: #35211f;
+      --fix: #8fb0ff;
+      --fix-soft: #1c2434;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper: #14150f;
+    --sheet: #1c1e17;
+    --rule: #33362c;
+    --rule-2: #4b4f42;
+    --ink: #eeece2;
+    --ink-2: #a8ab9c;
+    --ink-3: #71746a;
+
+    --box: #262a20;
+    --box-2: #343930;
+    --box-3: #474d41;
+
+    --bug: #ff7d72;
+    --bug-soft: #35211f;
+    --fix: #8fb0ff;
+    --fix-soft: #1c2434;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--prose);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 var(--pad) 96px;
+  }
+
+  a { color: var(--fix); }
+
+  :focus-visible {
+    outline: 2px solid var(--fix);
+    outline-offset: 3px;
+  }
+
+  /* ---------- rótulos ---------- */
+  .lbl {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  /* ---------- capa ---------- */
+  .cover {
+    padding: clamp(56px, 9vw, 104px) 0 clamp(36px, 5vw, 56px);
+    border-bottom: 2px solid var(--ink);
+  }
+  .cover h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(38px, 7.6vw, 78px);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    margin: 14px 0 18px;
+    text-wrap: balance;
+    max-width: 16ch;
+  }
+  .cover .deck {
+    font-size: clamp(18px, 2.1vw, 21px);
+    line-height: 1.55;
+    color: var(--ink-2);
+    max-width: 60ch;
+    margin: 0;
+  }
+  .cover-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 28px;
+    margin-top: 30px;
+  }
+  .cover-meta div { display: flex; flex-direction: column; gap: 3px; }
+  .cover-meta b {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink);
+  }
+
+  /* ---------- índice problema → prancha ---------- */
+  .index { margin: 46px 0 8px; }
+  .index h2 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    margin: 0 0 14px;
+  }
+  .index-table { width: 100%; border-collapse: collapse; }
+  .index-table th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    padding: 0 12px 8px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .index-table td {
+    padding: 13px 12px 13px 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    font-size: 15px;
+    line-height: 1.45;
+  }
+  .index-table td:first-child {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-3);
+    white-space: nowrap;
+    width: 1%;
+  }
+  .index-table td.was { color: var(--bug); }
+
+  /* ---------- prancha ---------- */
+  .sheet {
+    margin-top: 56px;
+    border: 1.5px solid var(--rule-2);
+    background: var(--sheet);
+  }
+  .sheet-head {
+    display: grid;
+    grid-template-columns: 62px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 18px;
+    padding: 16px 20px;
+    border-bottom: 1.5px solid var(--rule-2);
+  }
+  .sheet-no {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    border-right: 1.5px solid var(--rule-2);
+    padding-right: 18px;
+    font-variant-numeric: tabular-nums;
+  }
+  .sheet-head h2 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(17px, 2.2vw, 21px);
+    letter-spacing: -0.01em;
+    margin: 0 0 2px;
+  }
+  .sheet-head p { margin: 0; }
+  .sheet-scope {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    text-align: right;
+    line-height: 1.6;
+  }
+  .sheet-body { padding: 24px 20px 26px; }
+
+  /* ---------- wireframe ---------- */
+  .frames {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+  }
+  .frames > * { flex: 1 1 0; min-width: 230px; }
+
+  .wf {
+    border: 1.5px solid var(--rule-2);
+    background: var(--paper);
+    padding: 0;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.05em;
+    color: var(--ink-3);
+    position: relative;
+  }
+  .wf-cap {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    margin-bottom: 7px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .wf-cap .dot {
+    width: 7px; height: 7px; flex: none;
+    background: var(--ink-3);
+  }
+  .wf-cap.is-empty .dot { background: var(--bug); }
+  .wf-cap.is-new .dot { background: var(--fix); }
+
+  /* peças do wireframe */
+  .p { padding: 8px 10px; border-bottom: 1px solid var(--rule); }
+  .p:last-child { border-bottom: none; }
+  .p-row { display: flex; align-items: center; gap: 6px; }
+  .p-row.between { justify-content: space-between; }
+
+  .b {                       /* bloco cinza genérico */
+    background: var(--box);
+    height: 10px;
+  }
+  .b.tall { height: 26px; }
+  .b.xl { height: 54px; }
+  .b.dark { background: var(--box-2); }
+  .b.darker { background: var(--box-3); }
+  .b.w25 { width: 25%; } .b.w33 { width: 33%; } .b.w40 { width: 40%; }
+  .b.w50 { width: 50%; } .b.w60 { width: 60%; } .b.w70 { width: 70%; }
+  .b.w85 { width: 85%; } .b.full { width: 100%; }
+
+  .chip {
+    border: 1px solid var(--rule-2);
+    padding: 2px 6px;
+    font-size: 8.5px;
+    white-space: nowrap;
+    color: var(--ink-3);
+  }
+  .chip.on {
+    background: var(--box-3);
+    border-color: var(--box-3);
+    color: var(--paper);
+  }
+  .stack { display: flex; flex-direction: column; gap: 7px; }
+
+  /* elemento novo — contorno azul tracejado */
+  .new {
+    outline: 1.5px dashed var(--fix);
+    outline-offset: 2px;
+    background: var(--fix-soft);
+  }
+  .bad {
+    outline: 1.5px dashed var(--bug);
+    outline-offset: 2px;
+    background: var(--bug-soft);
+  }
+
+  /* marcador de chamada */
+  .m {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px; height: 16px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--fix);
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .m.bug { background: var(--bug); }
+
+  /* ---------- notas de chamada ---------- */
+  .notes {
+    list-style: none;
+    margin: 22px 0 0;
+    padding: 18px 0 0;
+    border-top: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
+    gap: 16px 26px;
+  }
+  .notes li {
+    display: grid;
+    grid-template-columns: 16px minmax(0, 1fr);
+    gap: 10px;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .notes b {
+    font-family: var(--display);
+    font-weight: 600;
+    display: block;
+    font-size: 14.5px;
+  }
+  .notes span { color: var(--ink-2); }
+  .notes code, .u {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    background: var(--box);
+    padding: 1px 5px;
+    color: var(--ink);
+  }
+
+  /* ---------- bloco antes/depois ---------- */
+  .swap {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 0;
+    border: 1.5px solid var(--rule-2);
+    margin-top: 20px;
+  }
+  .swap > div { padding: 15px 17px; }
+  .swap > div + div { border-left: 1.5px solid var(--rule-2); }
+  .swap .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .swap .was .tag { color: var(--bug); }
+  .swap .now .tag { color: var(--fix); }
+  .swap p { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--ink-2); }
+  .swap .code {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 7px;
+    word-break: break-all;
+  }
+  @media (max-width: 560px) {
+    .swap > div + div { border-left: none; border-top: 1.5px solid var(--rule-2); }
+  }
+
+  /* ---------- árvore de decisão ---------- */
+  .tree {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+    margin-top: 4px;
+  }
+  .tree-node {
+    border: 1.5px solid var(--rule-2);
+    padding: 15px 17px;
+    background: var(--paper);
+  }
+  .tree-node.q {
+    grid-column: 1 / -1;
+    background: var(--box);
+    text-align: center;
+  }
+  .tree-node h4 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0 0 9px;
+  }
+  .tree-node ul {
+    margin: 0;
+    padding-left: 17px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+  .tree-node ul li::marker { color: var(--ink-3); }
+  .tree-yes h4 { color: var(--fix); }
+  .tree-no h4 { color: var(--bug); }
+
+  /* ---------- ordem de foco ---------- */
+  .focus-path {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+    margin-top: 4px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+  }
+  .focus-path .step {
+    border: 1px solid var(--rule-2);
+    padding: 4px 8px;
+    background: var(--paper);
+  }
+  .focus-path .step.first {
+    border-color: var(--fix);
+    color: var(--fix);
+    background: var(--fix-soft);
+  }
+  .focus-path .arr { color: var(--ink-3); }
+
+  /* ---------- rodapé ---------- */
+  .foot {
+    margin-top: 64px;
+    padding-top: 22px;
+    border-top: 2px solid var(--ink);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 34px;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .foot p { margin: 0; font-size: 14.5px; color: var(--ink-2); max-width: 54ch; }
+
+  .open-q {
+    margin-top: 30px;
+    border-left: 3px solid var(--bug);
+    padding: 3px 0 3px 18px;
+  }
+  .open-q h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--bug);
+    margin: 0 0 8px;
+  }
+  .open-q ul { margin: 0; padding-left: 18px; font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+</style>
+
+<div class="wrap">
+
+  <header class="cover">
+    <div class="lbl">Prancha de UX · site pessoal · kaluan bernardo</div>
+    <h1>Onde o site mentia</h1>
+    <p class="deck">
+      Seis pranchas de estrutura e estado. O assunto não é a aparência — essa já foi
+      resolvida. É o que a interface prometia e não cumpria: botões que não enviavam,
+      links que não iam a lugar nenhum, filtros sem resposta e uma página de erro que
+      nunca existiu.
+    </p>
+    <div class="cover-meta">
+      <div><span class="lbl">Escopo</span><b>7 páginas · PT + EN</b></div>
+      <div><span class="lbl">Pranchas</span><b>00 – 05</b></div>
+      <div><span class="lbl">Legenda</span><b>vermelho = defeito · azul = proposta</b></div>
+    </div>
+  </header>
+
+  <section class="index">
+    <h2>Índice · defeito → prancha</h2>
+    <table class="index-table">
+      <thead>
+        <tr><th>Prancha</th><th>O que estava errado</th><th>O que a prancha propõe</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>00</td>
+          <td class="was">7 itens de nav antes do conteúdo, em toda página</td>
+          <td>Atalho para o conteúdo e ordem de foco declarada</td>
+        </tr>
+        <tr>
+          <td>01</td>
+          <td class="was">Filtrar não dava resposta; zero resultado = tela em branco</td>
+          <td>Contagem viva, estado vazio com saída, filtro na URL</td>
+        </tr>
+        <tr>
+          <td>02</td>
+          <td class="was">Ensaio de 8 min sem noção de quanto falta nem volta ao topo</td>
+          <td>Progresso de leitura e retorno ao topo em página longa</td>
+        </tr>
+        <tr>
+          <td>03</td>
+          <td class="was">Nenhuma página 404 — o host entregava a genérica</td>
+          <td>Erro que diz o que houve e oferece as 6 seções</td>
+        </tr>
+        <tr>
+          <td>04</td>
+          <td class="was">Cartões, publicações e sociais apontando para <code>#</code></td>
+          <td>Regra única: sem destino, não é link</td>
+        </tr>
+        <tr>
+          <td>05</td>
+          <td class="was">Formulário que engolia o e-mail em silêncio</td>
+          <td>Envio real e confirmação no próprio controle</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============ 00 ============ -->
+  <section class="sheet">
+    <header class="sheet-head">
+      <div class="sheet-no">00</div>
+      <div>
+        <h2>Anatomia comum e caminho de teclado</h2>
+        <p class="lbl">aplica-se a todas as páginas</p>
+      </div>
+      <div class="sheet-scope">shell<br>+ ordem de foco</div>
+    </header>
+    <div class="sheet-body">
+      <div class="frames">
+        <div>
+          <div class="wf-cap is-new"><span class="dot"></span>Estrutura</div>
+          <div class="wf">
+            <div class="p"><div class="b full new" style="height:14px"></div>
+              <div style="margin-top:5px">atalho · só visível no foco</div></div>
+            <div class="p p-row between">
+              <span class="b w25 darker"></span>
+              <span style="display:flex;gap:4px">
+                <span class="chip">00</span><span class="chip">01</span><span class="chip">02</span><span class="chip">03</span>
+              </span>
+              <span class="chip">PT/EN</span>
+            </div>
+            <div class="p" style="padding:14px 10px">
+              <div class="stack">
+                <span class="b tall w60 dark"></span>
+                <span class="b w85"></span><span class="b w70"></span><span class="b w85"></span>
+                <span class="b xl full"></span>
+              </div>
+              <div style="margin-top:8px">main#conteudo · alvo do atalho</div>
+            </div>
+            <div class="p p-row between" style="border-top:1px solid var(--rule)">
+              <span>rodapé</span>
+              <span class="b w25"></span>
+            </div>
+            <div class="p p-row between" style="background:var(--box)">
+              <span>status bar · hh:mm</span><span>v0.404</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="wf-cap is-new"><span class="dot"></span>Voltar ao topo</div>
+          <div class="wf">
+            <div class="p" style="padding:14px 10px">
+              <div class="stack">
+                <span class="b w85"></span><span class="b w70"></span><span class="b w85"></span>
+                <span class="b w60"></span><span class="b w85"></span><span class="b w40"></span>
+              </div>
+            </div>
+            <div class="p p-row" style="justify-content:flex-end;border:none;padding-bottom:14px">
+              <span class="chip new">↑ topo</span>
+            </div>
+            <div class="p" style="background:var(--box)">
+              aparece após rolar 60% da altura da tela · some ao voltar
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="focus-path">
+        <span class="step first">1 · pular p/ conteúdo</span>
+        <span class="arr">→</span>
+        <span class="step">2 · marca</span>
+        <span class="arr">→</span>
+        <span class="step">3–9 · nav (7)</span>
+        <span class="arr">→</span>
+        <span class="step">10 · idioma</span>
+        <span class="arr">→</span>
+        <span class="step">11+ · conteúdo</span>
+      </div>
+
+      <ol class="notes">
+        <li><span class="m">1</span><span><b>Atalho no primeiro Tab</b>Sem ele, quem navega por teclado atravessa 7 itens de menu em cada página antes de chegar ao texto. Fica fora da tela até receber foco.</span></li>
+        <li><span class="m">2</span><span><b>O idioma atual não é link</b>Era <code>&lt;a href="#"&gt;</code>: entrava na ordem de foco e não levava a lugar nenhum. Vira rótulo com <code>aria-current</code>.</span></li>
+        <li><span class="m">3</span><span><b>Retorno ao topo só quando faz falta</b>Limiar por altura de tela, não por pixel fixo. Em página curta o botão nunca aparece — o rodapé já está ali.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ 01 ============ -->
+  <section class="sheet">
+    <header class="sheet-head">
+      <div class="sheet-no">01</div>
+      <div>
+        <h2>Filtro de listagem · três estados</h2>
+        <p class="lbl">blog · projetos</p>
+      </div>
+      <div class="sheet-scope">padrão / filtrado<br>/ vazio</div>
+    </header>
+    <div class="sheet-body">
+      <div class="frames">
+        <div>
+          <div class="wf-cap"><span class="dot"></span>A · padrão</div>
+          <div class="wf">
+            <div class="p p-row" style="flex-wrap:wrap;gap:4px">
+              <span class="chip on">#todos</span><span class="chip">#produto</span><span class="chip">#leitura</span>
+              <span class="new" style="padding:2px 6px;font-size:8.5px">6 itens</span>
+            </div>
+            <div class="p"><div class="stack">
+              <span class="b w85"></span><span class="b w70"></span><span class="b w85"></span>
+              <span class="b w60"></span><span class="b w85"></span><span class="b w70"></span>
+            </div></div>
+            <div class="p" style="background:var(--box)">url: <span class="u">/blog</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="wf-cap"><span class="dot"></span>B · filtrado</div>
+          <div class="wf">
+            <div class="p p-row" style="flex-wrap:wrap;gap:4px">
+              <span class="chip">#todos</span><span class="chip on">#produto</span><span class="chip">#leitura</span>
+              <span class="new" style="padding:2px 6px;font-size:8.5px">2 de 6</span>
+            </div>
+            <div class="p"><div class="stack">
+              <span class="b w85"></span><span class="b w70"></span>
+            </div></div>
+            <div class="p" style="background:var(--box)">url: <span class="u">/blog?tag=produto</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="wf-cap is-empty"><span class="dot"></span>C · vazio</div>
+          <div class="wf">
+            <div class="p p-row" style="flex-wrap:wrap;gap:4px">
+              <span class="chip">#todos</span><span class="chip">#produto</span><span class="chip on">#leitura</span>
+              <span class="new" style="padding:2px 6px;font-size:8.5px">0 de 6</span>
+            </div>
+            <div class="p new" style="padding:14px 10px">
+              <div class="b tall w50 dark"></div>
+              <div style="margin:7px 0 9px">nenhum item corresponde</div>
+              <span class="chip">limpar filtro</span>
+            </div>
+            <div class="p" style="background:var(--box)">url: <span class="u">/blog?tag=leitura</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="swap">
+        <div class="was">
+          <span class="tag">Antes</span>
+          <span class="code">display: none · sem contagem</span>
+          <p>Filtrar não devolvia número nenhum. Zero resultado deixava a coluna em branco, sem dizer o que houve nem como sair. O filtro não sobrevivia ao recarregar e o botão voltar do navegador saía da página.</p>
+        </div>
+        <div class="now">
+          <span class="tag">Depois</span>
+          <span class="code">?tag= · history.pushState · aria-live</span>
+          <p>A contagem é anunciada a leitor de tela. A visão filtrada tem endereço próprio: dá para mandar por mensagem, favoritar, recarregar, e o botão voltar desfaz o filtro em vez de abandonar a página.</p>
+        </div>
+      </div>
+
+      <ol class="notes">
+        <li><span class="m">1</span><span><b>Contador sempre visível</b>Ao lado dos chips, na mesma linha. <span class="u">6 itens</span> quando não há filtro; <span class="u">2 de 6</span> quando há — a relação entre parte e todo fica explícita.</span></li>
+        <li><span class="m">2</span><span><b>Vazio é um estado, não um vácuo</b>Título, uma linha de explicação e um botão de saída. Sem ele o usuário conclui que a página quebrou.</span></li>
+        <li><span class="m">3</span><span><b>Estado na URL</b>O filtro passa a ser endereço. Também é o que faz o botão voltar se comportar como o usuário espera.</span></li>
+        <li><span class="m bug">4</span><span><b>Defeito achado no teste</b><code>[hidden]</code> não escondia nada: <code>.post-row</code> é <code>display:grid</code> e vence o atributo. O contador dizia <span class="u">0 de 4</span> com os quatro posts na tela.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ 02 ============ -->
+  <section class="sheet">
+    <header class="sheet-head">
+      <div class="sheet-no">02</div>
+      <div>
+        <h2>Leitura longa</h2>
+        <p class="lbl">post do blog · ensaios de 6 a 8 min</p>
+      </div>
+      <div class="sheet-scope">progresso<br>+ retorno</div>
+    </header>
+    <div class="sheet-body">
+      <div class="frames">
+        <div>
+          <div class="wf-cap is-new"><span class="dot"></span>Início · 0%</div>
+          <div class="wf">
+            <div style="height:6px;background:var(--box)"><div class="new" style="width:4%;height:6px"></div></div>
+            <div class="p"><div class="stack">
+              <span class="b w40"></span><span class="b tall w85 dark"></span><span class="b w33"></span>
+            </div></div>
+            <div class="p"><div class="stack">
+              <span class="b w85"></span><span class="b w85"></span><span class="b w60"></span>
+            </div></div>
+          </div>
+        </div>
+        <div>
+          <div class="wf-cap is-new"><span class="dot"></span>Meio · ~55%</div>
+          <div class="wf">
+            <div style="height:6px;background:var(--box)"><div class="new" style="width:55%;height:6px"></div></div>
+            <div class="p"><div class="stack">
+              <span class="b w85"></span><span class="b w70"></span><span class="b tall w50 dark"></span>
+              <span class="b w85"></span><span class="b w60"></span>
+            </div></div>
+            <div class="p p-row" style="justify-content:flex-end">
+              <span class="chip new">↑ topo</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="wf-cap is-new"><span class="dot"></span>Fim · 100%</div>
+          <div class="wf">
+            <div style="height:6px;background:var(--box)"><div class="new" style="width:100%;height:6px"></div></div>
+            <div class="p"><div class="stack">
+              <span class="b w85"></span><span class="b w40"></span>
+            </div></div>
+            <div class="p p-row between">
+              <span class="chip">← anterior</span>
+              <span class="chip on">assinar</span>
+              <span class="chip">próximo →</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ol class="notes">
+        <li><span class="m">1</span><span><b>Barra no topo da janela</b>Fica fixa, com 3px. Não é elemento decorativo novo: ocupa a mesma faixa que a régua do cabeçalho já ocupava.</span></li>
+        <li><span class="m">2</span><span><b>Medida pelo artigo, não pela página</b>Chega a 100% no fim do texto, não no fim do rodapé — senão a barra mente sobre quanto falta ler.</span></li>
+        <li><span class="m">3</span><span><b>Rolagem suave só quando permitida</b>O retorno ao topo respeita <code>prefers-reduced-motion</code> e devolve o foco ao início do conteúdo, não só a posição da tela.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ 03 ============ -->
+  <section class="sheet">
+    <header class="sheet-head">
+      <div class="sheet-no">03</div>
+      <div>
+        <h2>Página não encontrada</h2>
+        <p class="lbl">rota 404 · PT e EN</p>
+      </div>
+      <div class="sheet-scope">não existia</div>
+    </header>
+    <div class="sheet-body">
+      <div class="frames">
+        <div style="max-width:420px">
+          <div class="wf-cap is-empty"><span class="dot"></span>Antes · página do host</div>
+          <div class="wf">
+            <div class="p bad" style="padding:26px 10px;text-align:center">
+              <div class="b w50 dark" style="margin:0 auto 8px"></div>
+              <div>404 · File not found</div>
+              <div style="margin-top:6px">sem marca · sem saída · sem idioma</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="wf-cap is-new"><span class="dot"></span>Depois</div>
+          <div class="wf">
+            <div class="p"><div>404 / not_found</div></div>
+            <div class="p"><div class="stack">
+              <span class="b tall w70 dark"></span>
+              <span class="b w85"></span><span class="b w40"></span>
+            </div></div>
+            <div class="p"><span class="chip on">← home</span></div>
+            <div class="p">
+              <div style="margin-bottom:7px">onde você pode ir</div>
+              <div class="stack">
+                <span class="b w60"></span><span class="b w50"></span><span class="b w70"></span>
+                <span class="b w50"></span><span class="b w60"></span><span class="b w40"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ol class="notes">
+        <li><span class="m">1</span><span><b>A saída vem antes da lista</b>Quem cai aqui geralmente quer só voltar. O botão para a home fica acima do índice das seções.</span></li>
+        <li><span class="m">2</span><span><b>As 6 seções, numeradas como no resto do site</b>A lista sai da mesma fonte da navegação: acrescentar uma seção no site acrescenta aqui, sem edição manual.</span></li>
+        <li><span class="m">3</span><span><b>Existe nos dois idiomas</b><span class="u">/404</span> e <span class="u">/en/404</span> — quem estava lendo em inglês não é jogado para o português.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ 04 ============ -->
+  <section class="sheet">
+    <header class="sheet-head">
+      <div class="sheet-no">04</div>
+      <div>
+        <h2>Regra de afordância · link ou não-link</h2>
+        <p class="lbl">cartões de projeto · publicações · sociais · idioma</p>
+      </div>
+      <div class="sheet-scope">a mentira<br>mais comum</div>
+    </header>
+    <div class="sheet-body">
+      <div class="tree">
+        <div class="tree-node q">
+          <h4 style="margin:0">O item tem URL cadastrada?</h4>
+        </div>
+        <div class="tree-node tree-yes">
+          <h4>Sim → é um link</h4>
+          <ul>
+            <li>Elemento <code>&lt;a href&gt;</code></li>
+            <li>Seta indicando destino</li>
+            <li>Cursor de link e hover</li>
+            <li>Entra na ordem de foco</li>
+          </ul>
+        </div>
+        <div class="tree-node tree-no">
+          <h4>Não → não é link</h4>
+          <ul>
+            <li>Elemento <code>&lt;div&gt;</code></li>
+            <li>Sem seta</li>
+            <li>Cursor padrão, sem hover</li>
+            <li>Fora da ordem de foco</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="swap">
+        <div class="was">
+          <span class="tag">Antes · 4 ocorrências</span>
+          <span class="code">href="#"</span>
+          <p>Os 6 sociais do "sobre", cartões de projeto e linhas de publicação sem URL, e o idioma já selecionado. Todos pareciam link, recebiam foco e não levavam a lugar nenhum — o clique apenas rolava a página para o topo.</p>
+        </div>
+        <div class="now">
+          <span class="tag">Depois</span>
+          <span class="code">a[href] | div</span>
+          <p>A tag do elemento passa a depender do dado. Um item sem URL continua listado — some a promessa, não a informação. Preencher a URL numa lista central reativa o link sem tocar em componente.</p>
+        </div>
+      </div>
+
+      <ol class="notes">
+        <li><span class="m">1</span><span><b>Não basta tirar o <code>href</code></b>Um <code>&lt;a&gt;</code> sem <code>href</code> deixa de ser link, mas continua parecendo cartão clicável. A tag precisa mudar.</span></li>
+        <li><span class="m">2</span><span><b>Fonte única</b>Os sociais saem de um arquivo só, com <code>href: null</code> para o que ainda não tem endereço. É onde se completa o que falta.</span></li>
+        <li><span class="m bug">3</span><span><b>Ainda pendente</b>GitHub, Twitter e Lattes seguem sem URL — aparecem listados, sem virar link. E o e-mail do site continua sendo o de exemplo.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ 05 ============ -->
+  <section class="sheet">
+    <header class="sheet-head">
+      <div class="sheet-no">05</div>
+      <div>
+        <h2>Controles que confirmam</h2>
+        <p class="lbl">assinatura da newsletter · e-mail de contato</p>
+      </div>
+      <div class="sheet-scope">envio real<br>+ retorno</div>
+    </header>
+    <div class="sheet-body">
+      <div class="frames">
+        <div>
+          <div class="wf-cap is-empty"><span class="dot"></span>Antes · newsletter</div>
+          <div class="wf">
+            <div class="p"><div class="stack">
+              <span class="b w60 dark"></span>
+              <span class="b full" style="height:18px"></span>
+              <span class="b w50 darker" style="height:18px"></span>
+            </div></div>
+            <div class="p bad">
+              submit → <span class="u">return false</span><br>
+              nada sai, nada é dito
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="wf-cap is-new"><span class="dot"></span>Depois · newsletter</div>
+          <div class="wf">
+            <div class="p"><div class="stack">
+              <span class="b w60 dark"></span>
+              <span class="b full new" style="height:18px"></span>
+              <span class="b w50 darker" style="height:18px"></span>
+            </div></div>
+            <div class="p">
+              label real + autocomplete<br>
+              submit → página de assinatura
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="wf-cap is-new"><span class="dot"></span>Copiar e-mail</div>
+          <div class="wf">
+            <div class="p"><div>e-mail</div></div>
+            <div class="p"><span class="b tall w85 dark"></span></div>
+            <div class="p p-row between">
+              <span class="chip">repouso: copiar</span>
+              <span class="chip on new">copiado ✓</span>
+            </div>
+            <div class="p" style="background:var(--box)">volta ao rótulo em 1,8 s</div>
+          </div>
+        </div>
+      </div>
+
+      <ol class="notes">
+        <li><span class="m">1</span><span><b>Confirmação no próprio controle</b>O botão que foi acionado é onde o olho já está. Sem aviso flutuante em outro canto da tela.</span></li>
+        <li><span class="m">2</span><span><b>O endereço continua clicável</b>Copiar é atalho, não substituto: o <code>mailto:</code> segue ali para quem prefere abrir o cliente de e-mail.</span></li>
+        <li><span class="m">3</span><span><b>Degrada sem quebrar</b>Se a área de transferência estiver bloqueada, o botão de copiar simplesmente não aparece — o link de e-mail basta.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="open-q">
+    <h3>Em aberto — decisão sua</h3>
+    <ul>
+      <li>O e-mail de contato ainda é <span class="u">ola@nome.com.br</span>.</li>
+      <li>Os links acadêmicos apontam para as home pages do Lattes e do ORCID, não para os seus perfis.</li>
+      <li>GitHub, Twitter e Lattes estão sem URL na lista de sociais.</li>
+      <li>O arquivo do blog mostra contagem por mês, mas ainda não filtra por mês — é informação, não controle.</li>
+    </ul>
+  </div>
+
+  <footer class="foot">
+    <p>
+      As pranchas descrevem estrutura e comportamento, não acabamento. A aparência — neon,
+      borda grossa, colagem torta — não muda em nenhuma delas.
+    </p>
+    <span class="lbl">00–05 · fim do conjunto</span>
+  </footer>
+
+</div>

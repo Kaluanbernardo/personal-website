@@ -1,6 +1,7 @@
 ---
 import { ui, type Lang } from '../../i18n/ui';
 import { link } from '../../lib/links';
+import { socials } from '../../lib/social';
 
 interface Props {
   lang: Lang;
@@ -121,12 +122,22 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
 
     <div class="socials-kicker">{t.sobre.socialsHeading.toUpperCase()}</div>
     <div class="socials">
-      {t.sobre.socials.map((s) => (
-        <a class="social-row zap" href="#">
-          <span class="s-name">{s}</span>
-          <span class="s-arr">↗</span>
-        </a>
+      {socials.map((s) => (
+        s.href ? (
+          <a class="social-row zap" href={s.href} target="_blank" rel="noreferrer noopener">
+            <span class="s-name">{s.label}</span>
+            <span class="s-arr" aria-hidden="true">↗</span>
+          </a>
+        ) : (
+          <div class="social-row is-off">
+            <span class="s-name">{s.label}</span>
+          </div>
+        )
       ))}
+      <a class="social-row zap" href={`mailto:${t.contato.email}`}>
+        <span class="s-name">E-mail</span>
+        <span class="s-arr" aria-hidden="true">↗</span>
+      </a>
     </div>
   </aside>
 </div>
@@ -252,6 +263,7 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
     color: var(--fg);
   }
   .social-row .s-arr { color: var(--cyan); }
+  .social-row.is-off { color: var(--fg-3); cursor: default; }
   .social-row:hover .s-arr { color: #000; }
 
   @media (max-width: 900px) {

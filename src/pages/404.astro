@@ -1,0 +1,10 @@
+---
+import Page from '../layouts/Page.astro';
+import NotFoundPage from '../components/pages/NotFoundPage.astro';
+import { ui } from '../i18n/ui';
+const lang = 'pt' as const;
+---
+
+<Page title={`404 · ${ui[lang].brand}`} description={ui[lang].ux.notFound.body} lang={lang} active="home">
+  <NotFoundPage lang={lang} />
+</Page>

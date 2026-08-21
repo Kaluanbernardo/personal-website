@@ -51,17 +51,20 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
     </div>
   ) : (
     <div class="pub-list">
-      {publications.map((p) => (
-        <a class="pub-row" href={p.url ?? '#'} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
+      {publications.map((p) => {
+        const Row = p.url ? 'a' : 'div';
+        return (
+        <Row class:list={['pub-row', !p.url && 'is-static']} href={p.url} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
           <span class="pub-year">{p.year}</span>
           <div class="pub-body">
             <h3 class="ed-bungee pub-title">{p.title}</h3>
             <div class="pub-venue">{p.venue}</div>
           </div>
           <span class="pub-tag">#{tagDisplay[lang][p.kind] ?? p.kind}</span>
-          <span class="pub-arrow">↗</span>
-        </a>
-      ))}
+          <span class="pub-arrow" aria-hidden="true">{p.url ? '↗' : ''}</span>
+        </Row>
+        );
+      })}
     </div>
   )}
 </section>
@@ -117,6 +120,8 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
     transition: padding-left 0.12s linear;
   }
   .pub-row:hover { padding-left: 10px; }
+  .pub-row.is-static { cursor: default; }
+  .pub-row.is-static:hover { padding-left: 0; }
   .pub-row:hover .pub-title,
   .pub-row:hover .pub-arrow { color: var(--vio); }
   .pub-year {

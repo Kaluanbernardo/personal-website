@@ -14,10 +14,10 @@ const socialColors = ['var(--ylw)', 'var(--cyan)', 'var(--acid)', 'var(--vio)'];
 const helloLine1 = lang === 'en' ? "LET'S" : 'FALA';
 const helloLine2 = lang === 'en' ? 'TALK' : 'COMIGO';
 
-const socialLinks: Record<string, string> = {
-  Substack: 'https://kaluanbernardo.substack.com',
-  LinkedIn: 'https://www.linkedin.com/in/kaluanbernardo/',
-};
+import { socials } from '../../lib/social';
+const socialLinks: Record<string, string | null> = Object.fromEntries(
+  socials.map((s) => [s.label, s.href]),
+);
 ---
 
 <div class="contato">
@@ -29,20 +29,53 @@ const socialLinks: Record<string, string> = {
 
   <div class="direct-kicker">{directLabel}</div>
   <div class="cards">
-    <a class="card" href={`mailto:${t.contato.email}`} style="--er-c: var(--hot)">
+    <div class="card" style="--er-c: var(--hot)">
       <span class="c-name">E-MAIL</span>
-      <span class="c-handle">{t.contato.email}</span>
-      <span class="c-arr">↗</span>
-    </a>
-    {t.contato.socials.map((s, i) => (
-      <a class="card" href={socialLinks[s.n] ?? '#'} target="_blank" rel="noreferrer noopener" style={`--er-c:${socialColors[i % socialColors.length]}`}>
-        <span class="c-name">{s.n.toUpperCase()}</span>
-        <span class="c-handle">{s.h}</span>
-        <span class="c-arr">↗</span>
-      </a>
-    ))}
+      <a class="c-handle c-mail" href={`mailto:${t.contato.email}`}>{t.contato.email}</a>
+      <button
+        class="c-copy"
+        type="button"
+        data-copy={t.contato.email}
+        data-label={t.ux.copy}
+        data-done={t.ux.copied}
+      >{t.ux.copy}</button>
+    </div>
+    {t.contato.socials.map((s, i) => {
+      const href = socialLinks[s.n] ?? null;
+      const Card = href ? 'a' : 'div';
+      return (
+        <Card
+          class:list={['card', !href && 'is-static']}
+          href={href ?? undefined}
+          target={href ? '_blank' : undefined}
+          rel={href ? 'noreferrer noopener' : undefined}
+          style={`--er-c:${socialColors[i % socialColors.length]}`}
+        >
+          <span class="c-name">{s.n.toUpperCase()}</span>
+          <span class="c-handle">{s.h}</span>
+          <span class="c-arr" aria-hidden="true">{href ? '↗' : ''}</span>
+        </Card>
+      );
+    })}
   </div>
 </div>
+
+<script>
+  const copyBtn = document.querySelector<HTMLButtonElement>('[data-copy]');
+  if (copyBtn && navigator.clipboard) {
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(copyBtn.dataset.copy ?? '');
+        copyBtn.textContent = copyBtn.dataset.done ?? 'ok';
+        setTimeout(() => { copyBtn.textContent = copyBtn.dataset.label ?? ''; }, 1800);
+      } catch {
+        /* clipboard bloqueado: o mailto ao lado continua funcionando */
+      }
+    });
+  } else if (copyBtn) {
+    copyBtn.hidden = true;
+  }
+</script>
 
 <style>
   .contato { padding-top: 6px; }
@@ -91,6 +124,9 @@ const socialLinks: Record<string, string> = {
   }
   .card:first-child { border-left: var(--edge) solid var(--fg); }
   .card:hover { background: var(--er-c); color: #000; }
+  .card.is-static { cursor: default; }
+  .card.is-static:hover { background: transparent; color: var(--fg); }
+  .card.is-static:hover .c-name { color: var(--er-c); }
   .card:hover .c-name, .card:hover .c-arr { color: #000; }
   .c-name {
     font-family: var(--mono);
@@ -110,6 +146,23 @@ const socialLinks: Record<string, string> = {
     color: var(--er-c, var(--hot));
     justify-self: end;
   }
+  .c-mail { text-decoration: none; }
+  .c-mail:hover { color: var(--er-c); }
+  /* copiar o endereço sem ter que selecionar à mão */
+  .c-copy {
+    justify-self: end;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--er-c, var(--hot));
+    border: var(--hair) solid currentColor;
+    padding: 4px 8px;
+    cursor: pointer;
+  }
+  .c-copy:hover { background: var(--ylw); color: #000; border-color: #000; }
+  .card:hover .c-copy { color: #000; border-color: #000; }
 
   @media (max-width: 900px) {
     .cards { grid-template-columns: 1fr; }

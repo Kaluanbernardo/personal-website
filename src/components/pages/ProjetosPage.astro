@@ -49,45 +49,87 @@ const kindColor: Record<string, string> = {
       #{label}
     </button>
   ))}
+  <span class="filter-count" data-count aria-live="polite">{t.ux.filterCount(projects.length, projects.length)}</span>
 </div>
 
 <div id="project-grid" class="grid">
-  {projects.map((p, i) => (
+  {projects.map((p, i) => {
+    /* sem URL cadastrada o cartão não é âncora nenhuma: <a> sem href
+       não é link, e <a href="#"> leva o leitor a lugar nenhum */
+    const Card = p.url ? 'a' : 'div';
+    return (
     <article
       class="cell"
       data-kind={p.kind}
       style={`--card-c:${kindColor[p.kind] ?? 'var(--fg)'};--rot:${i % 2 === 0 ? '0.4deg' : '-0.4deg'}`}
     >
-      <a class="card" href={p.url ?? '#'} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
+      <Card class:list={['card', !p.url && 'is-static']} href={p.url} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
         <div class="thumb ed-imgframe">
           <div class="ph">thumb · 4×3</div>
         </div>
         <div class="card-body">
           <span class="card-tag">#{tagDisplay[lang][p.kind] ?? p.kind}</span>
           <h3 class="ed-bungee card-title">{p.title}</h3>
-          <div class="card-place">{p.place} →</div>
+          <div class="card-place">{p.place}{p.url ? ' →' : ''}</div>
         </div>
-      </a>
+      </Card>
     </article>
-  ))}
+    );
+  })}
+</div>
+
+<div class="empty-state" data-empty hidden>
+  <div class="es-code">{t.ux.emptyTitle}</div>
+  <p class="es-body">{t.ux.emptyBody}</p>
+  <button type="button" class="ed-btn" data-clear>{t.ux.clearFilter}</button>
 </div>
 
 <script>
   const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
   const cells = document.querySelectorAll<HTMLElement>('.cell');
-  buttons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      buttons.forEach((button) => {
-        const active = button === btn;
-        button.classList.toggle('is-active', active);
-        button.setAttribute('aria-pressed', String(active));
-      });
-      const kind = btn.dataset.kind ?? '';
-      cells.forEach((cell) => {
-        cell.hidden = Boolean(kind && cell.dataset.kind !== kind);
-      });
+  const countEl = document.querySelector<HTMLElement>('[data-count]');
+  const emptyEl = document.querySelector<HTMLElement>('[data-empty]');
+  const clearBtn = document.querySelector<HTMLButtonElement>('[data-clear]');
+  const total = cells.length;
+  const fmt = countEl?.textContent?.includes('of') ? 'en' : 'pt';
+
+  function apply(kind: string, push: boolean) {
+    let shown = 0;
+    cells.forEach((cell) => {
+      const match = !kind || cell.dataset.kind === kind;
+      cell.hidden = !match;
+      if (match) shown += 1;
     });
+    buttons.forEach((b) => {
+      const active = (b.dataset.kind ?? '') === kind;
+      b.classList.toggle('is-active', active);
+      b.setAttribute('aria-pressed', String(active));
+    });
+    if (countEl) {
+      countEl.textContent = shown === total
+        ? (fmt === 'en' ? `${total} items` : `${total} itens`)
+        : (fmt === 'en' ? `${shown} of ${total}` : `${shown} de ${total}`);
+    }
+    if (emptyEl) emptyEl.hidden = shown !== 0;
+
+    /* filtro na URL: a visão filtrada passa a ser compartilhável
+       e sobrevive ao recarregar / voltar do navegador */
+    if (push) {
+      const url = new URL(window.location.href);
+      if (kind) url.searchParams.set('tag', kind);
+      else url.searchParams.delete('tag');
+      history.pushState({ kind }, '', url);
+    }
+  }
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => apply(btn.dataset.kind ?? '', true));
   });
+  clearBtn?.addEventListener('click', () => apply('', true));
+  window.addEventListener('popstate', () => {
+    apply(new URL(window.location.href).searchParams.get('tag') ?? '', false);
+  });
+  apply(new URL(window.location.href).searchParams.get('tag') ?? '', false);
 </script>
 
 <style>
@@ -130,6 +172,8 @@ const kindColor: Record<string, string> = {
     color: inherit;
   }
   .card:hover { background: var(--bg-2); color: inherit; }
+  .card.is-static { cursor: default; }
+  .card.is-static:hover { background: transparent; }
   .thumb {
     aspect-ratio: 4/3;
     border-bottom: var(--edge) solid var(--fg);

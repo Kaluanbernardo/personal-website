@@ -48,6 +48,11 @@
 
 * { box-sizing: border-box; }
 
+/* [hidden] precisa vencer as regras de display dos componentes:
+   .post-row é `display: grid` e o atributo sozinho não escondia nada,
+   então o filtro contava certo e mostrava tudo mesmo assim. */
+[hidden] { display: none !important; }
+
 html, body { margin: 0; padding: 0; overflow-x: clip; }
 
 body {
@@ -182,7 +187,13 @@ button { font: inherit; }
   cursor: pointer;
 }
 .site-nav a:last-child { border-right: none; }
-.site-nav a .num { opacity: 0.5; margin-right: 6px; }
+/* Cor explícita em vez de opacity. Sobre fundo escuro o número pode
+   ser secundário; sobre o acento aceso, não: violeta e magenta são
+   escuros o bastante para que qualquer preto esmaecido caia abaixo de
+   4,5:1. Ali ele assume a tinta cheia. */
+.site-nav a .num { color: var(--fg-3); margin-right: 6px; }
+.site-nav a.active .num,
+.site-nav a:hover .num { color: inherit; }
 .site-nav a.active { background: var(--accent); color: var(--accent-ink); }
 .site-nav a:hover { background: var(--ylw); color: #000; }
 
@@ -451,4 +462,92 @@ button { font: inherit; }
   .page-inner { padding: 20px 16px 52px; }
   .site-header { padding: 10px 16px; }
   .site-footer { padding: 14px 16px; }
+}
+
+/* =========================================================
+   Afordâncias de uso
+   Nada de "modo alternativo": o site tem uma cara só. Isto aqui
+   é o mínimo que uma página precisa ter para ser usável —
+   escrito na mesma linguagem visual do resto.
+   ========================================================= */
+
+/* Pular para o conteúdo: a nav tem 7 itens antes do conteúdo em
+   toda página, o que é caro para quem navega por teclado. */
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -100px;
+  z-index: 100;
+  background: var(--acid);
+  color: #000;
+  border: var(--edge) solid #000;
+  font-family: var(--mono);
+  font-size: var(--t-ui);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 10px 14px;
+}
+.skip-link:focus { top: 8px; color: #000; background: var(--acid); }
+
+/* Progresso de leitura: os ensaios têm 6–8 min. */
+.read-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0;
+  background: var(--accent);
+  z-index: 40;
+  pointer-events: none;
+}
+
+/* Voltar ao topo: o CV tem 14 cargos e o rodapé fica longe. */
+.to-top {
+  position: fixed;
+  right: 16px;
+  bottom: 60px;
+  z-index: 31;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--bg);
+  color: var(--fg);
+  border: var(--edge) solid var(--fg);
+  padding: 8px 10px;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s linear, visibility 0.15s linear;
+}
+.to-top.is-on { opacity: 1; visibility: visible; }
+.to-top:hover { background: var(--ylw); color: #000; border-color: #000; }
+
+/* Estado vazio: filtrar para zero resultados deixava a página em
+   branco, sem dizer o que aconteceu nem como voltar. */
+.empty-state {
+  padding: 36px 0 8px;
+  font-family: var(--mono);
+  border-top: var(--hair) solid var(--fg);
+}
+.empty-state .es-code {
+  font-family: var(--display);
+  font-size: 30px;
+  color: var(--accent);
+  line-height: 1;
+}
+.empty-state .es-body {
+  font-size: var(--t-ui);
+  color: var(--fg-2);
+  margin: 10px 0 16px;
+}
+
+/* Contador de resultados do filtro */
+.filter-count {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  align-self: center;
+  margin-left: 4px;
 }

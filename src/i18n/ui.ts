@@ -97,6 +97,22 @@ type Dict = {
     label: string;
     href: (path: string) => string;
   };
+  ux: {
+    skip: string;
+    copy: string;
+    copied: string;
+    filterCount: (shown: number, total: number) => string;
+    emptyTitle: string;
+    emptyBody: string;
+    clearFilter: string;
+    toTop: string;
+    notFound: {
+      code: string;
+      title: string;
+      body: string;
+      whereTo: string;
+    };
+  };
 };
 
 export const ui: Record<Lang, Dict> = {
@@ -465,6 +481,24 @@ export const ui: Record<Lang, Dict> = {
     footer: {
       note: '© kaluan bernardo · vibecodado com claude + markdown + astro',
       sourceLabel: 'código fonte ↗',
+    },
+    ux: {
+      skip: 'pular para o conteúdo',
+      copy: 'copiar',
+      copied: 'copiado ✓',
+      filterCount: (shown: number, total: number) =>
+        shown === total ? `${total} itens` : `${shown} de ${total}`,
+      emptyTitle: '0 RESULTADOS',
+      emptyBody: 'Nenhum item corresponde a esse filtro.',
+      clearFilter: 'limpar filtro',
+      toTop: '↑ topo',
+      notFound: {
+        code: '404',
+        title: 'PÁGINA NÃO ENCONTRADA',
+        body:
+          'O endereço não existe ou mudou de lugar. Abaixo, as seções do site.',
+        whereTo: 'ONDE VOCÊ PODE IR',
+      },
     },
     altLang: {
       label: 'EN',
@@ -836,6 +870,24 @@ export const ui: Record<Lang, Dict> = {
     footer: {
       note: '© kaluan bernardo · vibecoded with claude + markdown + astro',
       sourceLabel: 'source code ↗',
+    },
+    ux: {
+      skip: 'skip to content',
+      copy: 'copy',
+      copied: 'copied ✓',
+      filterCount: (shown: number, total: number) =>
+        shown === total ? `${total} items` : `${shown} of ${total}`,
+      emptyTitle: '0 RESULTS',
+      emptyBody: 'No items match that filter.',
+      clearFilter: 'clear filter',
+      toTop: '↑ top',
+      notFound: {
+        code: '404',
+        title: 'PAGE NOT FOUND',
+        body:
+          'This address does not exist or has moved. The sections of the site are below.',
+        whereTo: 'WHERE YOU CAN GO',
+      },
     },
     altLang: {
       label: 'PT',

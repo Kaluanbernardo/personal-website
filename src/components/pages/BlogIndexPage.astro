@@ -55,16 +55,23 @@ const archiveItems = [...archiveCounts.entries()]
   <h1 class="ed-bungee headline">BLOG <span class="mark mark-vio" aria-hidden="true">■</span></h1>
 </header>
 
-<div class="filters">
+<div class="filters" role="group" aria-label={lang === 'en' ? 'Filter posts' : 'Filtrar posts'}>
   {t.blog.filters.map((label, i) => (
-    <button type="button" class={`ed-tag filter-btn ${i === 0 ? 'is-active' : ''}`} data-tag={tagByFilter[label] ?? ''}>
+    <button
+      type="button"
+      class={`ed-tag filter-btn ${i === 0 ? 'is-active' : ''}`}
+      data-tag={tagByFilter[label] ?? ''}
+      aria-pressed={i === 0 ? 'true' : 'false'}
+      aria-controls="post-list"
+    >
       #{label}
     </button>
   ))}
+  <span class="filter-count" data-count aria-live="polite">{t.ux.filterCount(posts.length, posts.length)}</span>
 </div>
 
 <div class="blog-grid">
-  <main class="posts">
+  <main class="posts" id="post-list">
     {featured && (
       <a class="featured" href={postHref(featured.id)} data-tag={featured.data.tag}>
         <div class="ft-kicker">{featuredKicker}</div>
@@ -85,6 +92,12 @@ const archiveItems = [...archiveCounts.entries()]
         <span class="rarr">→</span>
       </a>
     ))}
+
+    <div class="empty-state" data-empty hidden>
+      <div class="es-code">{t.ux.emptyTitle}</div>
+      <p class="es-body">{t.ux.emptyBody}</p>
+      <button type="button" class="ed-btn" data-clear>{t.ux.clearFilter}</button>
+    </div>
   </main>
 
   <aside class="aside">
@@ -94,9 +107,23 @@ const archiveItems = [...archiveCounts.entries()]
         {lang === 'en' ? <>IN YOUR<br />INBOX.</> : <>NO E-MAIL.<br />SEM SPAM.</>}
       </h3>
       <p class="nl-copy">{t.blog.newsletterCopy}</p>
-      <form class="nl-form" onsubmit="return false">
-        <input class="ed-input nl-input" placeholder={t.blog.newsletterPlaceholder} type="email" />
-        <button class="ed-btn ylw nl-submit">SUBSCRIBE →</button>
+      <form
+        class="nl-form"
+        action="https://kaluanbernardo.substack.com/subscribe"
+        method="get"
+        target="_blank"
+      >
+        <label class="nl-label" for="nl-email">{t.blog.newsletterPlaceholder}</label>
+        <input
+          class="ed-input nl-input"
+          id="nl-email"
+          name="email"
+          type="email"
+          required
+          autocomplete="email"
+          placeholder={t.blog.newsletterPlaceholder}
+        />
+        <button class="ed-btn ylw nl-submit" type="submit">SUBSCRIBE →</button>
       </form>
     </div>
 
@@ -104,7 +131,7 @@ const archiveItems = [...archiveCounts.entries()]
       <div class="archive">
         <div class="arch-kicker">{archiveHeading}</div>
         {archiveItems.map((m) => (
-          <div class="arch-row zap">
+          <div class="arch-row">
             <span>{m.label}</span><span class="arch-n">{m.n}</span>
           </div>
         ))}
@@ -115,18 +142,48 @@ const archiveItems = [...archiveCounts.entries()]
 
 <script>
   const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
-  const rows = document.querySelectorAll<HTMLElement>('[data-tag]');
-  filterBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach((b) => b.classList.remove('is-active'));
-      btn.classList.add('is-active');
-      const target = btn.dataset.tag ?? '';
-      rows.forEach((row) => {
-        const match = !target || row.dataset.tag === target;
-        (row as HTMLElement).style.display = match ? '' : 'none';
-      });
+  const rows = document.querySelectorAll<HTMLElement>('.post-row[data-tag], .featured[data-tag]');
+  const countEl = document.querySelector<HTMLElement>('[data-count]');
+  const emptyEl = document.querySelector<HTMLElement>('[data-empty]');
+  const clearBtn = document.querySelector<HTMLButtonElement>('[data-clear]');
+  const total = rows.length;
+  const isEn = document.documentElement.lang === 'en';
+
+  function apply(tag: string, push: boolean) {
+    let shown = 0;
+    rows.forEach((row) => {
+      const match = !tag || row.dataset.tag === tag;
+      row.hidden = !match;
+      if (match) shown += 1;
     });
+    filterBtns.forEach((b) => {
+      const active = (b.dataset.tag ?? '') === tag;
+      b.classList.toggle('is-active', active);
+      b.setAttribute('aria-pressed', String(active));
+    });
+    if (countEl) {
+      countEl.textContent = shown === total
+        ? (isEn ? `${total} items` : `${total} itens`)
+        : (isEn ? `${shown} of ${total}` : `${shown} de ${total}`);
+    }
+    if (emptyEl) emptyEl.hidden = shown !== 0;
+
+    if (push) {
+      const url = new URL(window.location.href);
+      if (tag) url.searchParams.set('tag', tag);
+      else url.searchParams.delete('tag');
+      history.pushState({ tag }, '', url);
+    }
+  }
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => apply(btn.dataset.tag ?? '', true));
   });
+  clearBtn?.addEventListener('click', () => apply('', true));
+  window.addEventListener('popstate', () => {
+    apply(new URL(window.location.href).searchParams.get('tag') ?? '', false);
+  });
+  apply(new URL(window.location.href).searchParams.get('tag') ?? '', false);
 </script>
 
 <style>
@@ -277,6 +334,14 @@ const archiveItems = [...archiveCounts.entries()]
     margin: 0 0 12px;
   }
   .nl-form { display: flex; flex-direction: column; gap: 8px; }
+  /* rótulo real para leitor de tela; o placeholder sozinho some ao digitar */
+  .nl-label {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
   .nl-input { width: 100%; font-size: 11px; color: var(--ylw); border-color: var(--ylw); }
   .nl-input::placeholder { color: var(--ylw); opacity: 0.6; }
   .nl-submit { justify-content: center; font-size: 12px; }
@@ -300,7 +365,6 @@ const archiveItems = [...archiveCounts.entries()]
     color: var(--fg);
   }
   .arch-row .arch-n { color: var(--vio); }
-  .arch-row:hover .arch-n { color: #000; }
 
   @media (max-width: 900px) {
     .blog-grid { grid-template-columns: 1fr; gap: 36px; }

@@ -2,7 +2,7 @@
 import Base from './Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import type { Lang } from '../i18n/ui';
+import { ui, type Lang } from '../i18n/ui';
 import { sections, type SectionKey } from '../lib/sections';
 
 interface Props {
@@ -24,6 +24,7 @@ const {
   backHref,
 } = Astro.props;
 const pathname = Astro.url.pathname;
+const t = ui[lang];
 
 const defaultDescriptions: Record<Lang, Record<SectionKey, string>> = {
   pt: {
@@ -55,6 +56,7 @@ const pageDescription = description ?? defaultDescriptions[lang][active];
   ogType={navVariant === 'back' ? 'article' : 'website'}
 >
   <div class={`page ${sections[active].theme}`}>
+    <a class="skip-link" href="#conteudo">{t.ux.skip}</a>
     <Nav
       lang={lang}
       active={active}
@@ -63,9 +65,26 @@ const pageDescription = description ?? defaultDescriptions[lang][active];
       backHref={backHref}
       pathname={pathname}
     />
-    <main class="page-inner">
+    <main class="page-inner" id="conteudo" tabindex="-1">
       <slot />
     </main>
+
+    <button class="to-top" type="button" data-to-top>{t.ux.toTop}</button>
     <Footer lang={lang} />
   </div>
 </Base>
+
+<script>
+  /* Voltar ao topo: só aparece depois que a página realmente rolou. */
+  const btn = document.querySelector<HTMLButtonElement>('[data-to-top]');
+  if (btn) {
+    const sync = () => btn.classList.toggle('is-on', window.scrollY > window.innerHeight * 0.6);
+    sync();
+    window.addEventListener('scroll', sync, { passive: true });
+    btn.addEventListener('click', () => {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+      document.querySelector<HTMLElement>('#conteudo')?.focus();
+    });
+  }
+</script>

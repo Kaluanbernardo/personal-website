@@ -13,7 +13,7 @@ const t = ui[lang];
 const allPosts = await getCollection('posts', ({ data }) => !data.draft && data.lang === lang);
 const recentPosts = allPosts
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 6);
+  .slice(0, 3);
 
 const allProjects = await getCollection('projects', ({ data }) => data.lang === lang);
 
@@ -128,22 +128,22 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
   <div class="hero-main">
     <h1 class="hero-title ed-bungee">
       <span class="t-fg">{firstName.toUpperCase()}</span><br />
-      <span class="t-stroke">{lastName.toUpperCase()}</span><span class="ed-blink t-cyan">_</span>
+      <span class="t-stroke">{lastName.toUpperCase()}</span><span class="ed-blink hero-caret" aria-hidden="true">▌</span>
     </h1>
 
-    <p class="hero-intro hero-intro-long ed-mono">
+    <p class="hero-intro hero-intro-long">
       {lang === 'en' ? (
         <>
-          I create <span class="ed-mark-hot">products</span>, develop <span class="ed-mark-cyan">strategies</span>, do research and <span class="ed-mark-acid">analysis</span>, teach <span class="ed-mark-vio">classes</span>, think up and execute <span class="ed-mark-ylw">ideas</span>, all with a touch of <span class="ed-mark-orng">groove</span>. I like technology, culture, games, music and journalism. I also like potatoes and <span class="ed-mark-blue">studying</span>.
+          I create <span class="ed-mark-hot">products</span>, develop <span class="ed-mark-cyan">strategies</span>, do research and analysis, teach classes, think up and execute ideas, all with a touch of <span class="ed-mark-orng">groove</span>. I like technology, culture, games, music and journalism. I also like potatoes and <span class="ed-mark-acid">studying</span>.
         </>
       ) : (
         <>
-          Crio <span class="ed-mark-hot">produtos</span>, desenvolvo <span class="ed-mark-cyan">estratégias</span>, faço pesquisas e <span class="ed-mark-acid">análises</span>, dou <span class="ed-mark-vio">aulas</span>, penso e executo <span class="ed-mark-ylw">ideias</span> — tudo com um tiquinho de <span class="ed-mark-orng">carimbó</span>. Gosto de tecnologia, cultura, games, música e jornalismo. Também gosto de batata e de <span class="ed-mark-blue">estudar</span>.
+          Crio <span class="ed-mark-hot">produtos</span>, desenvolvo <span class="ed-mark-cyan">estratégias</span>, faço pesquisas e análises, dou aulas, penso e executo ideias — tudo com um tiquinho de <span class="ed-mark-orng">carimbó</span>. Gosto de tecnologia, cultura, games, música e jornalismo. Também gosto de batata e de <span class="ed-mark-acid">estudar</span>.
         </>
       )}
     </p>
 
-    <p class="hero-intro hero-intro-short ed-mono">
+    <p class="hero-intro hero-intro-short">
       {lang === 'en'
         ? 'I create products and strategies, research, teach, and turn curiosity into work, with a touch of Brazilian groove.'
         : 'Crio produtos e estratégias, faço pesquisa, dou aulas e transformo curiosidade em trabalho, com um tiquinho de carimbó.'}
@@ -152,14 +152,14 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
 
   <div class="hero-tags">
     {heroTags.map((tag, i) => (
-      <span class={`ed-tag t-${i % 6}`}>#{tag}</span>
+      <span class={`ed-tag c-${['hot', 'acid', 'cyan', 'ylw'][i % 4]}`}>#{tag}</span>
     ))}
   </div>
 </section>
 
 <section class="brutal-index">
   <div class="bi-head">
-    <div class="bi-kicker hf-mono">{'>>>'} {indexHeading}</div>
+    <div class="bi-kicker ed-kicker">{'>>>'} {indexHeading}</div>
     <div class="bi-counter ed-tiny">{entriesLabel}</div>
   </div>
   <hr class="ed-rule-rainbow" />
@@ -179,15 +179,15 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
   <section class="from-blog">
     <div class="fb-head">
       <h2 class="ed-bungee fb-title">{fromBlogHeading}</h2>
-      <a class="fb-all hf-mono" href={blogHref}>{allPostsLabel}</a>
+      <a class="fb-all" href={blogHref}>{allPostsLabel}</a>
     </div>
     <div class="fb-grid">
       {recentPosts.map((p) => (
         <a class="fb-card" href={postHref(p.id)}>
           <span class="fb-tag">#{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
           <h3 class="ed-bungee fb-card-title">{p.data.title}</h3>
-          <div class="fb-meta hf-mono">
-            {formatDate(p.data.pubDate, lang).toUpperCase()} · {p.data.readingTime} min
+          <div class="fb-meta">
+            {formatDate(p.data.pubDate, lang).toUpperCase()} · {p.data.readingTime} MIN
           </div>
         </a>
       ))}
@@ -198,7 +198,7 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
 <style>
   .hero {
     position: relative;
-    padding: 4px 0 36px;
+    padding: 8px 0 40px;
     display: grid;
     grid-template-columns: 1fr;
     gap: 18px;
@@ -206,7 +206,7 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
   }
   .hero-grid-bg {
     position: absolute;
-    inset: 0;
+    inset: -12px;
     background-image:
       linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
@@ -216,11 +216,7 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     z-index: 0;
   }
   .hero-main, .hero-tags { position: relative; z-index: 1; }
-  .hero-main {
-    grid-column: 1;
-    grid-row: 1;
-    min-width: 0;
-  }
+  .hero-main { grid-column: 1; grid-row: 1; min-width: 0; }
 
   .hero-visual {
     position: relative;
@@ -230,17 +226,18 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     z-index: 2;
   }
 
-  /* espaço reservado para a foto */
+  /* foto: borda grossa, sombra dura ciano e a inclinação de colagem */
   .hero-photo {
     width: 100%;
     aspect-ratio: 4 / 5;
     overflow: hidden;
-    border: 3px solid var(--fg);
+    border: var(--loud) solid var(--fg);
     background: var(--bg-2);
     box-shadow: 8px 8px 0 var(--cyan);
     transform: rotate(1deg);
   }
 
+  /* selo: continua torto, só parou de balançar sozinho */
   .ai-seal {
     position: absolute;
     right: -14px;
@@ -251,13 +248,9 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     transform: rotate(-8deg);
     filter: drop-shadow(4px 6px 0 rgba(0, 0, 0, 0.55));
     pointer-events: none;
-    animation: ai-seal-wobble 3.4s ease-in-out infinite;
   }
   .ai-seal svg { width: 100%; height: 100%; display: block; }
-  @keyframes ai-seal-wobble {
-    0%, 100% { transform: rotate(-8deg); }
-    50%      { transform: rotate(-4deg); }
-  }
+
   @media (max-width: 1100px) {
     .hero {
       grid-template-columns: minmax(0, 1fr) 210px;
@@ -278,52 +271,43 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     .ai-seal { width: 98px; height: 98px; right: 8px; bottom: -20px; }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .ai-seal { animation: none; }
-  }
-
   .hero-title {
-    /* dimensionado para "BERNARDO_" caber inteiro na coluna ao lado da foto */
-    font-size: clamp(54px, 10.6vw, 150px);
+    font-size: clamp(54px, 10.4vw, 142px);
     margin: 0;
     max-width: 100%;
-    overflow-wrap: anywhere;
-    white-space: nowrap;
-    line-height: 0.82;
+    line-height: 0.84;
     letter-spacing: -0.06em;
     text-transform: uppercase;
   }
   .t-fg { color: var(--fg); }
-  .t-hot { color: var(--hot); }
-  .t-cyan { color: var(--cyan); }
   .t-stroke {
     color: var(--bg);
     -webkit-text-stroke: 2.5px var(--fg);
   }
+  /* cursor em mono: em Bungee o "_" vira uma barra sólida solta */
+  .hero-caret {
+    font-family: var(--mono);
+    color: var(--cyan);
+    font-size: 0.46em;
+    line-height: 1;
+    margin-left: 0.05em;
+    vertical-align: 0.06em;
+  }
 
   .hero-intro {
+    font-family: var(--mono);
     font-size: 16px;
-    max-width: 680px;
+    max-width: 68ch;
     margin-top: 24px;
     line-height: 1.7;
   }
   .hero-intro-short { display: none; }
-  .hero-intro :global([class^="ed-mark"]) {
-    padding: 0;
-  }
-
-  .hero-cta {
-    margin-top: 22px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
+  .hero-intro :global([class^="ed-mark"]) { padding: 0 3px; }
 
   .hero-tags {
     grid-column: 1 / -1;
     display: flex;
     gap: 6px;
-    margin-top: 0;
     max-width: 100%;
     flex-wrap: wrap;
   }
@@ -333,49 +317,34 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     letter-spacing: 0.1em;
     max-width: 100%;
     overflow-wrap: anywhere;
-    word-break: break-word;
   }
-  .hero-tags .t-0 { background: var(--hot); color: #000; border-color: #000; }
-  .hero-tags .t-1 { background: var(--acid); color: #000; border-color: #000; }
-  .hero-tags .t-2 { background: var(--cyan); color: #000; border-color: #000; }
-  .hero-tags .t-3 { background: var(--ylw); color: #000; border-color: #000; }
-  .hero-tags .t-4 { background: var(--vio); color: #fff; border-color: #000; }
-  .hero-tags .t-5 { background: var(--orng); color: #000; border-color: #000; }
 
-  .brutal-index { margin: 12px 0 0; }
+  .brutal-index { margin: 16px 0 0; }
   .bi-head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    gap: 16px;
     margin-bottom: 6px;
   }
-  .bi-kicker {
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--acid);
-  }
-  .bi-counter { color: var(--fg); font-size: 9px; }
+  .bi-kicker { letter-spacing: 0.2em; }
+  .bi-counter { color: var(--fg); }
 
   .bi-row {
     display: grid;
     grid-template-columns: 50px minmax(0, 1fr) 220px 90px 28px;
     align-items: center;
-    padding: 14px 0;
-    border-bottom: 1.5px solid var(--fg);
+    padding: 15px 0;
+    border-bottom: var(--hair) solid var(--fg);
     gap: 14px;
     color: var(--fg);
-    transition: padding-left 0.12s linear, background 0.05s linear;
+    transition: padding-left 0.12s linear;
   }
   .bi-row > * { min-width: 0; }
-  .bi-row:hover {
-    background: transparent;
-    padding-left: 8px;
-  }
-  .bi-row:hover .bi-arr { color: var(--ylw); }
+  .bi-row:hover { padding-left: 10px; }
   .bi-row .bi-num {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: var(--t-meta);
     letter-spacing: 0.15em;
     color: var(--row-c);
   }
@@ -406,12 +375,13 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     text-align: right;
   }
 
-  .from-blog { margin-top: 56px; }
+  .from-blog { margin-top: 60px; }
   .fb-head {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     margin-bottom: 18px;
+    gap: 16px;
   }
   .fb-title {
     font-size: 36px;
@@ -419,24 +389,27 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     letter-spacing: -0.03em;
   }
   .fb-all {
-    font-size: 11px;
+    font-family: var(--mono);
+    font-size: var(--t-meta);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--vio);
+    white-space: nowrap;
   }
+  .fb-all:hover { background: var(--ylw); color: #000; }
+  /* auto-fit p/ trilha vazia colapsar: em EN só há 2 posts */
   .fb-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 0;
   }
   .fb-card {
     display: block;
     padding: 18px;
-    border: 2px solid var(--fg);
-    border-left: none;
+    border: var(--edge) solid var(--fg);
+    margin-left: -2px;
     cursor: pointer;
   }
-  .fb-card:first-child { border-left: 2px solid var(--fg); }
   .fb-card:hover { background: var(--bg-2); color: inherit; }
   .fb-tag {
     font-family: var(--mono);
@@ -446,13 +419,14 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     text-transform: uppercase;
   }
   .fb-card-title {
-    font-size: 22px;
+    font-size: 21px;
     margin: 8px 0 12px;
     letter-spacing: -0.02em;
     line-height: 1.05;
     text-transform: uppercase;
   }
   .fb-meta {
+    font-family: var(--mono);
     font-size: 10px;
     letter-spacing: 0.06em;
     color: var(--fg-3);
@@ -467,9 +441,7 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     }
     .bi-row .bi-title { font-size: clamp(22px, 5vw, 34px); }
     .bi-row .bi-sub { display: none; }
-    .fb-grid { grid-template-columns: 1fr; }
-    .fb-card { border-left: 2px solid var(--fg); border-top: none; }
-    .fb-card:first-child { border-top: 2px solid var(--fg); }
+    .fb-card { margin-left: 0; margin-top: -2px; }
   }
   @media (max-width: 720px) {
     .hero-title { font-size: clamp(40px, 13vw, 80px); }
@@ -477,12 +449,12 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     .hero-intro-short {
       display: block;
       font-size: 14px;
-      line-height: 1.55;
+      line-height: 1.6;
       margin-top: 16px;
-      max-width: 34ch;
+      max-width: 40ch;
     }
     .fb-title { font-size: 28px; }
-    .brutal-index { margin-top: 4px; }
+    .brutal-index { margin-top: 8px; }
     .bi-row {
       grid-template-columns: 30px minmax(0, 1fr) 52px 18px;
       gap: 7px;

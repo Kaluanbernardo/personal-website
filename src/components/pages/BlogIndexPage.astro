@@ -27,36 +27,58 @@ t.blog.filters.forEach((label, i) => {
 });
 
 const eyebrow = `${sections.blog.number} / *.MD`;
-const sidebarKickerNL = lang === 'en' ? '★ NEWSLETTER ★' : '★ NEWSLETTER ★';
-const archiveHeading = lang === 'en' ? './ARCHIVE' : './ARQUIVO';
-const archiveItems = lang === 'en'
-  ? ['apr/26 (4)', 'mar/26 (3)', 'feb/26 (5)', 'jan/26 (2)', 'dec/25 (4)', 'nov/25 (5)']
-  : ['abr/26 (4)', 'mar/26 (3)', 'fev/26 (5)', 'jan/26 (2)', 'dez/25 (4)', 'nov/25 (5)'];
-const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ POST EM DESTAQUE ★★';
+const sidebarKickerNL = '** NEWSLETTER **';
+const featuredKicker = lang === 'en' ? '** FEATURED POST **' : '** POST EM DESTAQUE **';
+
+/* arquivo derivado dos posts reais — a lista antiga era fixa no código
+   e mostrava contagens que não batiam com o conteúdo publicado */
+const archiveHeading = lang === 'en' ? 'ARCHIVE' : 'ARQUIVO';
+const archiveCounts = new Map<string, number>();
+posts.forEach((p) => {
+  const d = p.data.pubDate;
+  const key = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
+  archiveCounts.set(key, (archiveCounts.get(key) ?? 0) + 1);
+});
+const monthNames = lang === 'en'
+  ? ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+  : ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+const monthKey = (d: Date) =>
+  `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
+const archiveItems = [...archiveCounts.entries()]
+  .sort((a, b) => b[0].localeCompare(a[0]))
+  .map(([key, n]) => {
+    const [y, m] = key.split('-').map(Number);
+    return { key, label: `${monthNames[m - 1]}/${String(y).slice(-2)}`, n };
+  });
 ---
 
 <header class="head">
-  <div class="kicker">{eyebrow}</div>
-  <h1 class="ed-bungee headline">
-    BLOG <span class="ed-blink mark mark-vio" aria-hidden="true">■</span>
-  </h1>
+  <div class="kicker ed-kicker">{eyebrow}</div>
+  <h1 class="ed-bungee headline">BLOG <span class="mark mark-vio" aria-hidden="true">■</span></h1>
 </header>
 
-<div class="filters">
+<div class="filters" role="group" aria-label={lang === 'en' ? 'Filter posts' : 'Filtrar posts'}>
   {t.blog.filters.map((label, i) => (
-    <button type="button" class={`ed-tag filter-btn ${i === 0 ? 'is-active' : ''}`} data-tag={tagByFilter[label] ?? ''}>
+    <button
+      type="button"
+      class={`ed-tag filter-btn ${i === 0 ? 'is-active' : ''}`}
+      data-tag={tagByFilter[label] ?? ''}
+      aria-pressed={i === 0 ? 'true' : 'false'}
+      aria-controls="post-list"
+    >
       #{label}
     </button>
   ))}
+  <span class="filter-count" data-count aria-live="polite">{t.ux.filterCount(posts.length, posts.length)}</span>
 </div>
 
 <div class="blog-grid">
-  <main class="posts">
+  <main class="posts" id="post-list">
     {featured && (
-      <a class="featured" href={postHref(featured.id)} data-tag={featured.data.tag}>
+      <a class="featured" href={postHref(featured.id)} data-tag={featured.data.tag} data-month={monthKey(featured.data.pubDate)}>
         <div class="ft-kicker">{featuredKicker}</div>
         <h2 class="ed-bungee ft-title">{featured.data.title}</h2>
-        <p class="ft-desc serif">{featured.data.description}</p>
+        <p class="ft-desc">{featured.data.description}</p>
         <div class="ft-meta">
           {formatDate(featured.data.pubDate, lang).toUpperCase()} · {featured.data.readingTime} {minLabel} · #{tagDisplay[lang][featured.data.tag] ?? featured.data.tag}
         </div>
@@ -64,7 +86,7 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
     )}
 
     {rest.map((p) => (
-      <a class="post-row" href={postHref(p.id)} data-tag={p.data.tag}>
+      <a class="post-row" href={postHref(p.id)} data-tag={p.data.tag} data-month={monthKey(p.data.pubDate)}>
         <span class="rdate">{formatDate(p.data.pubDate, lang).toUpperCase()}</span>
         <h3 class="ed-bungee rtitle">{p.data.title}</h3>
         <span class="rtag">#{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
@@ -72,6 +94,12 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
         <span class="rarr">→</span>
       </a>
     ))}
+
+    <div class="empty-state" data-empty hidden>
+      <div class="es-code">{t.ux.emptyTitle}</div>
+      <p class="es-body">{t.ux.emptyBody}</p>
+      <button type="button" class="ed-btn" data-clear>{t.ux.clearFilter}</button>
+    </div>
   </main>
 
   <aside class="aside">
@@ -81,187 +109,252 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
         {lang === 'en' ? <>IN YOUR<br />INBOX.</> : <>NO E-MAIL.<br />SEM SPAM.</>}
       </h3>
       <p class="nl-copy">{t.blog.newsletterCopy}</p>
-      <form class="nl-form" onsubmit="return false">
-        <input class="ed-input nl-input" placeholder={t.blog.newsletterPlaceholder} type="email" />
-        <button class="ed-btn ylw nl-submit">SUBSCRIBE →</button>
+      <form
+        class="nl-form"
+        action="https://kaluanbernardo.substack.com/subscribe"
+        method="get"
+        target="_blank"
+      >
+        <label class="nl-label" for="nl-email">{t.blog.newsletterPlaceholder}</label>
+        <input
+          class="ed-input nl-input"
+          id="nl-email"
+          name="email"
+          type="email"
+          required
+          autocomplete="email"
+          placeholder={t.blog.newsletterPlaceholder}
+        />
+        <button class="ed-btn ylw nl-submit" type="submit">SUBSCRIBE →</button>
       </form>
     </div>
 
-    <div class="archive">
-      <div class="arch-kicker">{archiveHeading}</div>
-      {archiveItems.map((m) => (
-        <div class="arch-row">
-          <span>{m}</span><span class="arr">→</span>
-        </div>
-      ))}
-    </div>
-
+    {archiveItems.length > 0 && (
+      <div class="archive" role="group" aria-label={archiveHeading}>
+        <div class="arch-kicker">{archiveHeading}</div>
+        {archiveItems.map((m) => (
+          <button
+            type="button"
+            class="arch-row"
+            data-month={m.key}
+            aria-pressed="false"
+            aria-controls="post-list"
+          >
+            <span>{m.label}</span><span class="arch-n">{m.n}</span>
+          </button>
+        ))}
+      </div>
+    )}
   </aside>
 </div>
 
 <script>
+  /* Dois eixos de filtro — assunto (tag) e mês — que se combinam.
+     Um zerar o outro em silêncio seria mais simples de escrever e
+     pior de usar: quem clica no mês depois da tag espera estreitar,
+     não recomeçar. Os dois viajam juntos na URL. */
   const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
-  const rows = document.querySelectorAll<HTMLElement>('[data-tag]');
+  const monthBtns = document.querySelectorAll<HTMLButtonElement>('.arch-row');
+  const rows = document.querySelectorAll<HTMLElement>('.post-row[data-tag], .featured[data-tag]');
+  const countEl = document.querySelector<HTMLElement>('[data-count]');
+  const emptyEl = document.querySelector<HTMLElement>('[data-empty]');
+  const clearBtn = document.querySelector<HTMLButtonElement>('[data-clear]');
+  const total = rows.length;
+  const isEn = document.documentElement.lang === 'en';
+
+  function apply(tag: string, month: string, push: boolean) {
+    let shown = 0;
+    rows.forEach((row) => {
+      const match = (!tag || row.dataset.tag === tag)
+        && (!month || row.dataset.month === month);
+      row.hidden = !match;
+      if (match) shown += 1;
+    });
+
+    filterBtns.forEach((b) => {
+      const active = (b.dataset.tag ?? '') === tag;
+      b.classList.toggle('is-active', active);
+      b.setAttribute('aria-pressed', String(active));
+    });
+    monthBtns.forEach((b) => {
+      const active = (b.dataset.month ?? '') === month;
+      b.classList.toggle('is-active', active);
+      b.setAttribute('aria-pressed', String(active));
+    });
+
+    if (countEl) {
+      countEl.textContent = shown === total
+        ? (isEn ? `${total} items` : `${total} itens`)
+        : (isEn ? `${shown} of ${total}` : `${shown} de ${total}`);
+    }
+    if (emptyEl) emptyEl.hidden = shown !== 0;
+
+    if (push) {
+      const url = new URL(window.location.href);
+      if (tag) url.searchParams.set('tag', tag); else url.searchParams.delete('tag');
+      if (month) url.searchParams.set('month', month); else url.searchParams.delete('month');
+      history.pushState({ tag, month }, '', url);
+    }
+  }
+
+  const read = () => {
+    const q = new URL(window.location.href).searchParams;
+    return { tag: q.get('tag') ?? '', month: q.get('month') ?? '' };
+  };
+
   filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => apply(btn.dataset.tag ?? '', read().month, true));
+  });
+  monthBtns.forEach((btn) => {
+    /* clicar no mês já ativo desliga: sem isso a única saída seria
+       o botão de limpar, que só aparece quando dá zero resultado */
     btn.addEventListener('click', () => {
-      filterBtns.forEach((b) => b.classList.remove('is-active'));
-      btn.classList.add('is-active');
-      const target = btn.dataset.tag ?? '';
-      rows.forEach((row) => {
-        const match = !target || row.dataset.tag === target;
-        (row as HTMLElement).style.display = match ? '' : 'none';
-      });
+      const cur = read().month;
+      const next = cur === btn.dataset.month ? '' : (btn.dataset.month ?? '');
+      apply(read().tag, next, true);
     });
   });
+  clearBtn?.addEventListener('click', () => apply('', '', true));
+  window.addEventListener('popstate', () => {
+    const { tag, month } = read();
+    apply(tag, month, false);
+  });
+  const initial = read();
+  apply(initial.tag, initial.month, false);
 </script>
 
 <style>
-  .head { padding-top: 6px; margin-bottom: 18px; }
-  .kicker {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    color: var(--vio);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
+  .head { padding-top: 6px; margin-bottom: 22px; }
+  .kicker { margin-bottom: 10px; }
   .headline {
-    font-size: clamp(48px, 9vw, 88px);
-    margin: 0 0 4px;
-    line-height: 0.85;
+    font-size: clamp(44px, 8vw, 76px);
+    margin: 0;
+    line-height: 0.9;
     letter-spacing: -0.04em;
     text-transform: uppercase;
-  }
-  .headline .t-vio { color: var(--vio); }
-  .meta {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    opacity: 0.6;
-    margin-bottom: 18px;
   }
 
   .filters {
     display: flex;
-    gap: 4px;
-    margin-bottom: 18px;
+    gap: 6px;
+    margin-bottom: 28px;
     flex-wrap: wrap;
-  }
-  .filter-btn { font-size: 11px; padding: 4px 10px; }
-  .filter-btn.is-active {
-    background: var(--vio);
-    color: #fff;
-    border-color: var(--vio);
   }
 
   .blog-grid {
     display: grid;
-    grid-template-columns: 1fr 280px;
-    gap: 28px;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 48px;
     align-items: flex-start;
   }
 
+  /* bloco chapado com sombra dura, como no original.
+     A diferença: fundo amarelo com texto preto em vez de branco sobre
+     violeta, que dava 3,4:1 e era ilegível no texto pequeno. */
   .featured {
     display: block;
-    background: var(--vio);
-    color: #fff;
+    background: var(--ylw);
+    color: #000;
     padding: 18px 22px;
-    border: 2.5px solid var(--fg);
-    margin-bottom: 20px;
-    box-shadow: 6px 6px 0 var(--ylw);
+    border: var(--loud) solid #000;
+    margin-bottom: 24px;
+    box-shadow: 8px 8px 0 var(--vio);
     cursor: pointer;
   }
-  .featured:hover { background: var(--vio); color: #fff; }
+  .featured:hover { background: var(--ylw); color: #000; transform: translate(-2px, -2px); box-shadow: 10px 10px 0 var(--vio); }
+  .featured { transition: transform 0.08s linear, box-shadow 0.08s linear; }
   .ft-kicker {
     font-family: var(--mono);
-    font-size: 9px;
+    font-size: 10px;
+    font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--ylw);
-    margin-bottom: 8px;
+    color: #000;
+    margin-bottom: 12px;
   }
   .ft-title {
-    font-size: 36px;
-    margin: 0 0 8px;
-    line-height: 0.95;
+    font-size: clamp(26px, 3.4vw, 34px);
+    margin: 0 0 12px;
+    line-height: 1.05;
     text-transform: uppercase;
     letter-spacing: -0.03em;
   }
   .ft-desc {
     font-family: var(--serif);
-    font-size: 16px;
+    font-size: 17px;
     line-height: 1.5;
-    margin: 0 0 12px;
-    max-width: 560px;
+    margin: 0 0 14px;
+    max-width: 56ch;
   }
   .ft-meta {
     font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.05em;
+    font-size: var(--t-meta);
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
   .post-row {
     display: grid;
-    grid-template-columns: 80px 1fr 100px 60px 24px;
-    gap: 14px;
-    padding: 14px 0;
-    border-bottom: 1.5px solid var(--fg);
+    grid-template-columns: 88px minmax(0, 1fr) 100px 56px 20px;
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: var(--hair) solid var(--fg);
     align-items: baseline;
+    transition: padding-left 0.12s linear;
   }
-  .post-row:hover { background: transparent; padding-left: 8px; }
-  .post-row:hover .rtitle { color: var(--vio); }
-  .post-row:hover .rarr { color: var(--vio); }
+  .post-row:hover { padding-left: 10px; }
+  .post-row:hover .rtitle,
+  .post-row:hover .rarr { color: var(--accent); }
   .rdate {
     font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.05em;
-    color: var(--fg);
-    opacity: 0.7;
+    font-size: var(--t-meta);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-3);
   }
   .rtitle {
-    font-size: 22px;
+    font-size: 19px;
     margin: 0;
     text-transform: uppercase;
     letter-spacing: -0.02em;
-    line-height: 1.05;
+    line-height: 1.15;
   }
   .rtag {
     font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.08em;
-    color: var(--vio);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--fg-3);
     text-transform: uppercase;
     text-align: right;
   }
   .rmins {
     font-family: var(--mono);
-    font-size: 11px;
-    opacity: 0.6;
+    font-size: var(--t-meta);
+    color: var(--fg-3);
     text-align: right;
   }
   .rarr {
-    color: var(--vio);
-    font-size: 18px;
+    color: var(--fg-3);
+    font-size: 16px;
     text-align: right;
+    transition: color 0.12s ease;
   }
 
-  .aside { display: flex; flex-direction: column; gap: 18px; }
+  .aside { display: flex; flex-direction: column; gap: 28px; }
 
   .newsletter {
-    border: 3px solid var(--ylw);
+    border: var(--loud) solid var(--ylw);
     padding: 16px 18px;
     background: #000;
     color: var(--ylw);
-    position: relative;
   }
   .nl-kicker {
-    font-family: var(--tiny);
-    font-size: 9px;
-    letter-spacing: 0.05em;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
     color: var(--ylw);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
   .nl-title {
     font-size: 22px;
@@ -278,61 +371,61 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
     margin: 0 0 12px;
   }
   .nl-form { display: flex; flex-direction: column; gap: 8px; }
-  .nl-input {
-    width: 100%;
-    font-size: 11px;
-    color: var(--ylw);
-    border-color: var(--ylw);
+  /* rótulo real para leitor de tela; o placeholder sozinho some ao digitar */
+  .nl-label {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
+  .nl-input { width: 100%; font-size: 11px; color: var(--ylw); border-color: var(--ylw); }
   .nl-input::placeholder { color: var(--ylw); opacity: 0.6; }
-  .nl-submit { justify-content: center; }
+  .nl-submit { justify-content: center; font-size: 12px; }
 
   .archive { display: flex; flex-direction: column; }
   .arch-kicker {
     font-family: var(--mono);
     font-size: 10px;
     letter-spacing: 0.2em;
-    color: var(--fg);
-    opacity: 0.6;
+    color: var(--fg-3);
     text-transform: uppercase;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
   .arch-row {
     font-family: var(--mono);
     font-size: 12px;
-    padding: 4px 0;
-    border-bottom: 1.5px dashed var(--fg);
+    padding: 6px 0;
+    border: none;
+    border-bottom: var(--hair) dashed var(--fg);
     display: flex;
     justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    background: transparent;
+    color: var(--fg);
+    text-align: left;
+    cursor: pointer;
   }
-  .arch-row .arr { color: var(--vio); }
-
-  .webring {
-    border: 2px solid var(--cyan);
-    color: var(--cyan);
-    padding: 10px 12px;
+  .arch-row:hover { background: var(--ylw); color: #000; }
+  .arch-row:hover .arch-n { color: #000; }
+  .arch-row.is-active {
+    background: var(--vio);
+    color: #000;
+    border-bottom-color: var(--vio);
+    padding-left: 6px;
+    padding-right: 6px;
   }
-  .wr-kicker {
-    font-family: var(--tiny);
-    font-size: 9px;
-    margin-bottom: 6px;
-  }
-  .wr-list {
-    font-family: var(--mono);
-    font-size: 10px;
-    line-height: 1.6;
-  }
-  .wr-list a { color: var(--cyan); }
-
-  .serif { font-family: var(--serif); }
+  .arch-row.is-active .arch-n { color: #000; }
+  .arch-row .arch-n { color: var(--vio); }
 
   @media (max-width: 900px) {
-    .blog-grid { grid-template-columns: 1fr; }
+    .blog-grid { grid-template-columns: 1fr; gap: 36px; }
     .post-row {
-      grid-template-columns: 60px 1fr 24px;
-      gap: 8px;
+      grid-template-columns: 72px minmax(0, 1fr) 20px;
+      gap: 10px;
     }
     .rtag, .rmins { display: none; }
-    .ft-title { font-size: 28px; }
+    .ft-title { font-size: 24px; }
   }
 </style>

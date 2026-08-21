@@ -1,13 +1,13 @@
 /* =========================================================
-   Site pessoal — ANTI-DESIGN / BRUTALISM / PUNK / RAVE
-   Visual ruidoso, vibrante, propositalmente quebrado.
-   Mesmo conteúdo, identidade tipográfica + neon.
+   Site pessoal — PUNK / FANZINE / BRUTALISTA
+   Neon vivo, borda grossa, sombra dura, colagem torta.
+   O que mudou em relação ao original não é o volume do estilo:
+   é só parar de usar TODOS os recursos ao mesmo tempo, na mesma
+   coisa. Cor forte continua; o que sai é cor aleatória.
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Shade&family=Departure+Mono&family=Major+Mono+Display&family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=VT323&display=swap');
-
 :root {
-  /* base palette — neon brutalist (dark default) */
+  /* --- base --- */
   --bg: #0a0a0a;
   --fg: #f5f5f0;
   --bg-2: #161614;
@@ -15,30 +15,43 @@
   --fg-2: #c8c6be;
   --fg-3: #8a8884;
 
-  /* neon */
-  --hot: #ff2d55;       /* magenta */
+  /* --- neon: valores originais, cheios --- */
+  --hot: #ff2d55;
   --cyan: #00f0ff;
-  --acid: #c4ff00;      /* verde ácido */
+  --acid: #c4ff00;
   --ylw: #ffe600;
   --orng: #ff6a00;
-  --vio: #b400ff;
+  --vio: #b83dff;   /* clareado só o suficiente p/ texto pequeno passar em contraste */
   --blue: #1a35ff;
 
-  /* per-page accent (overridden) */
+  /* acento da seção (sobrescrito em .theme-*) */
   --accent: var(--acid);
+  --accent-ink: #000;
 
-  /* fonts */
-  --mono: 'Departure Mono', 'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  --pixel: 'VT323', monospace;
+  /* --- traço: três pesos, cada um com função --- */
+  --hair: 1.5px;   /* divisória de lista */
+  --edge: 2px;     /* contorno de bloco */
+  --loud: 3px;     /* bloco em destaque */
+
+  /* --- fontes --- */
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --display: 'Bungee', Impact, sans-serif;
   --tiny: 'Press Start 2P', monospace;
-  --display: 'Space Grotesk', system-ui, sans-serif;
-  --major: 'Major Mono Display', monospace;
-  --bungee: 'Bungee', sans-serif;
-  --bungee-s: 'Bungee Shade', sans-serif;
-  --serif: 'Times New Roman', Times, serif;
+  --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --bungee: var(--display);
+
+  --t-meta: 11px;
+  --t-ui: 12px;
+  --t-body: 14px;
+  --t-read: 18px;
 }
 
 * { box-sizing: border-box; }
+
+/* [hidden] precisa vencer as regras de display dos componentes:
+   .post-row é `display: grid` e o atributo sozinho não escondia nada,
+   então o filtro contava certo e mostrava tudo mesmo assim. */
+[hidden] { display: none !important; }
 
 html, body { margin: 0; padding: 0; overflow-x: clip; }
 
@@ -46,50 +59,74 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--mono);
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: var(--t-body);
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
 }
 
+/* Base: acento no texto. O amarelo chapado volta, mas em conteúdo
+   (texto, listas, rodapé) — não em toda a navegação, que era o que
+   fazia a tela inteira piscar a cada movimento do mouse. */
 a {
   color: inherit;
   text-decoration: none;
-  transition: background 0.05s linear, color 0.05s linear;
+  transition: background 0.05s linear, color 0.05s linear, border-color 0.05s linear;
 }
-a:hover { background: var(--ylw); color: #000; }
+a:hover { color: var(--accent); }
+
+.zap:hover,
+.prose a:hover,
+.site-footer a:hover {
+  background: var(--ylw);
+  color: #000;
+  border-color: #000;
+}
 
 img { display: block; max-width: 100%; }
 
 button { font: inherit; }
 
+:focus-visible {
+  outline: var(--loud) solid var(--ylw);
+  outline-offset: 2px;
+}
+
 ::selection { background: var(--acid); color: #000; }
 
+/* acessibilidade: quem pediu menos movimento recebe menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
 /* =========================================================
-   Site shell (page wrapper, header, footer)
+   Shell
    ========================================================= */
 
 .page {
   position: relative;
   min-height: 100vh;
-  padding: 0 0 56px;   /* leave room for status bar */
+  padding: 0 0 52px;
 }
 
 .page-inner {
-  padding: 22px 28px 48px;
+  padding: 26px 28px 56px;
   max-width: 1280px;
   margin: 0 auto;
 }
 
-/* Top bar */
 .site-header {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 18px;
   padding: 10px 28px;
-  border-bottom: 2px solid var(--fg);
+  border-bottom: var(--edge) solid var(--fg);
 }
 .site-header .brand {
   display: flex; align-items: center; gap: 12px;
@@ -97,12 +134,14 @@ button { font: inherit; }
 }
 .site-header .brand-back {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--t-meta);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
+.site-header .brand-back:hover { background: var(--ylw); color: #000; }
+/* monograma: sempre magenta, é a marca e não muda por página */
 .site-header .brand-tag {
-  font-family: var(--bungee);
+  font-family: var(--display);
   background: var(--hot);
   color: #000;
   padding: 2px 8px;
@@ -110,17 +149,6 @@ button { font: inherit; }
   letter-spacing: -0.04em;
   white-space: nowrap;
 }
-.site-header .brand-label {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--fg-2);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.site-header .brand-label .slash { color: var(--hot); }
 .site-header .nav-aux {
   display: flex; align-items: center; gap: 6px;
   justify-self: end;
@@ -129,17 +157,18 @@ button { font: inherit; }
 .menu-toggle {
   display: none;
   background: none;
-  border: 2px solid var(--fg);
+  border: var(--edge) solid var(--fg);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--t-meta);
   letter-spacing: 0.1em;
   color: var(--fg);
   text-transform: uppercase;
   cursor: pointer;
   padding: 4px 8px;
 }
+.menu-toggle:hover { background: var(--ylw); color: #000; }
 
-/* Numbered nav */
+/* Nav numerada com as divisórias verticais de volta */
 .site-nav {
   display: flex;
   flex-wrap: wrap;
@@ -149,39 +178,40 @@ button { font: inherit; }
 }
 .site-nav a {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--t-meta);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 6px 10px;
-  border-right: 1.5px solid var(--fg);
+  border-right: var(--hair) solid var(--fg);
   color: inherit;
   cursor: pointer;
 }
 .site-nav a:last-child { border-right: none; }
-.site-nav a .num { opacity: 0.5; margin-right: 6px; }
-.site-nav a.active {
-  background: var(--accent);
-  color: #000;
-}
+/* Cor explícita em vez de opacity. Sobre fundo escuro o número pode
+   ser secundário; sobre o acento aceso, não: violeta e magenta são
+   escuros o bastante para que qualquer preto esmaecido caia abaixo de
+   4,5:1. Ali ele assume a tinta cheia. */
+.site-nav a .num { color: var(--fg-3); margin-right: 6px; }
+.site-nav a.active .num,
+.site-nav a:hover .num { color: inherit; }
+.site-nav a.active { background: var(--accent); color: var(--accent-ink); }
 .site-nav a:hover { background: var(--ylw); color: #000; }
 
-/* Footer */
 .site-footer {
   padding: 18px 28px;
-  border-top: 2px solid var(--fg);
+  border-top: var(--edge) solid var(--fg);
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--t-meta);
   letter-spacing: 0.06em;
   color: var(--fg-2);
   gap: 12px;
   text-transform: uppercase;
   flex-wrap: wrap;
 }
-.site-footer a { color: var(--fg); border-bottom: 1.5px solid currentColor; }
-.site-footer a:hover { background: var(--ylw); color: #000; }
+.site-footer a { color: var(--fg); border-bottom: var(--hair) solid currentColor; }
 
 /* =========================================================
    Status bar
@@ -194,7 +224,7 @@ button { font: inherit; }
   font-size: 10px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  border-top: 2px solid var(--fg);
+  border-top: var(--edge) solid var(--fg);
   background: var(--bg);
   z-index: 30;
 }
@@ -207,18 +237,22 @@ button { font: inherit; }
 .statusbar > div:last-child { border-right: none; margin-left: auto; }
 
 /* =========================================================
-   Common helpers (ed-*)
+   Helpers
    ========================================================= */
 .ed-mono { font-family: var(--mono); }
-.ed-pixel { font-family: var(--pixel); }
-.ed-tiny { font-family: var(--tiny); font-size: 9px; line-height: 1.6; letter-spacing: 0.05em; }
-.ed-display { font-family: var(--display); font-weight: 700; letter-spacing: -0.04em; line-height: 0.95; }
-.ed-major { font-family: var(--major); }
-.ed-bungee { font-family: var(--bungee); font-weight: 400; }
-.ed-bungee-s { font-family: var(--bungee-s); font-weight: 400; }
+.ed-bungee { font-family: var(--display); font-weight: 400; }
 .ed-serif { font-family: var(--serif); }
+.ed-tiny { font-family: var(--tiny); font-size: 9px; line-height: 1.6; letter-spacing: 0.05em; }
 
-/* tag / chip */
+.ed-kicker {
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* chip */
 .ed-tag {
   display: inline-block;
   font-family: var(--mono);
@@ -226,26 +260,33 @@ button { font: inherit; }
   letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 4px 8px;
-  border: 1.5px solid currentColor;
+  border: var(--hair) solid currentColor;
   background: transparent;
+  color: inherit;   /* <button> não herda color por conta própria */
   cursor: pointer;
 }
+.ed-tag:hover { background: var(--ylw); color: #000; border-color: #000; }
 .ed-tag.active,
 .ed-tag.is-active {
   background: var(--accent);
-  color: #000;
+  color: var(--accent-ink);
   border-color: #000;
 }
+/* chips coloridos — voltam, mas num ciclo de 4 e não de 7 */
+.ed-tag.c-hot  { background: var(--hot);  color: #000; border-color: #000; }
+.ed-tag.c-cyan { background: var(--cyan); color: #000; border-color: #000; }
+.ed-tag.c-acid { background: var(--acid); color: #000; border-color: #000; }
+.ed-tag.c-ylw  { background: var(--ylw);  color: #000; border-color: #000; }
 
-/* button */
+/* botão: o "aperta" com sombra dura é assinatura, volta */
 .ed-btn {
   display: inline-flex; align-items: center; gap: 6px;
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: var(--t-ui);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   padding: 10px 16px;
-  border: 2px solid currentColor;
+  border: var(--edge) solid currentColor;
   background: transparent;
   color: inherit;
   cursor: pointer;
@@ -259,53 +300,26 @@ button { font: inherit; }
   background: transparent;
   color: inherit;
 }
-.ed-btn:active {
-  transform: translate(0, 0);
-  box-shadow: 0 0 0 currentColor;
-}
-.ed-btn.solid { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-.ed-btn.hot { background: var(--hot); color: #000; border-color: #000; }
+.ed-btn:active { transform: translate(0, 0); box-shadow: 0 0 0 currentColor; }
+.ed-btn.solid   { background: var(--fg);   color: var(--bg); border-color: var(--fg); }
+.ed-btn.primary { background: var(--accent); color: var(--accent-ink); border-color: #000; }
+.ed-btn.hot  { background: var(--hot);  color: #000; border-color: #000; }
 .ed-btn.acid { background: var(--acid); color: #000; border-color: #000; }
 .ed-btn.cyan { background: var(--cyan); color: #000; border-color: #000; }
-.ed-btn.ylw { background: var(--ylw); color: #000; border-color: #000; }
-.ed-btn.vio { background: var(--vio); color: #fff; border-color: #000; }
+.ed-btn.ylw  { background: var(--ylw);  color: #000; border-color: #000; }
+.ed-btn.vio  { background: var(--vio);  color: #000; border-color: #000; }
 .ed-btn.orng { background: var(--orng); color: #000; border-color: #000; }
 
-/* boxes */
-.ed-box {
-  border: 2px solid currentColor;
-  padding: 12px 14px;
-}
+.ed-box { border: var(--edge) solid currentColor; padding: 12px 14px; }
 
-/* mark / highlight */
-.ed-mark { background: var(--ylw); color: #000; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-hot { background: var(--hot); color: #000; padding: 0 4px; box-decoration-break: clone; }
+/* marca-texto chapado: volta. Só não são mais 7 cores num parágrafo. */
+.ed-mark      { background: var(--ylw);  color: #000; padding: 0 4px; box-decoration-break: clone; }
+.ed-mark-hot  { background: var(--hot);  color: #000; padding: 0 4px; box-decoration-break: clone; }
 .ed-mark-cyan { background: var(--cyan); color: #000; padding: 0 4px; box-decoration-break: clone; }
 .ed-mark-acid { background: var(--acid); color: #000; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-ylw { background: var(--ylw); color: #000; padding: 0 4px; box-decoration-break: clone; }
+.ed-mark-ylw  { background: var(--ylw);  color: #000; padding: 0 4px; box-decoration-break: clone; }
 .ed-mark-orng { background: var(--orng); color: #000; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-vio { background: var(--vio); color: #fff; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-blue { background: var(--blue); color: #fff; padding: 0 4px; box-decoration-break: clone; }
-
-/* rules */
-.ed-rule { border: none; border-top: 2px solid var(--fg); margin: 0; }
-.ed-rule-dashed { border: none; border-top: 2px dashed var(--fg); margin: 0; }
-.ed-rule-dotted { border: none; border-top: 3px dotted var(--fg); margin: 0; }
-.ed-rule-rainbow {
-  border: none;
-  height: 8px;
-  background: var(--acid);
-  margin: 0;
-}
-
-/* blink */
-.ed-blink { animation: ed-blink 1.05s steps(2) infinite; }
-@keyframes ed-blink { 50% { opacity: 0; } }
-
-.ed-cursor {
-  display: inline-block;
-  animation: ed-blink 1.05s steps(2) infinite;
-}
+.ed-mark-vio  { background: var(--vio);  color: #000; padding: 0 4px; box-decoration-break: clone; }
 
 .mark { display: inline-block; }
 .mark-hot { color: var(--hot); }
@@ -315,13 +329,23 @@ button { font: inherit; }
 .mark-vio { color: var(--vio); }
 .mark-orng { color: var(--orng); }
 
-.ed-cursor::after {
-  content: '_';
-  animation: ed-blink 1.05s steps(2) infinite;
-  margin-left: 0.05em;
+/* réguas */
+.ed-rule { border: none; border-top: var(--edge) solid var(--fg); margin: 0; }
+.ed-rule-accent { border: none; border-top: var(--loud) solid var(--accent); margin: 0; }
+.ed-rule-dashed { border: none; border-top: var(--edge) dashed var(--fg); margin: 0; }
+/* barra grossa no acento da seção — como no original, que apesar do
+   nome era sólida. Um arco-íris de verdade aqui seria MAIS ruído. */
+.ed-rule-rainbow {
+  border: none;
+  height: 8px;
+  margin: 0;
+  background: var(--accent);
 }
 
-/* image frame */
+.ed-blink { animation: ed-blink 1.05s steps(2) infinite; }
+@keyframes ed-blink { 50% { opacity: 0; } }
+
+/* moldura xerocada: a hachura diagonal volta */
 .ed-imgframe {
   position: relative;
   background: repeating-linear-gradient(
@@ -354,27 +378,24 @@ button { font: inherit; }
 }
 .ed-imgframe > img + .ph { display: none; }
 
-/* grid bg */
+/* texturas de fundo */
 .ed-grid-bg {
   background-image:
     linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
   background-size: 32px 32px;
 }
-
-/* dot bg */
 .ed-dot-bg {
   background-image: radial-gradient(currentColor 1px, transparent 1.5px);
   background-size: 14px 14px;
 }
 
-/* form */
 .ed-input {
   font-family: var(--mono);
   font-size: 13px;
   background: transparent;
   color: inherit;
-  border: 2px solid currentColor;
+  border: var(--edge) solid currentColor;
   padding: 8px 10px;
   outline: none;
   width: 100%;
@@ -382,73 +403,151 @@ button { font: inherit; }
 .ed-input:focus { background: var(--ylw); color: #000; border-color: #000; }
 .ed-input::placeholder { color: var(--fg-3); }
 
-/* sticker */
 .ed-sticker {
   display: inline-block;
   padding: 6px 10px;
-  border: 2px solid currentColor;
+  border: var(--edge) solid currentColor;
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-/* glitch */
-.ed-glitch {
-  position: relative;
-  display: inline-block;
-}
-
 /* =========================================================
-   Per-page accent themes
+   Acento por seção
    ========================================================= */
-.theme-home    { --accent: var(--acid); }
-.theme-sobre   { --accent: var(--cyan); }
-.theme-cv      { --accent: var(--ylw); }
-.theme-academ  { --accent: var(--acid); }
-.theme-blog    { --accent: var(--vio); }
-.theme-projetos{ --accent: var(--orng); }
-.theme-contato { --accent: var(--hot); }
+.theme-home     { --accent: var(--acid); --accent-ink: #000; }
+.theme-sobre    { --accent: var(--cyan); --accent-ink: #000; }
+.theme-cv       { --accent: var(--ylw);  --accent-ink: #000; }
+.theme-academ   { --accent: var(--acid); --accent-ink: #000; }
+.theme-blog     { --accent: var(--vio);  --accent-ink: #000; }
+.theme-projetos { --accent: var(--orng); --accent-ink: #000; }
+.theme-contato  { --accent: var(--hot);  --accent-ink: #000; }
 
 /* =========================================================
-   Generic legacy mappings (for any leftover class usage)
-   ========================================================= */
-.hf-mono { font-family: var(--mono); }
-.hf-display { font-family: var(--bungee); font-weight: 400; line-height: 0.95; letter-spacing: -0.03em; text-transform: uppercase; }
-.hf-rule { border: none; border-top: 2px solid var(--fg); }
-.hf-rule-soft { border: none; border-top: 1.5px dashed var(--fg); }
-.hf-rule-thick { border: none; border-top: 3px solid var(--fg); }
-
-/* =========================================================
-   Responsive
+   Responsivo
    ========================================================= */
 @media (max-width: 960px) {
+  /* marca | idioma | menu numa linha só; nav abre embaixo */
   .site-header {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr auto auto;
     row-gap: 10px;
+    gap: 10px;
   }
-  .menu-toggle { display: inline-block; }
+  .site-header .brand { grid-column: 1; grid-row: 1; }
+  .site-header .nav-aux { grid-column: 2; grid-row: 1; }
+  .menu-toggle { grid-column: 3; grid-row: 1; display: inline-block; }
   .site-nav {
     grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: stretch;
     display: none;
   }
   .site-header.is-open .site-nav {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    border-top: 2px dashed var(--fg);
+    border-top: var(--edge) dashed var(--fg);
     padding-top: 8px;
   }
   .site-header.is-open .site-nav a {
     border-right: none;
     border-bottom: 1px solid var(--fg);
+    padding: 10px;
   }
-  .site-header .nav-aux { justify-self: end; }
   .statusbar { font-size: 9px; flex-wrap: wrap; }
   .statusbar > div { padding: 3px 6px; }
 }
 @media (max-width: 720px) {
-  .page-inner { padding: 18px 16px 48px; }
+  .page-inner { padding: 20px 16px 52px; }
   .site-header { padding: 10px 16px; }
   .site-footer { padding: 14px 16px; }
+}
+
+/* =========================================================
+   Afordâncias de uso
+   Nada de "modo alternativo": o site tem uma cara só. Isto aqui
+   é o mínimo que uma página precisa ter para ser usável —
+   escrito na mesma linguagem visual do resto.
+   ========================================================= */
+
+/* Pular para o conteúdo: a nav tem 7 itens antes do conteúdo em
+   toda página, o que é caro para quem navega por teclado. */
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -100px;
+  z-index: 100;
+  background: var(--acid);
+  color: #000;
+  border: var(--edge) solid #000;
+  font-family: var(--mono);
+  font-size: var(--t-ui);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 10px 14px;
+}
+.skip-link:focus { top: 8px; color: #000; background: var(--acid); }
+
+/* Progresso de leitura: os ensaios têm 6–8 min. */
+.read-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0;
+  background: var(--accent);
+  z-index: 40;
+  pointer-events: none;
+}
+
+/* Voltar ao topo: o CV tem 14 cargos e o rodapé fica longe. */
+.to-top {
+  position: fixed;
+  right: 16px;
+  bottom: 60px;
+  z-index: 31;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--bg);
+  color: var(--fg);
+  border: var(--edge) solid var(--fg);
+  padding: 8px 10px;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s linear, visibility 0.15s linear;
+}
+.to-top.is-on { opacity: 1; visibility: visible; }
+.to-top:hover { background: var(--ylw); color: #000; border-color: #000; }
+
+/* Estado vazio: filtrar para zero resultados deixava a página em
+   branco, sem dizer o que aconteceu nem como voltar. */
+.empty-state {
+  padding: 36px 0 8px;
+  font-family: var(--mono);
+  border-top: var(--hair) solid var(--fg);
+}
+.empty-state .es-code {
+  font-family: var(--display);
+  font-size: 30px;
+  color: var(--accent);
+  line-height: 1;
+}
+.empty-state .es-body {
+  font-size: var(--t-ui);
+  color: var(--fg-2);
+  margin: 10px 0 16px;
+}
+
+/* Contador de resultados do filtro */
+.filter-count {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  align-self: center;
+  margin-left: 4px;
 }

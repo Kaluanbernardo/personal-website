@@ -1,4 +1,14 @@
 ---
+/* Fontes auto-hospedadas: sem requisição a terceiros e sem CSS bloqueante.
+   Antes vinham de um @import do Google Fonts com 8 famílias — e uma delas
+   ('Departure Mono') nem existe lá, então a mono do site nunca carregou. */
+import '@fontsource/jetbrains-mono/latin-400.css';
+import '@fontsource/jetbrains-mono/latin-700.css';
+import '@fontsource/bungee/latin-400.css';
+import '@fontsource/press-start-2p/latin-400.css';
+import '@fontsource/newsreader/latin-400.css';
+import '@fontsource/newsreader/latin-400-italic.css';
+import '@fontsource/newsreader/latin-600.css';
 import '../styles/global.css';
 import type { Lang } from '../i18n/ui';
 import { link } from '../lib/links';

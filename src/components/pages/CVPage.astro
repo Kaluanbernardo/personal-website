@@ -62,13 +62,12 @@ const langs = lang === 'en'
 const skillTags = lang === 'en'
   ? ['product management', 'product discovery', 'JTBD', 'double diamond', 'design sprints', 'UX research', 'OKRs', 'A/B testing', 'SQL', 'SEO', 'content strategy', 'editing', 'reporting', 'team leadership', 'Notion', 'Figma']
   : ['product management', 'product discovery', 'JTBD', 'double diamond', 'design sprints', 'UX research', 'OKRs', 'testes A/B', 'SQL', 'SEO', 'estratégia de conteúdo', 'edição', 'reportagem', 'gestão de times', 'Notion', 'Figma'];
-const tagBgs = ['var(--hot)', 'var(--cyan)', 'var(--ylw)', 'transparent'];
 ---
 
 <div class="cv-head" id="cv-top">
-  <div class="kicker">{eyebrow}</div>
+  <div class="kicker ed-kicker">{eyebrow}</div>
   <h1 class="ed-bungee headline">
-    {lang === 'en' ? 'RESUME' : 'CURRÍCULO'} <span class="ed-blink mark mark-ylw" aria-hidden="true">▲</span>
+    {lang === 'en' ? 'RESUME' : 'CURRÍCULO'} <span class="mark mark-ylw" aria-hidden="true">▲</span>
   </h1>
 </div>
 
@@ -85,33 +84,31 @@ const tagBgs = ['var(--hot)', 'var(--cyan)', 'var(--ylw)', 'transparent'];
       <div class="info-kicker">{whereLabel}</div>
       <div class="info-val">{whereVal}</div>
       <div class="info-kicker">{statusLabel}</div>
-      <div class="info-val acid">{statusVal}</div>
+      <div class="info-val is-live">{statusVal}</div>
     </div>
 
     <a class="ed-btn ylw download-btn" href={pdfHref} download>↓ {t.cv.download}</a>
   </aside>
 
   <main>
-    <details class="section c-ylw" id="experience">
+    <details class="section c-ylw" id="experience" open>
       <summary class="section-summary">
         <span class="section-kicker">{expHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
       </summary>
-      {t.cv.experience.map((e) => {
-        const c = 'ylw';
-        return (
-          <details class={`exp-row c-${c}`}>
+      {t.cv.experience.map((e) => (
+          <details class="exp-row">
             <summary class="exp-summary">
-              <div class={`exp-period c-${c}`}>{e.p}</div>
+              <div class="exp-period">{e.p}</div>
               <div class="exp-body">
                 <div class="ed-bungee exp-role">{e.r}</div>
-                <div class={`exp-org c-${c}`}>{e.o}</div>
+                <div class="exp-org">{e.o}</div>
                 <p class="exp-desc">{e.d}</p>
                 <div class="exp-tags">
-                  {e.tags.map((tg) => <span class={`ed-tag c-${c}`}>{tg}</span>)}
+                  {e.tags.map((tg) => <span class="ed-tag">{tg}</span>)}
                 </div>
               </div>
-              <span class={`exp-plus c-${c}`} aria-hidden="true">+</span>
+              <span class="exp-plus" aria-hidden="true">+</span>
             </summary>
             <div class="exp-details">
               <ul>
@@ -119,13 +116,12 @@ const tagBgs = ['var(--hot)', 'var(--cyan)', 'var(--ylw)', 'transparent'];
               </ul>
             </div>
           </details>
-        );
-      })}
+      ))}
     </details>
 
     <details class="section c-cyan" id="education">
       <summary class="section-summary">
-        <span class="section-kicker cyan">{formHeading}</span>
+        <span class="section-kicker">{formHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
       </summary>
       {formationItems.map((e) => (
@@ -141,24 +137,19 @@ const tagBgs = ['var(--hot)', 'var(--cyan)', 'var(--ylw)', 'transparent'];
 
     <details class="section c-hot" id="skills">
       <summary class="section-summary">
-        <span class="section-kicker hot">{skillsHeading}</span>
+        <span class="section-kicker">{skillsHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
       </summary>
       <div class="skill-tags">
-        {skillTags.map((s, i) => {
-          const bg = tagBgs[i % 4];
-          const transparent = bg === 'transparent';
-          const style = transparent
-            ? 'background:transparent;color:var(--fg);border-color:var(--fg)'
-            : `background:${bg};color:#000;border-color:#000`;
-          return <span class="ed-tag" style={style}>{s}</span>;
-        })}
+        {skillTags.map((s, i) => (
+          <span class={`ed-tag ${['c-hot', 'c-cyan', 'c-ylw', ''][i % 4]}`}>{s}</span>
+        ))}
       </div>
     </details>
 
     <details class="section c-vio" id="languages">
       <summary class="section-summary">
-        <span class="section-kicker vio">{langHeading}</span>
+        <span class="section-kicker">{langHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
       </summary>
       <div class="langs">
@@ -175,36 +166,20 @@ const tagBgs = ['var(--hot)', 'var(--cyan)', 'var(--ylw)', 'transparent'];
 </div>
 
 <style>
-  .cv-head { padding-top: 6px; }
-  .kicker {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    color: var(--ylw);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
+  .cv-head { padding-top: 6px; margin-bottom: 40px; }
+  .kicker { margin-bottom: 10px; }
   .headline {
-    font-size: clamp(48px, 9vw, 88px);
-    margin: 0 0 6px;
-    line-height: 0.85;
+    font-size: clamp(44px, 8vw, 76px);
+    margin: 0;
+    line-height: 0.9;
     letter-spacing: -0.04em;
     text-transform: uppercase;
-  }
-  .headline .arr { color: var(--ylw); }
-  .updated {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    opacity: 0.6;
-    margin-bottom: 24px;
   }
 
   .cv-grid {
     display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 32px;
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: 56px;
     align-items: flex-start;
   }
   .cv-aside {
@@ -218,19 +193,16 @@ const tagBgs = ['var(--hot)', 'var(--cyan)', 'var(--ylw)', 'transparent'];
     font-family: var(--mono);
     font-size: 10px;
     letter-spacing: 0.2em;
-    color: var(--fg);
-    opacity: 0.6;
+    color: var(--fg-3);
     text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-  .section-link {
-    font-family: var(--mono);
-    font-size: 13px;
-    padding: 4px 0;
-    color: var(--fg);
+    margin-bottom: 12px;
   }
   .section-link {
     display: block;
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 6px 0;
+    color: var(--fg-2);
     text-decoration: none;
   }
   .section-link.on { color: var(--ylw); font-weight: 700; }
@@ -240,24 +212,25 @@ const tagBgs = ['var(--hot)', 'var(--cyan)', 'var(--ylw)', 'transparent'];
 
   .info-box {
     margin-top: 24px;
-    border: 2px solid var(--acid);
+    border: var(--edge) solid var(--acid);
     padding: 10px 12px;
     font-family: var(--mono);
   }
   .info-kicker {
     font-size: 9px;
     color: var(--acid);
-    letter-spacing: 0.15em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    margin-top: 6px;
+    margin-top: 10px;
   }
   .info-kicker:first-child { margin-top: 0; }
-  .info-val { font-size: 12px; margin-top: 4px; }
-  .info-val.acid { color: var(--acid); }
-  .download-btn { margin-top: 18px; }
+  .info-val { font-size: 12px; margin-top: 5px; color: var(--fg-2); }
+  .info-val.is-live { color: var(--acid); }
+  .download-btn { margin-top: 20px; width: 100%; justify-content: center; }
 
-  .section { margin-top: 32px; }
-  .section[open] { margin-bottom: 8px; }
+  /* seções: um único tratamento, sem cor por bloco */
+  .section { margin-top: 44px; }
+  .section:first-of-type { margin-top: 0; }
   .section-summary {
     display: flex;
     align-items: center;
@@ -265,65 +238,54 @@ const tagBgs = ['var(--hot)', 'var(--cyan)', 'var(--ylw)', 'transparent'];
     gap: 16px;
     list-style: none;
     cursor: pointer;
-    padding: 6px 0;
-    border-bottom: 2px solid currentColor;
+    padding: 8px 0;
+    border-bottom: var(--edge) solid currentColor;
   }
-  .section.c-ylw .section-summary { color: var(--ylw); }
+  .section.c-ylw  .section-summary { color: var(--ylw); }
   .section.c-cyan .section-summary { color: var(--cyan); }
-  .section.c-hot .section-summary { color: var(--hot); }
-  .section.c-vio .section-summary { color: var(--vio); }
+  .section.c-hot  .section-summary { color: var(--hot); }
+  .section.c-vio  .section-summary { color: var(--vio); }
   .section-summary::-webkit-details-marker { display: none; }
   .section-summary::marker { content: ''; }
-  .section-summary:hover .section-kicker { color: var(--ylw); }
-  .section-toggle {
-    width: 40px;
-    height: 40px;
-    border: 2px solid var(--fg);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--bungee);
-    font-size: 22px;
-    line-height: 1;
-    color: var(--fg);
-    transition: transform 0.18s ease, background 0.12s linear, color 0.12s linear;
-  }
-  .section[open] .section-toggle { transform: rotate(45deg); }
-  .section.c-ylw .section-toggle { color: var(--ylw); border-color: var(--ylw); }
-  .section.c-cyan .section-toggle { color: var(--cyan); border-color: var(--cyan); }
-  .section.c-hot .section-toggle { color: var(--hot); border-color: var(--hot); }
-  .section.c-vio .section-toggle { color: var(--vio); border-color: var(--vio); }
-  .section[open].c-ylw .section-toggle { background: var(--ylw); color: #000; }
-  .section[open].c-cyan .section-toggle { background: var(--cyan); color: #000; }
-  .section[open].c-hot .section-toggle { background: var(--hot); color: #000; }
-  .section[open].c-vio .section-toggle { background: var(--vio); color: #fff; }
-
+  .section-summary:hover .section-kicker { color: var(--accent); }
   .section-kicker {
     font-family: var(--mono);
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 700;
     letter-spacing: 0.04em;
-    color: var(--ylw);
+    color: currentColor;
     text-transform: uppercase;
     margin: 0;
   }
-  .section-kicker.cyan { color: var(--cyan); }
-  .section-kicker.hot { color: var(--hot); }
-  .section-kicker.vio { color: var(--vio); }
-
-  .section-rule { border-top: 2px solid var(--ylw); margin-bottom: 14px; }
-  .section-rule.cyan { border-top-color: var(--cyan); }
-  .section-rule.acid { border-top-color: var(--acid); }
+  /* caixa do "+" volta, com a cor da seção */
+  .section-toggle {
+    width: 36px;
+    height: 36px;
+    flex: none;
+    border: var(--edge) solid currentColor;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--display);
+    font-size: 18px;
+    line-height: 1;
+    transition: transform 0.18s ease, background 0.12s linear, color 0.12s linear;
+  }
+  .section[open] .section-toggle { transform: rotate(45deg); }
+  .section[open].c-ylw  .section-toggle { background: var(--ylw);  color: #000; }
+  .section[open].c-cyan .section-toggle { background: var(--cyan); color: #000; }
+  .section[open].c-hot  .section-toggle { background: var(--hot);  color: #000; }
+  .section[open].c-vio  .section-toggle { background: var(--vio);  color: #000; }
 
   .exp-row {
-    padding: 14px 0;
-    border-bottom: 1.5px dashed var(--fg);
+    padding: 16px 0;
+    border-bottom: var(--hair) dashed var(--fg);
   }
   .exp-row:hover { background: rgba(255,255,255,0.02); }
   .exp-summary {
     display: grid;
-    grid-template-columns: 120px 1fr 56px;
-    gap: 18px;
+    grid-template-columns: 120px minmax(0, 1fr) 32px;
+    gap: 20px;
     align-items: start;
     list-style: none;
     cursor: pointer;
@@ -333,168 +295,139 @@ const tagBgs = ['var(--hot)', 'var(--cyan)', 'var(--ylw)', 'transparent'];
   .exp-body { min-width: 0; }
   .exp-period {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: var(--t-meta);
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    color: var(--fg-3);
+    padding-top: 4px;
   }
-  .exp-period.c-ylw { color: var(--ylw); }
-  .exp-period.c-hot { color: var(--hot); }
-  .exp-period.c-cyan { color: var(--cyan); }
-  .exp-period.c-acid { color: var(--acid); }
-  .exp-period.c-vio { color: var(--vio); }
-  .exp-period.c-orng { color: var(--orng); }
   .exp-role {
-    font-size: 22px;
-    line-height: 1.05;
+    font-size: 19px;
+    line-height: 1.15;
     text-transform: uppercase;
     letter-spacing: -0.02em;
   }
   .exp-org {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    margin: 4px 0 8px;
-  }
-  .exp-org.c-ylw { color: var(--ylw); }
-  .exp-org.c-hot { color: var(--hot); }
-  .exp-org.c-cyan { color: var(--cyan); }
-  .exp-org.c-acid { color: var(--acid); }
-  .exp-org.c-vio { color: var(--vio); }
-  .exp-org.c-orng { color: var(--orng); }
-  .exp-desc {
+    font-family: var(--mono);
     font-size: 14px;
-    margin: 0 0 8px;
-    line-height: 1.5;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--ylw);
+    margin: 5px 0 9px;
+  }
+  .exp-desc {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--fg-2);
+    margin: 0 0 10px;
+    line-height: 1.6;
+    max-width: 70ch;
   }
   .exp-tags { display: flex; gap: 6px; flex-wrap: wrap; }
   .exp-tags .ed-tag {
-    font-size: 11px;
+    font-size: 10px;
     padding: 3px 8px;
-    background: transparent;
-    color: #fff;
+    cursor: default;
+    color: var(--fg);
     border-color: var(--ylw);
     font-weight: 700;
   }
+  .exp-tags .ed-tag:hover { background: transparent; color: var(--fg); border-color: var(--ylw); }
 
   .exp-plus {
     justify-self: end;
     align-self: center;
-    width: 44px;
-    height: 44px;
-    border: 2px solid var(--fg);
-    background: var(--bg);
-    color: var(--fg);
+    width: 40px;
+    height: 40px;
+    flex: none;
+    border: var(--edge) solid var(--ylw);
+    color: var(--ylw);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--bungee);
-    font-size: 26px;
+    font-family: var(--display);
+    font-size: 20px;
     line-height: 1;
     transition: transform 0.18s ease, background 0.12s linear, color 0.12s linear;
   }
-  .exp-row:hover .exp-plus { transform: rotate(90deg); }
-  .exp-plus.c-ylw { color: var(--ylw); border-color: var(--ylw); }
-  .exp-plus.c-hot { color: var(--hot); border-color: var(--hot); }
-  .exp-plus.c-cyan { color: var(--cyan); border-color: var(--cyan); }
-  .exp-plus.c-acid { color: var(--acid); border-color: var(--acid); }
-  .exp-plus.c-vio { color: var(--vio); border-color: var(--vio); }
-  .exp-plus.c-orng { color: var(--orng); border-color: var(--orng); }
-  .exp-row:hover .exp-plus.c-ylw { background: var(--ylw); color: #000; }
-  .exp-row:hover .exp-plus.c-hot { background: var(--hot); color: #000; }
-  .exp-row:hover .exp-plus.c-cyan { background: var(--cyan); color: #000; }
-  .exp-row:hover .exp-plus.c-acid { background: var(--acid); color: #000; }
-  .exp-row:hover .exp-plus.c-vio { background: var(--vio); color: #fff; }
-  .exp-row:hover .exp-plus.c-orng { background: var(--orng); color: #000; }
-  .exp-row[open] .exp-plus {
-    transform: rotate(45deg);
-  }
-  .exp-row[open] .exp-plus.c-ylw { background: var(--ylw); color: #000; }
-  .exp-row[open] .exp-plus.c-hot { background: var(--hot); color: #000; }
-  .exp-row[open] .exp-plus.c-cyan { background: var(--cyan); color: #000; }
-  .exp-row[open] .exp-plus.c-acid { background: var(--acid); color: #000; }
-  .exp-row[open] .exp-plus.c-vio { background: var(--vio); color: #fff; }
-  .exp-row[open] .exp-plus.c-orng { background: var(--orng); color: #000; }
+  .exp-row:hover .exp-plus,
+  .exp-row[open] .exp-plus { background: var(--ylw); color: #000; }
+  .exp-row[open] .exp-plus { transform: rotate(45deg); }
 
   .exp-details {
-    padding: 14px 0 4px 138px;
-    font-size: 14px;
-    line-height: 1.6;
+    padding: 14px 0 4px 140px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--fg-2);
   }
-  .exp-details ul {
-    margin: 0;
-    padding-left: 18px;
-  }
-  .exp-details li { margin-bottom: 6px; }
+  .exp-details ul { margin: 0; padding-left: 18px; max-width: 62ch; }
+  .exp-details li { margin-bottom: 8px; }
+  .exp-details li::marker { color: var(--fg-3); }
 
   .form-row {
     display: grid;
-    grid-template-columns: 120px 1fr;
-    gap: 18px;
-    padding: 10px 0;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 20px;
+    padding: 12px 0;
     border-bottom: 1px dotted var(--fg);
   }
   .form-period {
     font-family: var(--mono);
-    font-size: 11px;
-    color: var(--cyan);
+    font-size: var(--t-meta);
+    color: var(--fg-3);
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    padding-top: 3px;
   }
   .form-role {
-    font-size: 18px;
+    font-size: 17px;
     text-transform: uppercase;
     letter-spacing: -0.02em;
   }
   .form-org {
     font-family: var(--mono);
-    font-size: 11px;
-    opacity: 0.7;
+    font-size: var(--t-meta);
+    color: var(--fg-3);
     letter-spacing: 0.05em;
     text-transform: uppercase;
+    margin-top: 5px;
   }
 
-  .skill-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
-  .skill-tags .ed-tag { font-size: 11px; padding: 4px 8px; }
+  .skill-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 20px; }
+  .skill-tags .ed-tag { cursor: default; }
 
   .langs {
     display: flex;
-    gap: 48px;
+    gap: 56px;
     flex-wrap: wrap;
-    margin-top: 16px;
+    margin-top: 24px;
   }
-  .lang-cell {
-    min-width: 160px;
-  }
+  .lang-cell { min-width: 150px; }
   .lang-greet {
-    font-size: 22px;
+    font-family: var(--mono);
+    font-size: 20px;
     line-height: 1;
-    color: var(--fg);
-    margin-bottom: 6px;
+    color: var(--fg-3);
+    margin-bottom: 8px;
   }
-  .lang-mark {
-    display: inline-block;
-    margin-left: 4px;
-    color: var(--vio);
-  }
-  .lang-l { font-size: 32px; line-height: 1; }
+  .lang-mark { display: inline-block; margin-left: 4px; color: var(--vio); }
+  .lang-l { font-size: 26px; line-height: 1; }
   .lang-n {
     font-family: var(--mono);
-    font-size: 11px;
-    opacity: 0.7;
-    letter-spacing: 0.12em;
+    font-size: 10px;
+    color: var(--fg-3);
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    margin-top: 6px;
+    margin-top: 8px;
   }
 
-  .serif { font-family: var(--serif); }
-
   @media (max-width: 900px) {
-    .cv-grid { grid-template-columns: 1fr; }
+    .cv-grid { grid-template-columns: 1fr; gap: 32px; }
     .cv-aside { position: static; max-height: none; overflow: visible; }
     .form-row { grid-template-columns: 1fr; gap: 8px; }
-    .exp-summary { grid-template-columns: 1fr 44px; gap: 10px; }
-    .exp-period { grid-column: 1 / -1; }
-    .exp-plus { width: 40px; height: 40px; font-size: 22px; }
+    .exp-summary { grid-template-columns: minmax(0, 1fr) 32px; gap: 10px; }
+    .exp-period { grid-column: 1 / -1; padding-top: 0; }
     .exp-details { padding-left: 0; }
   }
 </style>

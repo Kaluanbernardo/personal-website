@@ -1,3 +1,5 @@
+import { email, scholarProfiles } from '../lib/profile';
+
 export type Lang = 'pt' | 'en';
 
 type Dict = {
@@ -96,6 +98,22 @@ type Dict = {
   altLang: {
     label: string;
     href: (path: string) => string;
+  };
+  ux: {
+    skip: string;
+    copy: string;
+    copied: string;
+    filterCount: (shown: number, total: number) => string;
+    emptyTitle: string;
+    emptyBody: string;
+    clearFilter: string;
+    toTop: string;
+    notFound: {
+      code: string;
+      title: string;
+      body: string;
+      whereTo: string;
+    };
   };
 };
 
@@ -387,12 +405,7 @@ export const ui: Record<Lang, Dict> = {
     academico: {
       eyebrow: '03 · currículo acadêmico',
       title: { line1: 'Pesquisa & ', emph: 'publicações' },
-      scholarIds: [
-        { label: 'Lattes', href: 'https://lattes.cnpq.br/' },
-        { label: 'ORCID', href: 'https://orcid.org/' },
-        { label: 'academia.edu', href: 'https://academia.edu/' },
-        { label: 'Google Scholar', href: 'https://scholar.google.com/' },
-      ],
+      scholarIds: scholarProfiles,
       linesHeading: 'linhas de pesquisa',
       lines: [
         'Economia da atenção',
@@ -455,7 +468,7 @@ export const ui: Record<Lang, Dict> = {
       title: { line1: 'Vamos', emph: 'conversar.' },
       intro:
         'Aceito pautas de jornalismo, propostas de produto e parcerias acadêmicas. Resposta em até 48h úteis.',
-      email: 'ola@nome.com.br',
+      email,
       socialsHeading: 'onde mais encontrar',
       socials: [
         { n: 'Substack', h: '@kaluanbernardo', d: 'ensaios mensais' },
@@ -465,6 +478,24 @@ export const ui: Record<Lang, Dict> = {
     footer: {
       note: '© kaluan bernardo · vibecodado com claude + markdown + astro',
       sourceLabel: 'código fonte ↗',
+    },
+    ux: {
+      skip: 'pular para o conteúdo',
+      copy: 'copiar',
+      copied: 'copiado ✓',
+      filterCount: (shown: number, total: number) =>
+        shown === total ? `${total} itens` : `${shown} de ${total}`,
+      emptyTitle: '0 RESULTADOS',
+      emptyBody: 'Nenhum item corresponde a esse filtro.',
+      clearFilter: 'limpar filtro',
+      toTop: '↑ topo',
+      notFound: {
+        code: '404',
+        title: 'PÁGINA NÃO ENCONTRADA',
+        body:
+          'O endereço não existe ou mudou de lugar. Abaixo, as seções do site.',
+        whereTo: 'ONDE VOCÊ PODE IR',
+      },
     },
     altLang: {
       label: 'EN',
@@ -758,12 +789,7 @@ export const ui: Record<Lang, Dict> = {
     academico: {
       eyebrow: '03 · academic cv',
       title: { line1: 'Research & ', emph: 'publications' },
-      scholarIds: [
-        { label: 'Lattes', href: 'https://lattes.cnpq.br/' },
-        { label: 'ORCID', href: 'https://orcid.org/' },
-        { label: 'academia.edu', href: 'https://academia.edu/' },
-        { label: 'Google Scholar', href: 'https://scholar.google.com/' },
-      ],
+      scholarIds: scholarProfiles,
       linesHeading: 'research lines',
       lines: [
         'Attention economy',
@@ -826,7 +852,7 @@ export const ui: Record<Lang, Dict> = {
       title: { line1: "Let's", emph: 'talk.' },
       intro:
         'Open to journalism pitches, product proposals, and academic collaborations. Reply within 48h on weekdays.',
-      email: 'hello@name.com',
+      email,
       socialsHeading: 'where else to find me',
       socials: [
         { n: 'Substack', h: '@kaluanbernardo', d: 'monthly essays' },
@@ -836,6 +862,24 @@ export const ui: Record<Lang, Dict> = {
     footer: {
       note: '© kaluan bernardo · vibecoded with claude + markdown + astro',
       sourceLabel: 'source code ↗',
+    },
+    ux: {
+      skip: 'skip to content',
+      copy: 'copy',
+      copied: 'copied ✓',
+      filterCount: (shown: number, total: number) =>
+        shown === total ? `${total} items` : `${shown} of ${total}`,
+      emptyTitle: '0 RESULTS',
+      emptyBody: 'No items match that filter.',
+      clearFilter: 'clear filter',
+      toTop: '↑ top',
+      notFound: {
+        code: '404',
+        title: 'PAGE NOT FOUND',
+        body:
+          'This address does not exist or has moved. The sections of the site are below.',
+        whereTo: 'WHERE YOU CAN GO',
+      },
     },
     altLang: {
       label: 'PT',

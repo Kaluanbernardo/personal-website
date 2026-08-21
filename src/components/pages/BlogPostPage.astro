@@ -22,8 +22,10 @@ const { Content } = await render(post);
 const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
 ---
 
+<div class="read-progress" data-progress role="presentation"></div>
+
 <article class="post">
-  <div class="kicker">#{tagLabel}</div>
+  <div class="kicker ed-kicker">{tagLabel}</div>
   <h1 class="ed-bungee title">{post.data.title}</h1>
   <div class="meta">
     {t.post.metaJoin(formatLongDate(post.data.pubDate, lang), post.data.readingTime)}
@@ -31,7 +33,7 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
 
   <hr class="ed-rule-rainbow" />
 
-  <p class="lead serif">{post.data.description}</p>
+  <p class="lead">{post.data.description}</p>
 
   <div class="prose">
     <Content />
@@ -40,112 +42,128 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
   <hr class="ed-rule-dashed sep" />
   <nav class="post-nav">
     {prev ? <a class="nav-link" href={postHref(prev.id)}>{t.post.prev}</a> : <span></span>}
-    <a class="nav-link accent" href="https://example.substack.com" target="_blank" rel="noreferrer noopener">{t.post.subscribe}</a>
+    <a class="nav-link accent" href="https://kaluanbernardo.substack.com" target="_blank" rel="noreferrer noopener">{t.post.subscribe}</a>
     {next ? <a class="nav-link" href={postHref(next.id)}>{t.post.next}</a> : <span></span>}
   </nav>
 </article>
 
+<script>
+  /* Barra de progresso: os ensaios têm 6–8 min e não havia
+     nenhuma indicação de quanto falta. */
+  const bar = document.querySelector<HTMLElement>('[data-progress]');
+  const article = document.querySelector<HTMLElement>('.post');
+  if (bar && article) {
+    let ticking = false;
+    const update = () => {
+      const start = article.offsetTop;
+      const span = article.offsetHeight - window.innerHeight;
+      const pct = span <= 0 ? 1 : (window.scrollY - start) / span;
+      bar.style.width = `${Math.min(100, Math.max(0, pct * 100))}%`;
+      ticking = false;
+    };
+    const onScroll = () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+  }
+</script>
+
 <style>
   .post {
-    max-width: 720px;
+    max-width: 680px;
     margin: 0 auto;
     padding-top: 6px;
   }
-  .kicker {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    color: var(--vio);
-    text-transform: uppercase;
-    margin-bottom: 14px;
-  }
+  .kicker { margin-bottom: 16px; }
   .title {
-    font-size: clamp(36px, 6vw, 60px);
-    margin: 0 0 14px;
-    line-height: 0.95;
+    font-size: clamp(32px, 5vw, 50px);
+    margin: 0 0 16px;
+    line-height: 1.02;
     text-transform: uppercase;
     letter-spacing: -0.03em;
   }
   .meta {
     font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.06em;
+    font-size: var(--t-meta);
+    letter-spacing: 0.08em;
     color: var(--fg-3);
     text-transform: uppercase;
-    margin-bottom: 18px;
+    margin-bottom: 24px;
   }
   .lead {
     font-family: var(--serif);
-    font-size: 22px;
-    color: var(--fg);
-    line-height: 1.5;
-    margin: 24px 0 32px;
+    font-size: 21px;
+    color: var(--fg-2);
+    line-height: 1.55;
+    margin: 32px 0 40px;
   }
-  .serif { font-family: var(--serif); }
   .prose {
     font-family: var(--serif);
-    font-size: 18px;
-    line-height: 1.7;
+    font-size: var(--t-read);
+    line-height: 1.75;
     color: var(--fg);
   }
   .prose :global(h2) {
-    font-family: var(--bungee);
+    font-family: var(--display);
     font-weight: 400;
-    font-size: 28px;
+    font-size: 24px;
     text-transform: uppercase;
     letter-spacing: -0.03em;
     color: var(--fg);
-    margin: 48px 0 16px;
-    line-height: 1;
+    margin: 56px 0 18px;
+    line-height: 1.1;
   }
   .prose :global(h3) {
-    font-family: var(--bungee);
+    font-family: var(--display);
     font-weight: 400;
-    font-size: 22px;
+    font-size: 19px;
     text-transform: uppercase;
     letter-spacing: -0.02em;
     color: var(--fg);
-    margin: 36px 0 14px;
+    margin: 40px 0 14px;
   }
-  .prose :global(p) { margin: 0 0 20px; }
+  .prose :global(p) { margin: 0 0 22px; }
   .prose :global(blockquote) {
-    border-left: 3px solid var(--vio);
+    border-left: var(--loud) solid var(--vio);
     padding: 4px 0 4px 24px;
-    margin: 36px 0;
-    font-family: var(--bungee);
-    font-size: 22px;
+    margin: 40px 0;
+    font-family: var(--display);
+    font-size: 19px;
     color: var(--fg);
-    line-height: 1.2;
+    line-height: 1.25;
     text-transform: uppercase;
   }
   .prose :global(blockquote p) { margin: 0; }
   .prose :global(a) {
     color: var(--vio);
-    border-bottom: 1.5px solid var(--vio);
-    transition: background 0.05s linear, color 0.05s linear;
+    border-bottom: var(--hair) solid var(--vio);
   }
-  .prose :global(a:hover) { background: var(--ylw); color: #000; border-bottom-color: #000; }
   .prose :global(code) {
     font-family: var(--mono);
-    font-size: 0.85em;
+    font-size: 0.82em;
     background: var(--bg-2);
     padding: 2px 6px;
   }
   .prose :global(pre) {
     background: var(--bg-2);
-    padding: 16px 20px;
+    padding: 18px 20px;
     overflow-x: auto;
     font-family: var(--mono);
     font-size: 13px;
-    border: 2px solid var(--fg);
+    border: var(--edge) solid var(--fg);
   }
+  .prose :global(pre code) { background: none; padding: 0; }
   .prose :global(ul), .prose :global(ol) {
     padding-left: 22px;
-    margin: 0 0 20px;
+    margin: 0 0 22px;
   }
-  .prose :global(li) { margin-bottom: 8px; }
-  .sep { margin: 56px 0 22px; }
+  .prose :global(li) { margin-bottom: 10px; }
+  .prose :global(li)::marker { color: var(--fg-3); }
+  .prose :global(hr) { border: none; border-top: var(--edge) solid var(--fg); margin: 40px 0; }
+
+  .sep { margin: 64px 0 24px; }
   .post-nav {
     display: flex;
     justify-content: space-between;
@@ -155,24 +173,25 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
   }
   .nav-link {
     font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.06em;
+    font-size: var(--t-meta);
+    letter-spacing: 0.08em;
     color: var(--fg-2);
     text-transform: uppercase;
-    border: 2px solid var(--fg);
-    padding: 6px 10px;
+    border: var(--edge) solid var(--fg);
+    padding: 7px 11px;
   }
   .nav-link:hover { background: var(--ylw); color: #000; border-color: #000; }
   .nav-link.accent {
     background: var(--vio);
-    color: #fff;
-    border-color: var(--vio);
+    color: #000;
+    border-color: #000;
   }
-  .nav-link.accent:hover { background: var(--ylw); color: #000; border-color: #000; }
+  .nav-link.accent:hover { background: var(--ylw); color: #000; }
 
   @media (max-width: 720px) {
     .lead { font-size: 18px; }
-    .prose { font-size: 16px; }
-    .post-nav { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .prose { font-size: 17px; }
+    .post-nav { flex-direction: column; align-items: stretch; gap: 8px; }
+    .nav-link { text-align: center; }
   }
 </style>

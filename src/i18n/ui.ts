@@ -1,3 +1,5 @@
+import { email, scholarProfiles } from '../lib/profile';
+
 export type Lang = 'pt' | 'en';
 
 type Dict = {
@@ -403,12 +405,7 @@ export const ui: Record<Lang, Dict> = {
     academico: {
       eyebrow: '03 · currículo acadêmico',
       title: { line1: 'Pesquisa & ', emph: 'publicações' },
-      scholarIds: [
-        { label: 'Lattes', href: 'https://lattes.cnpq.br/' },
-        { label: 'ORCID', href: 'https://orcid.org/' },
-        { label: 'academia.edu', href: 'https://academia.edu/' },
-        { label: 'Google Scholar', href: 'https://scholar.google.com/' },
-      ],
+      scholarIds: scholarProfiles,
       linesHeading: 'linhas de pesquisa',
       lines: [
         'Economia da atenção',
@@ -471,7 +468,7 @@ export const ui: Record<Lang, Dict> = {
       title: { line1: 'Vamos', emph: 'conversar.' },
       intro:
         'Aceito pautas de jornalismo, propostas de produto e parcerias acadêmicas. Resposta em até 48h úteis.',
-      email: 'ola@nome.com.br',
+      email,
       socialsHeading: 'onde mais encontrar',
       socials: [
         { n: 'Substack', h: '@kaluanbernardo', d: 'ensaios mensais' },
@@ -792,12 +789,7 @@ export const ui: Record<Lang, Dict> = {
     academico: {
       eyebrow: '03 · academic cv',
       title: { line1: 'Research & ', emph: 'publications' },
-      scholarIds: [
-        { label: 'Lattes', href: 'https://lattes.cnpq.br/' },
-        { label: 'ORCID', href: 'https://orcid.org/' },
-        { label: 'academia.edu', href: 'https://academia.edu/' },
-        { label: 'Google Scholar', href: 'https://scholar.google.com/' },
-      ],
+      scholarIds: scholarProfiles,
       linesHeading: 'research lines',
       lines: [
         'Attention economy',
@@ -860,7 +852,7 @@ export const ui: Record<Lang, Dict> = {
       title: { line1: "Let's", emph: 'talk.' },
       intro:
         'Open to journalism pitches, product proposals, and academic collaborations. Reply within 48h on weekdays.',
-      email: 'hello@name.com',
+      email,
       socialsHeading: 'where else to find me',
       socials: [
         { n: 'Substack', h: '@kaluanbernardo', d: 'monthly essays' },

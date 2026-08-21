@@ -3,7 +3,8 @@
    apontavam para href="#": pareciam links e não iam a lugar nenhum.
    Aqui, o que não tem URL conhecida não vira link — é listado sem
    afordância de clique, em vez de mentir para quem clica.
-   Para ativar um item, basta preencher a URL. */
+   Para ativar um item, basta preencher a URL.
+   O e-mail e os perfis acadêmicos ficam em src/lib/profile.ts. */
 export type Social = { key: string; label: string; href: string | null };
 
 export const socials: Social[] = [

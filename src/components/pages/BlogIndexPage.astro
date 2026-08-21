@@ -54,7 +54,7 @@ const archiveItems = [...archiveCounts.entries()]
 
 <header class="head">
   <div class="kicker ed-kicker">{eyebrow}</div>
-  <h1 class="ed-bungee headline">BLOG <span class="mark mark-vio" aria-hidden="true">■</span></h1>
+  <h1 class="ed-bungee headline">BLOG <span class="ed-blink mark mark-vio" aria-hidden="true">■</span></h1>
 </header>
 
 <div class="filters" role="group" aria-label={lang === 'en' ? 'Filter posts' : 'Filtrar posts'}>
@@ -125,7 +125,7 @@ const archiveItems = [...archiveCounts.entries()]
           autocomplete="email"
           placeholder={t.blog.newsletterPlaceholder}
         />
-        <button class="ed-btn ylw nl-submit" type="submit">SUBSCRIBE →</button>
+        <button class="ed-btn vio nl-submit" type="submit">SUBSCRIBE →</button>
       </form>
     </div>
 
@@ -248,20 +248,21 @@ const archiveItems = [...archiveCounts.entries()]
     align-items: flex-start;
   }
 
-  /* bloco chapado com sombra dura, como no original.
-     A diferença: fundo amarelo com texto preto em vez de branco sobre
-     violeta, que dava 3,4:1 e era ilegível no texto pequeno. */
+  /* Bloco chapado com sombra dura. Fundo violeta com texto PRETO:
+     preto sobre --vio dá 5,2:1 e passa em qualquer tamanho, enquanto
+     o branco dava 3,4:1 e sumia no texto pequeno. A sombra sai em
+     off-white porque a página não usa mais amarelo. */
   .featured {
     display: block;
-    background: var(--ylw);
+    background: var(--vio);
     color: #000;
     padding: 18px 22px;
     border: var(--loud) solid #000;
     margin-bottom: 24px;
-    box-shadow: 8px 8px 0 var(--vio);
+    box-shadow: 8px 8px 0 var(--fg);
     cursor: pointer;
   }
-  .featured:hover { background: var(--ylw); color: #000; transform: translate(-2px, -2px); box-shadow: 10px 10px 0 var(--vio); }
+  .featured:hover { background: var(--vio); color: #000; transform: translate(-2px, -2px); box-shadow: 10px 10px 0 var(--fg); }
   .featured { transition: transform 0.08s linear, box-shadow 0.08s linear; }
   .ft-kicker {
     font-family: var(--mono);
@@ -343,17 +344,17 @@ const archiveItems = [...archiveCounts.entries()]
   .aside { display: flex; flex-direction: column; gap: 28px; }
 
   .newsletter {
-    border: var(--loud) solid var(--ylw);
+    border: var(--loud) solid var(--vio);
     padding: 16px 18px;
     background: #000;
-    color: var(--ylw);
+    color: var(--vio);
   }
   .nl-kicker {
     font-family: var(--mono);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.2em;
-    color: var(--ylw);
+    color: var(--vio);
     margin-bottom: 10px;
   }
   .nl-title {
@@ -361,7 +362,7 @@ const archiveItems = [...archiveCounts.entries()]
     margin: 0 0 8px;
     line-height: 0.95;
     text-transform: uppercase;
-    color: var(--ylw);
+    color: var(--vio);
   }
   .nl-copy {
     font-family: var(--mono);
@@ -379,8 +380,8 @@ const archiveItems = [...archiveCounts.entries()]
     clip: rect(0 0 0 0);
     white-space: nowrap;
   }
-  .nl-input { width: 100%; font-size: 11px; color: var(--ylw); border-color: var(--ylw); }
-  .nl-input::placeholder { color: var(--ylw); opacity: 0.6; }
+  .nl-input { width: 100%; font-size: 11px; color: var(--vio); border-color: var(--vio); }
+  .nl-input::placeholder { color: var(--vio); opacity: 0.7; }
   .nl-submit { justify-content: center; font-size: 12px; }
 
   .archive { display: flex; flex-direction: column; }
@@ -407,7 +408,7 @@ const archiveItems = [...archiveCounts.entries()]
     text-align: left;
     cursor: pointer;
   }
-  .arch-row:hover { background: var(--ylw); color: #000; }
+  .arch-row:hover { background: var(--zap); color: var(--zap-ink); }
   .arch-row:hover .arch-n { color: #000; }
   .arch-row.is-active {
     background: var(--vio);

@@ -21,7 +21,7 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
 <header class="head">
   <div class="kicker ed-kicker">{eyebrow}</div>
   <h1 class="ed-bungee headline">
-    {lang === 'en' ? 'PUBLICATIONS' : 'PUBLICAÇÕES'} <span class="mark mark-acid" aria-hidden="true">◆</span>
+    {lang === 'en' ? 'PUBLICATIONS' : 'PUBLICAÇÕES'} <span class="ed-blink mark mark-acid" aria-hidden="true">◆</span>
   </h1>
   <div class="scholar-row">
     {t.academico.scholarIds.map((s) => (
@@ -104,10 +104,18 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
   .line-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 14px;
+    gap: 10px;
+    margin-top: 16px;
   }
-  .line-tag { font-size: 11px; padding: 4px 8px; cursor: default; }
+  /* as linhas de pesquisa são o conteúdo da seção, não legenda:
+     ganham corpo de leitura em vez de tamanho de metadado */
+  .line-tag {
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    padding: 9px 14px;
+    border-width: var(--edge);
+    cursor: default;
+  }
 
   .pub-list { margin-top: 4px; }
   .pub-row {
@@ -145,7 +153,7 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
   }
   .pub-tag {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 0.1em;
     color: var(--vio);
     text-transform: uppercase;

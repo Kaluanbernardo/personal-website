@@ -180,13 +180,13 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
     border: var(--edge) solid var(--fg);
     padding: 7px 11px;
   }
-  .nav-link:hover { background: var(--ylw); color: #000; border-color: #000; }
+  .nav-link:hover { background: var(--zap); color: var(--zap-ink); border-color: #000; }
   .nav-link.accent {
     background: var(--vio);
     color: #000;
     border-color: #000;
   }
-  .nav-link.accent:hover { background: var(--ylw); color: #000; }
+  .nav-link.accent:hover { background: transparent; color: var(--vio); }
 
   @media (max-width: 720px) {
     .lead { font-size: 18px; }

@@ -28,6 +28,11 @@
   --accent: var(--acid);
   --accent-ink: #000;
 
+  /* cor do "flash" de hover — o amarelo chapado é a voz padrão do
+     site, mas cada seção pode trocar por uma que combine com ela */
+  --zap: var(--ylw);
+  --zap-ink: #000;
+
   /* --- traço: três pesos, cada um com função --- */
   --hair: 1.5px;   /* divisória de lista */
   --edge: 2px;     /* contorno de bloco */
@@ -79,8 +84,8 @@ a:hover { color: var(--accent); }
 .zap:hover,
 .prose a:hover,
 .site-footer a:hover {
-  background: var(--ylw);
-  color: #000;
+  background: var(--zap);
+  color: var(--zap-ink);
   border-color: #000;
 }
 
@@ -89,7 +94,7 @@ img { display: block; max-width: 100%; }
 button { font: inherit; }
 
 :focus-visible {
-  outline: var(--loud) solid var(--ylw);
+  outline: var(--loud) solid var(--zap);
   outline-offset: 2px;
 }
 
@@ -138,7 +143,7 @@ button { font: inherit; }
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
-.site-header .brand-back:hover { background: var(--ylw); color: #000; }
+.site-header .brand-back:hover { background: var(--zap); color: var(--zap-ink); }
 /* monograma: sempre magenta, é a marca e não muda por página */
 .site-header .brand-tag {
   font-family: var(--display);
@@ -166,7 +171,7 @@ button { font: inherit; }
   cursor: pointer;
   padding: 4px 8px;
 }
-.menu-toggle:hover { background: var(--ylw); color: #000; }
+.menu-toggle:hover { background: var(--zap); color: var(--zap-ink); }
 
 /* Nav numerada com as divisórias verticais de volta */
 .site-nav {
@@ -195,7 +200,7 @@ button { font: inherit; }
 .site-nav a.active .num,
 .site-nav a:hover .num { color: inherit; }
 .site-nav a.active { background: var(--accent); color: var(--accent-ink); }
-.site-nav a:hover { background: var(--ylw); color: #000; }
+.site-nav a:hover { background: var(--zap); color: var(--zap-ink); }
 
 .site-footer {
   padding: 18px 28px;
@@ -265,7 +270,7 @@ button { font: inherit; }
   color: inherit;   /* <button> não herda color por conta própria */
   cursor: pointer;
 }
-.ed-tag:hover { background: var(--ylw); color: #000; border-color: #000; }
+.ed-tag:hover { background: var(--zap); color: var(--zap-ink); border-color: var(--zap-ink); }
 .ed-tag.active,
 .ed-tag.is-active {
   background: var(--accent);
@@ -400,7 +405,7 @@ button { font: inherit; }
   outline: none;
   width: 100%;
 }
-.ed-input:focus { background: var(--ylw); color: #000; border-color: #000; }
+.ed-input:focus { background: var(--zap); color: var(--zap-ink); border-color: var(--zap-ink); }
 .ed-input::placeholder { color: var(--fg-3); }
 
 .ed-sticker {
@@ -420,7 +425,7 @@ button { font: inherit; }
 .theme-sobre    { --accent: var(--cyan); --accent-ink: #000; }
 .theme-cv       { --accent: var(--ylw);  --accent-ink: #000; }
 .theme-academ   { --accent: var(--acid); --accent-ink: #000; }
-.theme-blog     { --accent: var(--vio);  --accent-ink: #000; }
+.theme-blog     { --accent: var(--vio);  --accent-ink: #000; --zap: var(--vio); }
 .theme-projetos { --accent: var(--orng); --accent-ink: #000; }
 .theme-contato  { --accent: var(--hot);  --accent-ink: #000; }
 
@@ -520,7 +525,7 @@ button { font: inherit; }
   transition: opacity 0.15s linear, visibility 0.15s linear;
 }
 .to-top.is-on { opacity: 1; visibility: visible; }
-.to-top:hover { background: var(--ylw); color: #000; border-color: #000; }
+.to-top:hover { background: var(--zap); color: var(--zap-ink); border-color: var(--zap-ink); }
 
 /* Estado vazio: filtrar para zero resultados deixava a página em
    branco, sem dizer o que aconteceu nem como voltar. */

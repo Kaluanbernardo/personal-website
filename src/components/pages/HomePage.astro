@@ -128,7 +128,9 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
   <div class="hero-main">
     <h1 class="hero-title ed-bungee">
       <span class="t-fg">{firstName.toUpperCase()}</span><br />
-      <span class="t-stroke">{lastName.toUpperCase()}</span><span class="ed-blink hero-caret" aria-hidden="true">▌</span>
+      <span class="t-stroke">{lastName.toUpperCase()}</span><svg class="ed-blink hero-star" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 .8l3.09 7.03 7.66.67-5.79 5.06 1.72 7.49L12 17.1l-6.68 3.95 1.72-7.49L1.25 8.5l7.66-.67z" />
+      </svg>
     </h1>
 
     <p class="hero-intro hero-intro-long">
@@ -284,14 +286,20 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     color: var(--bg);
     -webkit-text-stroke: 2.5px var(--fg);
   }
-  /* cursor em mono: em Bungee o "_" vira uma barra sólida solta */
-  .hero-caret {
-    font-family: var(--mono);
-    color: var(--cyan);
-    font-size: 0.46em;
-    line-height: 1;
-    margin-left: 0.05em;
-    vertical-align: 0.06em;
+  /* Estrela em SVG, não em texto: ★ (U+2605) não existe no subset
+     latin das fontes auto-hospedadas e cairia num tofu. Em SVG o
+     desenho é sempre o mesmo e acompanha o tamanho do título. */
+  .hero-star {
+    width: 0.42em;
+    height: 0.42em;
+    fill: var(--acid);
+    stroke: #000;
+    stroke-width: 1;
+    stroke-linejoin: round;
+    display: inline-block;
+    margin-left: 0.04em;
+    vertical-align: 0.1em;
+    overflow: visible;
   }
 
   .hero-intro {
@@ -396,7 +404,7 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     color: var(--vio);
     white-space: nowrap;
   }
-  .fb-all:hover { background: var(--ylw); color: #000; }
+  .fb-all:hover { background: var(--zap); color: var(--zap-ink); }
   /* auto-fit p/ trilha vazia colapsar: em EN só há 2 posts */
   .fb-grid {
     display: grid;

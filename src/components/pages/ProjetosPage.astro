@@ -20,20 +20,11 @@ t.projetos.filters.forEach((label, i) => {
 });
 
 const eyebrow = `${sections.projetos.number} / ./OUTPUT/*`;
-const kindColor: Record<string, string> = {
-  jornalismo: 'var(--hot)',
-  produto: 'var(--cyan)',
-  academia: 'var(--acid)',
-  palestra: 'var(--vio)',
-  pessoal: 'var(--ylw)',
-};
 ---
 
 <header class="head">
-  <div class="kicker">{eyebrow}</div>
-  <h1 class="ed-bungee headline">
-    {t.projetos.title.toUpperCase()} <span class="ed-blink mark mark-orng" aria-hidden="true">▼</span>
-  </h1>
+  <div class="kicker ed-kicker">{eyebrow}</div>
+  <h1 class="ed-bungee headline">{t.projetos.title.toUpperCase()}</h1>
   <div class="sub">{t.projetos.sub}</div>
 </header>
 
@@ -52,24 +43,20 @@ const kindColor: Record<string, string> = {
 </div>
 
 <div id="project-grid" class="grid">
-  {projects.map((p, i) => {
-    const c = kindColor[p.kind] ?? 'var(--fg)';
-    const rotate = i % 2 === 0 ? 'rotate(0.4deg)' : 'rotate(-0.4deg)';
-    return (
-      <article class="cell" data-kind={p.kind} style={`--card-c:${c};--rot:${rotate}`}>
-        <a class="card" href={p.url ?? '#'} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
-          <div class="thumb ed-imgframe">
-            <div class="ph">thumb · 4×3</div>
-          </div>
-          <div class="card-body">
-            <span class="card-tag">#{tagDisplay[lang][p.kind] ?? p.kind}</span>
-            <h3 class="ed-bungee card-title">{p.title}</h3>
-            <div class="card-place">{p.place} →</div>
-          </div>
-        </a>
-      </article>
-    );
-  })}
+  {projects.map((p) => (
+    <article class="cell" data-kind={p.kind}>
+      <a class="card" href={p.url ?? '#'} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
+        <div class="thumb ed-imgframe">
+          <div class="ph">thumb · 4×3</div>
+        </div>
+        <div class="card-body">
+          <span class="card-tag">{tagDisplay[lang][p.kind] ?? p.kind}</span>
+          <h3 class="ed-bungee card-title">{p.title}</h3>
+          <div class="card-place">{p.place}</div>
+        </div>
+      </a>
+    </article>
+  ))}
 </div>
 
 <script>
@@ -91,98 +78,64 @@ const kindColor: Record<string, string> = {
 </script>
 
 <style>
-  .head { padding-top: 6px; margin-bottom: 18px; }
-  .kicker {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    color: var(--orng);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
+  .head { padding-top: 6px; margin-bottom: 22px; }
+  .kicker { margin-bottom: 10px; }
   .headline {
-    font-size: clamp(48px, 9vw, 96px);
-    margin: 0 0 6px;
-    line-height: 0.85;
+    font-size: clamp(44px, 8vw, 76px);
+    margin: 0 0 10px;
+    line-height: 0.9;
     letter-spacing: -0.04em;
     text-transform: uppercase;
   }
-  .headline .dot { color: var(--orng); }
   .sub {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: var(--t-meta);
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    opacity: 0.6;
-    margin-bottom: 18px;
+    color: var(--fg-3);
   }
 
   .filters {
     display: flex;
-    gap: 4px;
-    margin-bottom: 24px;
+    gap: 6px;
+    margin-bottom: 28px;
     flex-wrap: wrap;
-  }
-  .filter-btn {
-    font-size: 11px;
-    padding: 4px 10px;
-    background: var(--bg);
-    color: var(--fg);
-    border-color: var(--fg);
-  }
-  .filter-btn:hover {
-    background: var(--fg);
-    color: var(--bg);
-  }
-  .filter-btn:focus-visible {
-    outline: 3px solid var(--orng);
-    outline-offset: 2px;
-  }
-  .filter-btn:active { transform: translateY(1px); }
-  .filter-btn.is-active {
-    background: var(--orng);
-    color: #000;
-    border-color: #000;
   }
 
   .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-  }
-  .cell {
-    transform: var(--rot, none);
+    gap: 24px;
   }
   .card {
     display: block;
-    border: 2.5px solid var(--fg);
+    border: 1px solid var(--line);
     background: transparent;
     cursor: pointer;
     color: inherit;
+    transition: border-color 0.16s ease, background 0.16s ease;
   }
-  .card:hover { background: var(--bg-2); color: inherit; }
+  .card:hover { background: var(--bg-2); border-color: var(--line-2); color: inherit; }
   .thumb {
     aspect-ratio: 4/3;
-    border-bottom: 2.5px solid var(--fg);
-    color: var(--card-c);
+    border: none;
+    border-bottom: 1px solid var(--line);
   }
-  .card-body { padding: 12px 14px; }
+  .card-body { padding: 16px 18px; }
   .card-tag {
     display: inline-block;
     font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.08em;
+    font-size: 10px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    background: var(--card-c);
-    color: #000;
-    border: 1.5px solid #000;
-    padding: 2px 6px;
-    margin-bottom: 8px;
+    color: var(--fg-3);
+    margin-bottom: 10px;
   }
+  .card:hover .card-tag { color: var(--accent); }
   .card-title {
-    font-size: 20px;
-    margin: 4px 0;
-    line-height: 1.05;
+    font-size: 18px;
+    margin: 0 0 8px;
+    line-height: 1.15;
     text-transform: uppercase;
     letter-spacing: -0.02em;
   }
@@ -191,13 +144,13 @@ const kindColor: Record<string, string> = {
     font-size: 10px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    opacity: 0.7;
+    color: var(--fg-3);
   }
 
   @media (max-width: 1080px) and (min-width: 721px) {
     .grid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 720px) {
-    .grid { grid-template-columns: 1fr; gap: 14px; }
+    .grid { grid-template-columns: 1fr; gap: 18px; }
   }
 </style>

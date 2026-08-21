@@ -6,26 +6,24 @@ const { extra = [] } = Astro.props;
 ---
 
 <div class="statusbar" aria-hidden="true">
-  <div class="clock"><span data-status-clock>--:--:--</span></div>
+  <div class="clock"><span data-status-clock>--:--</span></div>
   {extra.map((e) => <div>{e}</div>)}
   <div>v0.404 · NO_COOKIES</div>
 </div>
 
 <style>
-  .statusbar .dot { color: var(--acid); }
-  .statusbar .clock span { color: var(--fg); }
-  .statusbar .clock span :global(.s) { color: var(--hot); }
+  .statusbar .clock span { color: var(--fg-2); }
 </style>
 
 <script>
+  /* HH:MM em vez de HH:MM:SS — os segundos em magenta eram um ponto
+     de movimento permanente no canto da tela, em todas as páginas. */
   function pad(n: number) { return String(n).padStart(2, '0'); }
   const clockEl = document.querySelector<HTMLElement>('[data-status-clock]');
   function tick() {
     const t = new Date();
-    if (clockEl) {
-      clockEl.innerHTML = `${pad(t.getHours())}:${pad(t.getMinutes())}:<span class=\"s\" style=\"color:var(--hot)\">${pad(t.getSeconds())}</span>`;
-    }
+    if (clockEl) clockEl.textContent = `${pad(t.getHours())}:${pad(t.getMinutes())}`;
   }
   tick();
-  setInterval(tick, 1000);
+  setInterval(tick, 15000);
 </script>

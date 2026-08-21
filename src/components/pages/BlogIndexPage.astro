@@ -27,19 +27,32 @@ t.blog.filters.forEach((label, i) => {
 });
 
 const eyebrow = `${sections.blog.number} / *.MD`;
-const sidebarKickerNL = lang === 'en' ? '★ NEWSLETTER ★' : '★ NEWSLETTER ★';
-const archiveHeading = lang === 'en' ? './ARCHIVE' : './ARQUIVO';
-const archiveItems = lang === 'en'
-  ? ['apr/26 (4)', 'mar/26 (3)', 'feb/26 (5)', 'jan/26 (2)', 'dec/25 (4)', 'nov/25 (5)']
-  : ['abr/26 (4)', 'mar/26 (3)', 'fev/26 (5)', 'jan/26 (2)', 'dez/25 (4)', 'nov/25 (5)'];
-const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ POST EM DESTAQUE ★★';
+const sidebarKickerNL = 'NEWSLETTER';
+const featuredKicker = lang === 'en' ? 'FEATURED' : 'EM DESTAQUE';
+
+/* arquivo derivado dos posts reais — a lista antiga era fixa no código
+   e mostrava contagens que não batiam com o conteúdo publicado */
+const archiveHeading = lang === 'en' ? 'ARCHIVE' : 'ARQUIVO';
+const archiveCounts = new Map<string, number>();
+posts.forEach((p) => {
+  const d = p.data.pubDate;
+  const key = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
+  archiveCounts.set(key, (archiveCounts.get(key) ?? 0) + 1);
+});
+const monthNames = lang === 'en'
+  ? ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+  : ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+const archiveItems = [...archiveCounts.entries()]
+  .sort((a, b) => b[0].localeCompare(a[0]))
+  .map(([key, n]) => {
+    const [y, m] = key.split('-').map(Number);
+    return { label: `${monthNames[m - 1]}/${String(y).slice(-2)}`, n };
+  });
 ---
 
 <header class="head">
-  <div class="kicker">{eyebrow}</div>
-  <h1 class="ed-bungee headline">
-    BLOG <span class="ed-blink mark mark-vio" aria-hidden="true">■</span>
-  </h1>
+  <div class="kicker ed-kicker">{eyebrow}</div>
+  <h1 class="ed-bungee headline">BLOG</h1>
 </header>
 
 <div class="filters">
@@ -56,18 +69,18 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
       <a class="featured" href={postHref(featured.id)} data-tag={featured.data.tag}>
         <div class="ft-kicker">{featuredKicker}</div>
         <h2 class="ed-bungee ft-title">{featured.data.title}</h2>
-        <p class="ft-desc serif">{featured.data.description}</p>
+        <p class="ft-desc">{featured.data.description}</p>
         <div class="ft-meta">
-          {formatDate(featured.data.pubDate, lang).toUpperCase()} · {featured.data.readingTime} {minLabel} · #{tagDisplay[lang][featured.data.tag] ?? featured.data.tag}
+          {formatDate(featured.data.pubDate, lang)} · {featured.data.readingTime} {minLabel} · {tagDisplay[lang][featured.data.tag] ?? featured.data.tag}
         </div>
       </a>
     )}
 
     {rest.map((p) => (
       <a class="post-row" href={postHref(p.id)} data-tag={p.data.tag}>
-        <span class="rdate">{formatDate(p.data.pubDate, lang).toUpperCase()}</span>
+        <span class="rdate">{formatDate(p.data.pubDate, lang)}</span>
         <h3 class="ed-bungee rtitle">{p.data.title}</h3>
-        <span class="rtag">#{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
+        <span class="rtag">{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
         <span class="rmins">{p.data.readingTime} {minLabel}</span>
         <span class="rarr">→</span>
       </a>
@@ -83,19 +96,20 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
       <p class="nl-copy">{t.blog.newsletterCopy}</p>
       <form class="nl-form" onsubmit="return false">
         <input class="ed-input nl-input" placeholder={t.blog.newsletterPlaceholder} type="email" />
-        <button class="ed-btn ylw nl-submit">SUBSCRIBE →</button>
+        <button class="ed-btn primary nl-submit">SUBSCRIBE →</button>
       </form>
     </div>
 
-    <div class="archive">
-      <div class="arch-kicker">{archiveHeading}</div>
-      {archiveItems.map((m) => (
-        <div class="arch-row">
-          <span>{m}</span><span class="arr">→</span>
-        </div>
-      ))}
-    </div>
-
+    {archiveItems.length > 0 && (
+      <div class="archive">
+        <div class="arch-kicker">{archiveHeading}</div>
+        {archiveItems.map((m) => (
+          <div class="arch-row">
+            <span>{m.label}</span><span class="arch-n">{m.n}</span>
+          </div>
+        ))}
+      </div>
+    )}
   </aside>
 </div>
 
@@ -116,223 +130,181 @@ const featuredKicker = lang === 'en' ? '★★ FEATURED POST ★★' : '★★ P
 </script>
 
 <style>
-  .head { padding-top: 6px; margin-bottom: 18px; }
-  .kicker {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    color: var(--vio);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
+  .head { padding-top: 6px; margin-bottom: 22px; }
+  .kicker { margin-bottom: 10px; }
   .headline {
-    font-size: clamp(48px, 9vw, 88px);
-    margin: 0 0 4px;
-    line-height: 0.85;
+    font-size: clamp(44px, 8vw, 76px);
+    margin: 0;
+    line-height: 0.9;
     letter-spacing: -0.04em;
     text-transform: uppercase;
-  }
-  .headline .t-vio { color: var(--vio); }
-  .meta {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    opacity: 0.6;
-    margin-bottom: 18px;
   }
 
   .filters {
     display: flex;
-    gap: 4px;
-    margin-bottom: 18px;
+    gap: 6px;
+    margin-bottom: 28px;
     flex-wrap: wrap;
-  }
-  .filter-btn { font-size: 11px; padding: 4px 10px; }
-  .filter-btn.is-active {
-    background: var(--vio);
-    color: #fff;
-    border-color: var(--vio);
   }
 
   .blog-grid {
     display: grid;
-    grid-template-columns: 1fr 280px;
-    gap: 28px;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 48px;
     align-items: flex-start;
   }
 
+  /* destaque: fundo neutro + filete de acento. Antes era um bloco
+     violeta cheio com sombra amarela, que puxava toda a atenção. */
   .featured {
     display: block;
-    background: var(--vio);
-    color: #fff;
-    padding: 18px 22px;
-    border: 2.5px solid var(--fg);
-    margin-bottom: 20px;
-    box-shadow: 6px 6px 0 var(--ylw);
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--accent);
+    padding: 26px 28px;
+    margin-bottom: 28px;
     cursor: pointer;
+    color: var(--fg);
   }
-  .featured:hover { background: var(--vio); color: #fff; }
+  .featured:hover { background: var(--bg-3); color: var(--fg); }
   .ft-kicker {
     font-family: var(--mono);
-    font-size: 9px;
+    font-size: 10px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--ylw);
-    margin-bottom: 8px;
+    color: var(--accent);
+    margin-bottom: 12px;
   }
   .ft-title {
-    font-size: 36px;
-    margin: 0 0 8px;
-    line-height: 0.95;
+    font-size: clamp(26px, 3.4vw, 34px);
+    margin: 0 0 12px;
+    line-height: 1.05;
     text-transform: uppercase;
     letter-spacing: -0.03em;
   }
   .ft-desc {
     font-family: var(--serif);
-    font-size: 16px;
-    line-height: 1.5;
-    margin: 0 0 12px;
-    max-width: 560px;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--fg-2);
+    margin: 0 0 16px;
+    max-width: 56ch;
   }
   .ft-meta {
     font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.05em;
+    font-size: var(--t-meta);
+    letter-spacing: 0.08em;
     text-transform: uppercase;
+    color: var(--fg-3);
   }
 
   .post-row {
     display: grid;
-    grid-template-columns: 80px 1fr 100px 60px 24px;
-    gap: 14px;
-    padding: 14px 0;
-    border-bottom: 1.5px solid var(--fg);
+    grid-template-columns: 88px minmax(0, 1fr) 100px 56px 20px;
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
     align-items: baseline;
+    transition: padding-left 0.16s ease;
   }
-  .post-row:hover { background: transparent; padding-left: 8px; }
-  .post-row:hover .rtitle { color: var(--vio); }
-  .post-row:hover .rarr { color: var(--vio); }
+  .post-row:hover { padding-left: 10px; }
+  .post-row:hover .rtitle,
+  .post-row:hover .rarr { color: var(--accent); }
   .rdate {
     font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.05em;
-    color: var(--fg);
-    opacity: 0.7;
+    font-size: var(--t-meta);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-3);
   }
   .rtitle {
-    font-size: 22px;
+    font-size: 19px;
     margin: 0;
     text-transform: uppercase;
     letter-spacing: -0.02em;
-    line-height: 1.05;
+    line-height: 1.15;
   }
   .rtag {
     font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.08em;
-    color: var(--vio);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--fg-3);
     text-transform: uppercase;
     text-align: right;
   }
   .rmins {
     font-family: var(--mono);
-    font-size: 11px;
-    opacity: 0.6;
+    font-size: var(--t-meta);
+    color: var(--fg-3);
     text-align: right;
   }
   .rarr {
-    color: var(--vio);
-    font-size: 18px;
+    color: var(--fg-3);
+    font-size: 16px;
     text-align: right;
+    transition: color 0.12s ease;
   }
 
-  .aside { display: flex; flex-direction: column; gap: 18px; }
+  .aside { display: flex; flex-direction: column; gap: 28px; }
 
   .newsletter {
-    border: 3px solid var(--ylw);
-    padding: 16px 18px;
-    background: #000;
-    color: var(--ylw);
-    position: relative;
+    border: 1px solid var(--line);
+    padding: 20px;
+    background: var(--bg-2);
   }
   .nl-kicker {
-    font-family: var(--tiny);
-    font-size: 9px;
-    letter-spacing: 0.05em;
-    color: var(--ylw);
-    margin-bottom: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
   }
   .nl-title {
-    font-size: 22px;
-    margin: 0 0 8px;
-    line-height: 0.95;
+    font-size: 20px;
+    margin: 0 0 10px;
+    line-height: 1.05;
     text-transform: uppercase;
-    color: var(--ylw);
+    color: var(--fg);
   }
   .nl-copy {
     font-family: var(--mono);
-    font-size: 11px;
-    line-height: 1.5;
-    color: #fff;
-    margin: 0 0 12px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--fg-2);
+    margin: 0 0 14px;
   }
-  .nl-form { display: flex; flex-direction: column; gap: 8px; }
-  .nl-input {
-    width: 100%;
-    font-size: 11px;
-    color: var(--ylw);
-    border-color: var(--ylw);
-  }
-  .nl-input::placeholder { color: var(--ylw); opacity: 0.6; }
-  .nl-submit { justify-content: center; }
+  .nl-form { display: flex; flex-direction: column; gap: 10px; }
+  .nl-input { width: 100%; font-size: 12px; }
+  .nl-submit { justify-content: center; font-size: 12px; }
 
   .archive { display: flex; flex-direction: column; }
   .arch-kicker {
     font-family: var(--mono);
     font-size: 10px;
     letter-spacing: 0.2em;
-    color: var(--fg);
-    opacity: 0.6;
+    color: var(--fg-3);
     text-transform: uppercase;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
   .arch-row {
     font-family: var(--mono);
     font-size: 12px;
-    padding: 4px 0;
-    border-bottom: 1.5px dashed var(--fg);
+    padding: 7px 0;
+    border-bottom: 1px solid var(--line);
     display: flex;
     justify-content: space-between;
+    color: var(--fg-2);
   }
-  .arch-row .arr { color: var(--vio); }
-
-  .webring {
-    border: 2px solid var(--cyan);
-    color: var(--cyan);
-    padding: 10px 12px;
-  }
-  .wr-kicker {
-    font-family: var(--tiny);
-    font-size: 9px;
-    margin-bottom: 6px;
-  }
-  .wr-list {
-    font-family: var(--mono);
-    font-size: 10px;
-    line-height: 1.6;
-  }
-  .wr-list a { color: var(--cyan); }
-
-  .serif { font-family: var(--serif); }
+  .arch-row .arch-n { color: var(--fg-3); }
 
   @media (max-width: 900px) {
-    .blog-grid { grid-template-columns: 1fr; }
+    .blog-grid { grid-template-columns: 1fr; gap: 36px; }
     .post-row {
-      grid-template-columns: 60px 1fr 24px;
-      gap: 8px;
+      grid-template-columns: 72px minmax(0, 1fr) 20px;
+      gap: 10px;
     }
     .rtag, .rmins { display: none; }
-    .ft-title { font-size: 28px; }
+    .ft-title { font-size: 24px; }
   }
 </style>

@@ -1,41 +1,50 @@
 /* =========================================================
-   Site pessoal — ANTI-DESIGN / BRUTALISM / PUNK / RAVE
-   Visual ruidoso, vibrante, propositalmente quebrado.
-   Mesmo conteúdo, identidade tipográfica + neon.
+   Site pessoal — terminal brutalista
+   Identidade mantida: fundo escuro, mono, régua dura, neon.
+   Regra nova: UM acento por página. Neon é pontuação, não fundo.
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Shade&family=Departure+Mono&family=Major+Mono+Display&family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=VT323&display=swap');
-
 :root {
-  /* base palette — neon brutalist (dark default) */
-  --bg: #0a0a0a;
-  --fg: #f5f5f0;
-  --bg-2: #161614;
-  --bg-3: #1f1f1c;
-  --fg-2: #c8c6be;
-  --fg-3: #8a8884;
+  /* --- neutros: fazem 90% do trabalho --- */
+  --bg: #0b0b0c;
+  --bg-2: #141416;
+  --bg-3: #1c1c1f;
+  --fg: #f2f2ee;
+  --fg-2: #a8a8a2;
+  --fg-3: #6e6e6a;
 
-  /* neon */
-  --hot: #ff2d55;       /* magenta */
-  --cyan: #00f0ff;
-  --acid: #c4ff00;      /* verde ácido */
-  --ylw: #ffe600;
-  --orng: #ff6a00;
-  --vio: #b400ff;
-  --blue: #1a35ff;
+  /* linhas: só dois pesos no site inteiro */
+  --line: rgba(242, 242, 238, 0.16);   /* divisória (hairline) */
+  --line-2: rgba(242, 242, 238, 0.42); /* contorno de bloco */
 
-  /* per-page accent (overridden) */
+  /* --- neon: mesma paleta, um passo abaixo do berrante --- */
+  --hot: #ff3b63;
+  --cyan: #22dfef;
+  --acid: #b6f000;
+  --ylw: #f2d900;
+  --orng: #ff7a1a;
+  --vio: #a24bff;
+  --blue: #3b52ff;
+
+  /* acento por seção (sobrescrito em .theme-*) */
   --accent: var(--acid);
+  --accent-rgb: 182 240 0;
+  --accent-ink: #000;
+  --accent-wash: rgb(var(--accent-rgb) / 0.1);
+  --accent-line: rgb(var(--accent-rgb) / 0.45);
 
-  /* fonts */
-  --mono: 'Departure Mono', 'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  --pixel: 'VT323', monospace;
-  --tiny: 'Press Start 2P', monospace;
-  --display: 'Space Grotesk', system-ui, sans-serif;
-  --major: 'Major Mono Display', monospace;
-  --bungee: 'Bungee', sans-serif;
-  --bungee-s: 'Bungee Shade', sans-serif;
-  --serif: 'Times New Roman', Times, serif;
+  /* --- tipografia --- */
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --display: 'Bungee', Impact, sans-serif;
+  --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  /* aliases mantidos p/ compatibilidade */
+  --bungee: var(--display);
+
+  /* --- escala de texto --- */
+  --t-meta: 11px;    /* rótulos, datas, kickers */
+  --t-ui: 13px;      /* botões, nav, chips */
+  --t-body: 15px;    /* corpo em mono */
+  --t-read: 18px;    /* corpo em serifa (leitura longa) */
 }
 
 * { box-sizing: border-box; }
@@ -46,50 +55,66 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--mono);
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: var(--t-body);
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
 }
 
+/* Link: acento no texto, sem inundar o fundo.
+   (o hover amarelo global era a maior fonte de ruído do site) */
 a {
   color: inherit;
   text-decoration: none;
-  transition: background 0.05s linear, color 0.05s linear;
+  transition: color 0.12s ease, border-color 0.12s ease, background 0.12s ease;
 }
-a:hover { background: var(--ylw); color: #000; }
+a:hover { color: var(--accent); }
 
 img { display: block; max-width: 100%; }
 
 button { font: inherit; }
 
-::selection { background: var(--acid); color: #000; }
+/* foco visível e consistente — não existia antes */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
 
 /* =========================================================
-   Site shell (page wrapper, header, footer)
+   Shell (wrapper, header, footer)
    ========================================================= */
 
 .page {
   position: relative;
   min-height: 100vh;
-  padding: 0 0 56px;   /* leave room for status bar */
+  padding: 0 0 48px;   /* espaço da status bar */
 }
 
 .page-inner {
-  padding: 22px 28px 48px;
-  max-width: 1280px;
+  padding: 40px 28px 64px;
+  max-width: 1180px;
   margin: 0 auto;
 }
 
-/* Top bar */
+/* Topo */
 .site-header {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 18px;
-  padding: 10px 28px;
-  border-bottom: 2px solid var(--fg);
+  padding: 12px 28px;
+  border-bottom: 1px solid var(--line);
 }
 .site-header .brand {
   display: flex; align-items: center; gap: 12px;
@@ -97,30 +122,22 @@ button { font: inherit; }
 }
 .site-header .brand-back {
   font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-.site-header .brand-tag {
-  font-family: var(--bungee);
-  background: var(--hot);
-  color: #000;
-  padding: 2px 8px;
-  font-size: 18px;
-  letter-spacing: -0.04em;
-  white-space: nowrap;
-}
-.site-header .brand-label {
-  font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--t-meta);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--fg-2);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
-.site-header .brand-label .slash { color: var(--hot); }
+.site-header .brand-back:hover { color: var(--accent); }
+/* monograma: peça fixa da marca, então segue neutro em todas as páginas */
+.site-header .brand-tag {
+  font-family: var(--display);
+  background: var(--fg);
+  color: var(--bg);
+  padding: 3px 9px;
+  font-size: 17px;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
 .site-header .nav-aux {
   display: flex; align-items: center; gap: 6px;
   justify-self: end;
@@ -129,62 +146,63 @@ button { font: inherit; }
 .menu-toggle {
   display: none;
   background: none;
-  border: 2px solid var(--fg);
+  border: 1px solid var(--line-2);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--t-meta);
   letter-spacing: 0.1em;
   color: var(--fg);
   text-transform: uppercase;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 5px 9px;
 }
+.menu-toggle:hover { border-color: var(--fg); }
 
-/* Numbered nav */
+/* Nav numerada — sem separadores verticais, sem preenchimento colorido */
 .site-nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 0;
+  gap: 2px;
   align-items: center;
   justify-self: center;
 }
 .site-nav a {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--t-meta);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 6px 10px;
-  border-right: 1.5px solid var(--fg);
-  color: inherit;
+  color: var(--fg-2);
   cursor: pointer;
+  border-bottom: 2px solid transparent;
 }
-.site-nav a:last-child { border-right: none; }
-.site-nav a .num { opacity: 0.5; margin-right: 6px; }
+.site-nav a .num { color: var(--fg-3); margin-right: 6px; }
+.site-nav a:hover { color: var(--fg); }
 .site-nav a.active {
-  background: var(--accent);
-  color: #000;
+  color: var(--fg);
+  border-bottom-color: var(--accent);
 }
-.site-nav a:hover { background: var(--ylw); color: #000; }
+.site-nav a.active .num { color: var(--accent); }
 
-/* Footer */
+/* Rodapé */
 .site-footer {
-  padding: 18px 28px;
-  border-top: 2px solid var(--fg);
+  padding: 20px 28px;
+  border-top: 1px solid var(--line);
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--t-meta);
   letter-spacing: 0.06em;
-  color: var(--fg-2);
+  color: var(--fg-3);
   gap: 12px;
   text-transform: uppercase;
   flex-wrap: wrap;
 }
-.site-footer a { color: var(--fg); border-bottom: 1.5px solid currentColor; }
-.site-footer a:hover { background: var(--ylw); color: #000; }
+.site-footer a { color: var(--fg-2); border-bottom: 1px solid var(--line-2); }
+.site-footer a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 
 /* =========================================================
-   Status bar
+   Status bar — mantida como assinatura, mas em voz baixa
    ========================================================= */
 .statusbar {
   position: fixed;
@@ -192,152 +210,117 @@ button { font: inherit; }
   display: flex;
   font-family: var(--mono);
   font-size: 10px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  border-top: 2px solid var(--fg);
+  border-top: 1px solid var(--line);
   background: var(--bg);
+  color: var(--fg-3);
   z-index: 30;
 }
 .statusbar > div {
-  padding: 4px 10px;
-  border-right: 1px solid var(--fg);
+  padding: 5px 12px;
   display: flex; align-items: center; gap: 6px;
   white-space: nowrap;
 }
-.statusbar > div:last-child { border-right: none; margin-left: auto; }
+.statusbar > div:last-child { margin-left: auto; }
 
 /* =========================================================
-   Common helpers (ed-*)
+   Helpers (ed-*)
    ========================================================= */
 .ed-mono { font-family: var(--mono); }
-.ed-pixel { font-family: var(--pixel); }
-.ed-tiny { font-family: var(--tiny); font-size: 9px; line-height: 1.6; letter-spacing: 0.05em; }
-.ed-display { font-family: var(--display); font-weight: 700; letter-spacing: -0.04em; line-height: 0.95; }
-.ed-major { font-family: var(--major); }
-.ed-bungee { font-family: var(--bungee); font-weight: 400; }
-.ed-bungee-s { font-family: var(--bungee-s); font-weight: 400; }
+.ed-bungee { font-family: var(--display); font-weight: 400; }
 .ed-serif { font-family: var(--serif); }
 
-/* tag / chip */
+/* rótulo/kicker: um só padrão para o site inteiro */
+.ed-kicker {
+  font-family: var(--mono);
+  font-size: var(--t-meta);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* chip */
 .ed-tag {
   display: inline-block;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: var(--t-meta);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 4px 8px;
-  border: 1.5px solid currentColor;
+  padding: 4px 9px;
+  border: 1px solid var(--line-2);
   background: transparent;
+  color: var(--fg-2);
   cursor: pointer;
 }
+.ed-tag:hover { color: var(--fg); border-color: var(--fg); }
 .ed-tag.active,
 .ed-tag.is-active {
   background: var(--accent);
-  color: #000;
-  border-color: #000;
+  color: var(--accent-ink);
+  border-color: var(--accent);
 }
 
-/* button */
+/* botão */
 .ed-btn {
-  display: inline-flex; align-items: center; gap: 6px;
+  display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: var(--t-ui);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   padding: 10px 16px;
-  border: 2px solid currentColor;
+  border: 1px solid var(--line-2);
   background: transparent;
-  color: inherit;
+  color: var(--fg);
   cursor: pointer;
   text-decoration: none;
-  position: relative;
-  transition: transform 0.08s linear, box-shadow 0.08s linear;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
 }
 .ed-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0 currentColor;
-  background: transparent;
-  color: inherit;
+  border-color: var(--fg);
+  color: var(--fg);
+  background: var(--bg-2);
 }
-.ed-btn:active {
-  transform: translate(0, 0);
-  box-shadow: 0 0 0 currentColor;
+/* uma única variante cheia: a ação principal da página */
+.ed-btn.primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
 }
-.ed-btn.solid { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-.ed-btn.hot { background: var(--hot); color: #000; border-color: #000; }
-.ed-btn.acid { background: var(--acid); color: #000; border-color: #000; }
-.ed-btn.cyan { background: var(--cyan); color: #000; border-color: #000; }
-.ed-btn.ylw { background: var(--ylw); color: #000; border-color: #000; }
-.ed-btn.vio { background: var(--vio); color: #fff; border-color: #000; }
-.ed-btn.orng { background: var(--orng); color: #000; border-color: #000; }
+.ed-btn.primary:hover { background: transparent; color: var(--accent); border-color: var(--accent); }
 
-/* boxes */
+/* caixa */
 .ed-box {
-  border: 2px solid currentColor;
-  padding: 12px 14px;
+  border: 1px solid var(--line-2);
+  padding: 16px 18px;
 }
 
-/* mark / highlight */
-.ed-mark { background: var(--ylw); color: #000; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-hot { background: var(--hot); color: #000; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-cyan { background: var(--cyan); color: #000; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-acid { background: var(--acid); color: #000; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-ylw { background: var(--ylw); color: #000; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-orng { background: var(--orng); color: #000; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-vio { background: var(--vio); color: #fff; padding: 0 4px; box-decoration-break: clone; }
-.ed-mark-blue { background: var(--blue); color: #fff; padding: 0 4px; box-decoration-break: clone; }
-
-/* rules */
-.ed-rule { border: none; border-top: 2px solid var(--fg); margin: 0; }
-.ed-rule-dashed { border: none; border-top: 2px dashed var(--fg); margin: 0; }
-.ed-rule-dotted { border: none; border-top: 3px dotted var(--fg); margin: 0; }
-.ed-rule-rainbow {
-  border: none;
-  height: 8px;
-  background: var(--acid);
-  margin: 0;
+/* marca-texto: agora sublinhado no acento, não bloco colorido */
+.ed-mark {
+  color: var(--fg);
+  box-shadow: inset 0 -0.32em 0 var(--accent-wash);
+  border-bottom: 1px solid var(--accent-line);
+  box-decoration-break: clone;
 }
 
-/* blink */
-.ed-blink { animation: ed-blink 1.05s steps(2) infinite; }
+/* réguas: dois pesos, só isso */
+.ed-rule { border: none; border-top: 1px solid var(--line); margin: 0; }
+.ed-rule-accent { border: none; border-top: 2px solid var(--accent); margin: 0; }
+
+/* cursor de terminal — a única animação em loop que sobrou no site */
+.ed-blink { animation: ed-blink 1.15s steps(2) infinite; }
 @keyframes ed-blink { 50% { opacity: 0; } }
 
-.ed-cursor {
-  display: inline-block;
-  animation: ed-blink 1.05s steps(2) infinite;
-}
-
-.mark { display: inline-block; }
-.mark-hot { color: var(--hot); }
-.mark-ylw { color: var(--ylw); }
-.mark-acid { color: var(--acid); }
-.mark-cyan { color: var(--cyan); }
-.mark-vio { color: var(--vio); }
-.mark-orng { color: var(--orng); }
-
-.ed-cursor::after {
-  content: '_';
-  animation: ed-blink 1.05s steps(2) infinite;
-  margin-left: 0.05em;
-}
-
-/* image frame */
+/* moldura de imagem: neutra, sem hachura diagonal */
 .ed-imgframe {
   position: relative;
-  background: repeating-linear-gradient(
-    -45deg,
-    transparent 0,
-    transparent 8px,
-    currentColor 8px,
-    currentColor 9px
-  );
+  background: var(--bg-2);
+  border: 1px solid var(--line);
   overflow: hidden;
-  color: var(--fg-2);
 }
 .ed-imgframe > .ph {
-  position: absolute; inset: 6px;
+  position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  background: var(--bg);
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.15em;
@@ -346,109 +329,75 @@ button { font: inherit; }
 }
 .ed-imgframe > img {
   position: absolute;
-  inset: 6px;
-  width: calc(100% - 12px);
-  height: calc(100% - 12px);
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   z-index: 2;
 }
 .ed-imgframe > img + .ph { display: none; }
 
-/* grid bg */
-.ed-grid-bg {
-  background-image:
-    linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-
-/* dot bg */
-.ed-dot-bg {
-  background-image: radial-gradient(currentColor 1px, transparent 1.5px);
-  background-size: 14px 14px;
-}
-
-/* form */
+/* formulário */
 .ed-input {
   font-family: var(--mono);
-  font-size: 13px;
-  background: transparent;
-  color: inherit;
-  border: 2px solid currentColor;
-  padding: 8px 10px;
+  font-size: var(--t-ui);
+  background: var(--bg-2);
+  color: var(--fg);
+  border: 1px solid var(--line-2);
+  padding: 10px 12px;
   outline: none;
   width: 100%;
 }
-.ed-input:focus { background: var(--ylw); color: #000; border-color: #000; }
+.ed-input:focus { border-color: var(--accent); }
 .ed-input::placeholder { color: var(--fg-3); }
 
-/* sticker */
-.ed-sticker {
-  display: inline-block;
-  padding: 6px 10px;
-  border: 2px solid currentColor;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-/* glitch */
-.ed-glitch {
-  position: relative;
-  display: inline-block;
-}
-
 /* =========================================================
-   Per-page accent themes
+   Acento por seção — a fonte única de cor da página
    ========================================================= */
-.theme-home    { --accent: var(--acid); }
-.theme-sobre   { --accent: var(--cyan); }
-.theme-cv      { --accent: var(--ylw); }
-.theme-academ  { --accent: var(--acid); }
-.theme-blog    { --accent: var(--vio); }
-.theme-projetos{ --accent: var(--orng); }
-.theme-contato { --accent: var(--hot); }
+.theme-home     { --accent: var(--acid); --accent-rgb: 182 240 0;  --accent-ink: #000; }
+.theme-sobre    { --accent: var(--cyan); --accent-rgb: 34 223 239; --accent-ink: #000; }
+.theme-cv       { --accent: var(--ylw);  --accent-rgb: 242 217 0;  --accent-ink: #000; }
+.theme-academ   { --accent: var(--acid); --accent-rgb: 182 240 0;  --accent-ink: #000; }
+.theme-blog     { --accent: var(--vio);  --accent-rgb: 162 75 255; --accent-ink: #fff; }
+.theme-projetos { --accent: var(--orng); --accent-rgb: 255 122 26; --accent-ink: #000; }
+.theme-contato  { --accent: var(--hot);  --accent-rgb: 255 59 99;  --accent-ink: #000; }
 
 /* =========================================================
-   Generic legacy mappings (for any leftover class usage)
-   ========================================================= */
-.hf-mono { font-family: var(--mono); }
-.hf-display { font-family: var(--bungee); font-weight: 400; line-height: 0.95; letter-spacing: -0.03em; text-transform: uppercase; }
-.hf-rule { border: none; border-top: 2px solid var(--fg); }
-.hf-rule-soft { border: none; border-top: 1.5px dashed var(--fg); }
-.hf-rule-thick { border: none; border-top: 3px solid var(--fg); }
-
-/* =========================================================
-   Responsive
+   Responsivo
    ========================================================= */
 @media (max-width: 960px) {
+  /* marca | idioma | menu numa linha só; nav abre embaixo */
   .site-header {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr auto auto;
     row-gap: 10px;
+    gap: 10px;
   }
-  .menu-toggle { display: inline-block; }
+  .site-header .brand { grid-column: 1; grid-row: 1; }
+  .site-header .nav-aux { grid-column: 2; grid-row: 1; }
+  .menu-toggle { grid-column: 3; grid-row: 1; display: inline-block; }
   .site-nav {
     grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: stretch;
     display: none;
   }
   .site-header.is-open .site-nav {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    border-top: 2px dashed var(--fg);
+    border-top: 1px solid var(--line);
     padding-top: 8px;
   }
   .site-header.is-open .site-nav a {
-    border-right: none;
-    border-bottom: 1px solid var(--fg);
+    border-bottom: 1px solid var(--line);
+    padding: 10px;
   }
   .site-header .nav-aux { justify-self: end; }
-  .statusbar { font-size: 9px; flex-wrap: wrap; }
-  .statusbar > div { padding: 3px 6px; }
+  .statusbar { font-size: 9px; }
+  .statusbar > div { padding: 4px 8px; }
 }
 @media (max-width: 720px) {
-  .page-inner { padding: 18px 16px 48px; }
-  .site-header { padding: 10px 16px; }
-  .site-footer { padding: 14px 16px; }
+  .page-inner { padding: 28px 18px 56px; }
+  .site-header { padding: 10px 18px; }
+  .site-footer { padding: 16px 18px; }
 }

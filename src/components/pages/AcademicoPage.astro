@@ -19,10 +19,8 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
 ---
 
 <header class="head">
-  <div class="kicker">{eyebrow}</div>
-  <h1 class="ed-bungee headline">
-    {lang === 'en' ? 'PUBLICATIONS' : 'PUBLICAÇÕES'} <span class="ed-blink mark mark-acid" aria-hidden="true">◆</span>
-  </h1>
+  <div class="kicker ed-kicker">{eyebrow}</div>
+  <h1 class="ed-bungee headline">{lang === 'en' ? 'PUBLICATIONS' : 'PUBLICAÇÕES'}</h1>
   <div class="scholar-row">
     {t.academico.scholarIds.map((s) => (
       <a class="ed-btn scholar-btn" href={s.href} target="_blank" rel="noreferrer noopener">
@@ -33,27 +31,21 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
 </header>
 
 <section class="lines">
-  <div class="section-kicker acid">{linesHeading}</div>
-  <hr class="ed-rule" style="border-top-color: var(--acid)" />
+  <h2 class="section-kicker">{linesHeading}</h2>
+  <hr class="ed-rule" />
   <div class="line-tags">
-    {t.academico.lines.map((l, i) => {
-      const bgs = ['var(--acid)', 'var(--hot)', 'var(--cyan)', 'var(--ylw)'];
-      const bg = bgs[i % bgs.length];
-      return (
-        <span class="ed-tag line-tag" style={`background:${bg};color:#000;border-color:#000`}>
-          {l}
-        </span>
-      );
-    })}
+    {t.academico.lines.map((l) => (
+      <span class="ed-tag line-tag">{l}</span>
+    ))}
   </div>
 </section>
 
 <section class="pubs">
-  <div class="section-kicker vio">{pubsHeading}</div>
-  <hr class="ed-rule" style="border-top-color: var(--vio)" />
+  <h2 class="section-kicker">{pubsHeading}</h2>
+  <hr class="ed-rule" />
   {publications.length === 0 ? (
     <div class="empty">
-      <span class="ed-blink">[ ]</span> {lang === 'en' ? 'no publications listed yet.' : 'sem publicações listadas ainda.'}
+      {lang === 'en' ? 'no publications listed yet.' : 'sem publicações listadas ainda.'}
     </div>
   ) : (
     <div class="pub-list">
@@ -64,7 +56,7 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
             <h3 class="ed-bungee pub-title">{p.title}</h3>
             <div class="pub-venue">{p.venue}</div>
           </div>
-          <span class="pub-tag">#{tagDisplay[lang][p.kind] ?? p.kind}</span>
+          <span class="pub-tag">{tagDisplay[lang][p.kind] ?? p.kind}</span>
           <span class="pub-arrow">↗</span>
         </a>
       ))}
@@ -73,175 +65,99 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
 </section>
 
 <style>
-  .head { padding-top: 6px; margin-bottom: 36px; }
-  .kicker {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    color: var(--acid);
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
+  .head { padding-top: 6px; margin-bottom: 48px; }
+  .kicker { margin-bottom: 10px; }
   .headline {
-    font-size: clamp(48px, 8vw, 88px);
-    margin: 0 0 18px;
-    line-height: 0.85;
+    font-size: clamp(44px, 8vw, 76px);
+    margin: 0 0 22px;
+    line-height: 0.9;
     letter-spacing: -0.04em;
     text-transform: uppercase;
   }
-  .headline .amp { color: var(--acid); }
   .scholar-row {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
   }
-  .scholar-btn {
-    font-size: 11px;
-    padding: 6px 10px;
-  }
+  .scholar-btn { font-size: 12px; padding: 8px 12px; }
 
+  /* cabeçalho de seção: mesmo peso em toda a página, sem cor própria */
   .section-kicker {
     font-family: var(--mono);
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: var(--acid);
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    color: var(--fg-2);
     text-transform: uppercase;
-    margin: 0 0 6px;
+    margin: 0 0 10px;
   }
-  .section-kicker.cyan { color: var(--cyan); }
-  .section-kicker.vio { color: var(--vio); }
-  .ed-rule { border: none; border-top: 2px solid currentColor; margin: 0 0 20px; }
+  .ed-rule { margin: 0 0 24px; }
 
-  .lines { margin-bottom: 36px; }
+  .lines { margin-bottom: 56px; }
   .line-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 14px;
+    gap: 6px;
   }
-  .line-tag { font-size: 11px; padding: 4px 8px; }
+  .line-tag { cursor: default; }
+  .line-tag:hover { color: var(--fg-2); border-color: var(--line-2); }
 
-  .main-grid {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 36px;
-    align-items: flex-start;
-  }
-
-  .timeline {
-    list-style: none;
-    margin: 0;
-    padding: 0 0 0 28px;
-    position: relative;
-  }
-  .timeline::before {
-    content: '';
-    position: absolute;
-    top: 6px;
-    bottom: 6px;
-    left: 7px;
-    width: 2px;
-    background: var(--cyan);
-  }
-  .tl-item {
-    position: relative;
-    padding: 0 0 28px;
-  }
-  .tl-item:last-child { padding-bottom: 0; }
-  .tl-dot {
-    position: absolute;
-    left: -28px;
-    top: 4px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--bg);
-    border: 3px solid var(--cyan);
-  }
-  .tl-period {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    color: var(--cyan);
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .tl-role {
-    font-size: 22px;
-    line-height: 1.05;
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
-    margin: 0 0 4px;
-  }
-  .tl-org {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--cyan);
-    margin-bottom: 6px;
-  }
-  .tl-desc {
-    font-size: 14px;
-    margin: 0;
-    line-height: 1.5;
-  }
-
-  .pub-list { margin-top: 14px; }
+  .pub-list { margin-top: 4px; }
   .pub-row {
     display: grid;
-    grid-template-columns: 64px 1fr 120px 24px;
+    grid-template-columns: 64px minmax(0, 1fr) 120px 20px;
     gap: 18px;
-    padding: 14px 0;
-    border-bottom: 1.5px solid var(--fg);
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
     align-items: baseline;
+    transition: padding-left 0.16s ease;
   }
-  .pub-row:hover { background: transparent; padding-left: 8px; }
-  .pub-row:hover .pub-title { color: var(--vio); }
+  .pub-row:hover { padding-left: 10px; }
+  .pub-row:hover .pub-title,
+  .pub-row:hover .pub-arrow { color: var(--accent); }
   .pub-year {
     font-family: var(--mono);
     font-size: 12px;
     letter-spacing: 0.06em;
-    color: var(--vio);
+    color: var(--fg-3);
   }
   .pub-title {
-    font-size: 19px;
-    margin: 0 0 4px;
+    font-size: 17px;
+    margin: 0 0 6px;
     text-transform: uppercase;
     letter-spacing: -0.02em;
-    line-height: 1.1;
+    line-height: 1.2;
   }
   .pub-venue {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.04em;
-    color: var(--fg-2);
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--fg-3);
   }
   .pub-tag {
     font-family: var(--mono);
     font-size: 10px;
-    letter-spacing: 0.08em;
-    color: var(--vio);
+    letter-spacing: 0.1em;
+    color: var(--fg-3);
     text-transform: uppercase;
     text-align: right;
   }
   .pub-arrow {
-    font-size: 16px;
-    color: var(--vio);
+    font-size: 15px;
+    color: var(--fg-3);
     text-align: right;
+    transition: color 0.12s ease;
   }
   .empty {
     padding: 18px 0;
     font-family: var(--mono);
     font-size: 12px;
-    color: var(--fg-2);
+    color: var(--fg-3);
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
   @media (max-width: 900px) {
-    .main-grid { grid-template-columns: 1fr; gap: 24px; }
-    .pub-row { grid-template-columns: 60px 1fr 24px; }
+    .pub-row { grid-template-columns: 60px minmax(0, 1fr) 20px; }
     .pub-tag { grid-column: 2; text-align: left; }
     .pub-arrow { grid-row: 1; grid-column: 3; text-align: right; }
   }

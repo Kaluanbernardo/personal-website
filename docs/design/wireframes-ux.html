@@ -627,10 +627,10 @@
     <header class="sheet-head">
       <div class="sheet-no">01</div>
       <div>
-        <h2>Filtro de listagem · três estados</h2>
+        <h2>Filtro de listagem · estados e eixos</h2>
         <p class="lbl">blog · projetos</p>
       </div>
-      <div class="sheet-scope">padrão / filtrado<br>/ vazio</div>
+      <div class="sheet-scope">padrão / filtrado / vazio<br>assunto × mês</div>
     </header>
     <div class="sheet-body">
       <div class="frames">
@@ -678,16 +678,50 @@
         </div>
       </div>
 
+      <div class="wf-cap is-new" style="margin:26px 0 7px"><span class="dot"></span>D · dois eixos combinados <span style="color:var(--ink-3)">— só no blog</span></div>
+      <div class="frames">
+        <div style="flex:2 1 0">
+          <div class="wf">
+            <div class="p p-row" style="flex-wrap:wrap;gap:4px">
+              <span class="chip">#todos</span><span class="chip on">#produto</span><span class="chip">#leitura</span>
+              <span class="new" style="padding:2px 6px;font-size:8.5px">1 de 4</span>
+            </div>
+            <div class="p p-row" style="align-items:flex-start;gap:14px">
+              <span style="flex:1"><span class="stack"><span class="b w85"></span></span></span>
+              <span style="width:34%;display:flex;flex-direction:column;gap:3px">
+                <span style="font-size:8.5px">arquivo</span>
+                <span class="chip on new" style="display:flex;justify-content:space-between">abr/26 <span>4</span></span>
+                <span class="chip" style="display:flex;justify-content:space-between">mar/26 <span>3</span></span>
+              </span>
+            </div>
+            <div class="p" style="background:var(--box)">url: <span class="u">/blog?tag=produto&amp;month=2026-04</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="wf" style="height:100%">
+            <div class="p" style="border:none">
+              <div style="line-height:1.7">
+                assunto → chips do topo<br>
+                mês → lista do arquivo<br><br>
+                os dois <b style="color:var(--fix)">estreitam juntos</b>,<br>
+                nenhum zera o outro<br><br>
+                clicar no mês aceso<br>desliga o mês
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="swap">
         <div class="was">
           <span class="tag">Antes</span>
           <span class="code">display: none · sem contagem</span>
-          <p>Filtrar não devolvia número nenhum. Zero resultado deixava a coluna em branco, sem dizer o que houve nem como sair. O filtro não sobrevivia ao recarregar e o botão voltar do navegador saía da página.</p>
+          <p>Filtrar não devolvia número nenhum. Zero resultado deixava a coluna em branco, sem dizer o que houve nem como sair. O filtro não sobrevivia ao recarregar e o botão voltar do navegador saía da página. O arquivo por mês era só contagem: parecia lista de links e não filtrava nada.</p>
         </div>
         <div class="now">
           <span class="tag">Depois</span>
-          <span class="code">?tag= · history.pushState · aria-live</span>
-          <p>A contagem é anunciada a leitor de tela. A visão filtrada tem endereço próprio: dá para mandar por mensagem, favoritar, recarregar, e o botão voltar desfaz o filtro em vez de abandonar a página.</p>
+          <span class="code">?tag= &amp;month= · pushState · aria-live</span>
+          <p>A contagem é anunciada a leitor de tela. A visão filtrada tem endereço próprio: dá para mandar por mensagem, favoritar, recarregar, e o botão voltar desfaz o filtro em vez de abandonar a página. O arquivo virou controle e entra na mesma URL.</p>
         </div>
       </div>
 
@@ -695,7 +729,8 @@
         <li><span class="m">1</span><span><b>Contador sempre visível</b>Ao lado dos chips, na mesma linha. <span class="u">6 itens</span> quando não há filtro; <span class="u">2 de 6</span> quando há — a relação entre parte e todo fica explícita.</span></li>
         <li><span class="m">2</span><span><b>Vazio é um estado, não um vácuo</b>Título, uma linha de explicação e um botão de saída. Sem ele o usuário conclui que a página quebrou.</span></li>
         <li><span class="m">3</span><span><b>Estado na URL</b>O filtro passa a ser endereço. Também é o que faz o botão voltar se comportar como o usuário espera.</span></li>
-        <li><span class="m bug">4</span><span><b>Defeito achado no teste</b><code>[hidden]</code> não escondia nada: <code>.post-row</code> é <code>display:grid</code> e vence o atributo. O contador dizia <span class="u">0 de 4</span> com os quatro posts na tela.</span></li>
+        <li><span class="m">4</span><span><b>Os eixos combinam, não competem</b>Zerar a tag ao clicar no mês seria mais simples de escrever e pior de usar: quem clica no mês depois do assunto espera estreitar, não recomeçar.</span></li>
+        <li><span class="m bug">5</span><span><b>Defeito achado no teste</b><code>[hidden]</code> não escondia nada: <code>.post-row</code> é <code>display:grid</code> e vence o atributo. O contador dizia <span class="u">0 de 4</span> com os quatro posts na tela.</span></li>
       </ol>
     </div>
   </section>
@@ -935,7 +970,6 @@
       <li>O e-mail de contato ainda é <span class="u">ola@nome.com.br</span>.</li>
       <li>Os links acadêmicos apontam para as home pages do Lattes e do ORCID, não para os seus perfis.</li>
       <li>GitHub, Twitter e Lattes estão sem URL na lista de sociais.</li>
-      <li>O arquivo do blog mostra contagem por mês, mas ainda não filtra por mês — é informação, não controle.</li>
     </ul>
   </div>
 

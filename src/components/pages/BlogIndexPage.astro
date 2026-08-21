@@ -42,11 +42,13 @@ posts.forEach((p) => {
 const monthNames = lang === 'en'
   ? ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
   : ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+const monthKey = (d: Date) =>
+  `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
 const archiveItems = [...archiveCounts.entries()]
   .sort((a, b) => b[0].localeCompare(a[0]))
   .map(([key, n]) => {
     const [y, m] = key.split('-').map(Number);
-    return { label: `${monthNames[m - 1]}/${String(y).slice(-2)}`, n };
+    return { key, label: `${monthNames[m - 1]}/${String(y).slice(-2)}`, n };
   });
 ---
 
@@ -73,7 +75,7 @@ const archiveItems = [...archiveCounts.entries()]
 <div class="blog-grid">
   <main class="posts" id="post-list">
     {featured && (
-      <a class="featured" href={postHref(featured.id)} data-tag={featured.data.tag}>
+      <a class="featured" href={postHref(featured.id)} data-tag={featured.data.tag} data-month={monthKey(featured.data.pubDate)}>
         <div class="ft-kicker">{featuredKicker}</div>
         <h2 class="ed-bungee ft-title">{featured.data.title}</h2>
         <p class="ft-desc">{featured.data.description}</p>
@@ -84,7 +86,7 @@ const archiveItems = [...archiveCounts.entries()]
     )}
 
     {rest.map((p) => (
-      <a class="post-row" href={postHref(p.id)} data-tag={p.data.tag}>
+      <a class="post-row" href={postHref(p.id)} data-tag={p.data.tag} data-month={monthKey(p.data.pubDate)}>
         <span class="rdate">{formatDate(p.data.pubDate, lang).toUpperCase()}</span>
         <h3 class="ed-bungee rtitle">{p.data.title}</h3>
         <span class="rtag">#{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
@@ -128,12 +130,18 @@ const archiveItems = [...archiveCounts.entries()]
     </div>
 
     {archiveItems.length > 0 && (
-      <div class="archive">
+      <div class="archive" role="group" aria-label={archiveHeading}>
         <div class="arch-kicker">{archiveHeading}</div>
         {archiveItems.map((m) => (
-          <div class="arch-row">
+          <button
+            type="button"
+            class="arch-row"
+            data-month={m.key}
+            aria-pressed="false"
+            aria-controls="post-list"
+          >
             <span>{m.label}</span><span class="arch-n">{m.n}</span>
-          </div>
+          </button>
         ))}
       </div>
     )}
@@ -141,7 +149,12 @@ const archiveItems = [...archiveCounts.entries()]
 </div>
 
 <script>
+  /* Dois eixos de filtro — assunto (tag) e mês — que se combinam.
+     Um zerar o outro em silêncio seria mais simples de escrever e
+     pior de usar: quem clica no mês depois da tag espera estreitar,
+     não recomeçar. Os dois viajam juntos na URL. */
   const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const monthBtns = document.querySelectorAll<HTMLButtonElement>('.arch-row');
   const rows = document.querySelectorAll<HTMLElement>('.post-row[data-tag], .featured[data-tag]');
   const countEl = document.querySelector<HTMLElement>('[data-count]');
   const emptyEl = document.querySelector<HTMLElement>('[data-empty]');
@@ -149,18 +162,26 @@ const archiveItems = [...archiveCounts.entries()]
   const total = rows.length;
   const isEn = document.documentElement.lang === 'en';
 
-  function apply(tag: string, push: boolean) {
+  function apply(tag: string, month: string, push: boolean) {
     let shown = 0;
     rows.forEach((row) => {
-      const match = !tag || row.dataset.tag === tag;
+      const match = (!tag || row.dataset.tag === tag)
+        && (!month || row.dataset.month === month);
       row.hidden = !match;
       if (match) shown += 1;
     });
+
     filterBtns.forEach((b) => {
       const active = (b.dataset.tag ?? '') === tag;
       b.classList.toggle('is-active', active);
       b.setAttribute('aria-pressed', String(active));
     });
+    monthBtns.forEach((b) => {
+      const active = (b.dataset.month ?? '') === month;
+      b.classList.toggle('is-active', active);
+      b.setAttribute('aria-pressed', String(active));
+    });
+
     if (countEl) {
       countEl.textContent = shown === total
         ? (isEn ? `${total} items` : `${total} itens`)
@@ -170,20 +191,36 @@ const archiveItems = [...archiveCounts.entries()]
 
     if (push) {
       const url = new URL(window.location.href);
-      if (tag) url.searchParams.set('tag', tag);
-      else url.searchParams.delete('tag');
-      history.pushState({ tag }, '', url);
+      if (tag) url.searchParams.set('tag', tag); else url.searchParams.delete('tag');
+      if (month) url.searchParams.set('month', month); else url.searchParams.delete('month');
+      history.pushState({ tag, month }, '', url);
     }
   }
 
+  const read = () => {
+    const q = new URL(window.location.href).searchParams;
+    return { tag: q.get('tag') ?? '', month: q.get('month') ?? '' };
+  };
+
   filterBtns.forEach((btn) => {
-    btn.addEventListener('click', () => apply(btn.dataset.tag ?? '', true));
+    btn.addEventListener('click', () => apply(btn.dataset.tag ?? '', read().month, true));
   });
-  clearBtn?.addEventListener('click', () => apply('', true));
+  monthBtns.forEach((btn) => {
+    /* clicar no mês já ativo desliga: sem isso a única saída seria
+       o botão de limpar, que só aparece quando dá zero resultado */
+    btn.addEventListener('click', () => {
+      const cur = read().month;
+      const next = cur === btn.dataset.month ? '' : (btn.dataset.month ?? '');
+      apply(read().tag, next, true);
+    });
+  });
+  clearBtn?.addEventListener('click', () => apply('', '', true));
   window.addEventListener('popstate', () => {
-    apply(new URL(window.location.href).searchParams.get('tag') ?? '', false);
+    const { tag, month } = read();
+    apply(tag, month, false);
   });
-  apply(new URL(window.location.href).searchParams.get('tag') ?? '', false);
+  const initial = read();
+  apply(initial.tag, initial.month, false);
 </script>
 
 <style>
@@ -358,12 +395,28 @@ const archiveItems = [...archiveCounts.entries()]
   .arch-row {
     font-family: var(--mono);
     font-size: 12px;
-    padding: 5px 0;
+    padding: 6px 0;
+    border: none;
     border-bottom: var(--hair) dashed var(--fg);
     display: flex;
     justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    background: transparent;
     color: var(--fg);
+    text-align: left;
+    cursor: pointer;
   }
+  .arch-row:hover { background: var(--ylw); color: #000; }
+  .arch-row:hover .arch-n { color: #000; }
+  .arch-row.is-active {
+    background: var(--vio);
+    color: #000;
+    border-bottom-color: var(--vio);
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  .arch-row.is-active .arch-n { color: #000; }
   .arch-row .arch-n { color: var(--vio); }
 
   @media (max-width: 900px) {

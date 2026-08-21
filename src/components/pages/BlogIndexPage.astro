@@ -27,8 +27,8 @@ t.blog.filters.forEach((label, i) => {
 });
 
 const eyebrow = `${sections.blog.number} / *.MD`;
-const sidebarKickerNL = 'NEWSLETTER';
-const featuredKicker = lang === 'en' ? 'FEATURED' : 'EM DESTAQUE';
+const sidebarKickerNL = '** NEWSLETTER **';
+const featuredKicker = lang === 'en' ? '** FEATURED POST **' : '** POST EM DESTAQUE **';
 
 /* arquivo derivado dos posts reais — a lista antiga era fixa no código
    e mostrava contagens que não batiam com o conteúdo publicado */
@@ -52,7 +52,7 @@ const archiveItems = [...archiveCounts.entries()]
 
 <header class="head">
   <div class="kicker ed-kicker">{eyebrow}</div>
-  <h1 class="ed-bungee headline">BLOG</h1>
+  <h1 class="ed-bungee headline">BLOG <span class="mark mark-vio" aria-hidden="true">■</span></h1>
 </header>
 
 <div class="filters">
@@ -71,16 +71,16 @@ const archiveItems = [...archiveCounts.entries()]
         <h2 class="ed-bungee ft-title">{featured.data.title}</h2>
         <p class="ft-desc">{featured.data.description}</p>
         <div class="ft-meta">
-          {formatDate(featured.data.pubDate, lang)} · {featured.data.readingTime} {minLabel} · {tagDisplay[lang][featured.data.tag] ?? featured.data.tag}
+          {formatDate(featured.data.pubDate, lang).toUpperCase()} · {featured.data.readingTime} {minLabel} · #{tagDisplay[lang][featured.data.tag] ?? featured.data.tag}
         </div>
       </a>
     )}
 
     {rest.map((p) => (
       <a class="post-row" href={postHref(p.id)} data-tag={p.data.tag}>
-        <span class="rdate">{formatDate(p.data.pubDate, lang)}</span>
+        <span class="rdate">{formatDate(p.data.pubDate, lang).toUpperCase()}</span>
         <h3 class="ed-bungee rtitle">{p.data.title}</h3>
-        <span class="rtag">{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
+        <span class="rtag">#{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
         <span class="rmins">{p.data.readingTime} {minLabel}</span>
         <span class="rarr">→</span>
       </a>
@@ -96,7 +96,7 @@ const archiveItems = [...archiveCounts.entries()]
       <p class="nl-copy">{t.blog.newsletterCopy}</p>
       <form class="nl-form" onsubmit="return false">
         <input class="ed-input nl-input" placeholder={t.blog.newsletterPlaceholder} type="email" />
-        <button class="ed-btn primary nl-submit">SUBSCRIBE →</button>
+        <button class="ed-btn ylw nl-submit">SUBSCRIBE →</button>
       </form>
     </div>
 
@@ -104,7 +104,7 @@ const archiveItems = [...archiveCounts.entries()]
       <div class="archive">
         <div class="arch-kicker">{archiveHeading}</div>
         {archiveItems.map((m) => (
-          <div class="arch-row">
+          <div class="arch-row zap">
             <span>{m.label}</span><span class="arch-n">{m.n}</span>
           </div>
         ))}
@@ -154,25 +154,28 @@ const archiveItems = [...archiveCounts.entries()]
     align-items: flex-start;
   }
 
-  /* destaque: fundo neutro + filete de acento. Antes era um bloco
-     violeta cheio com sombra amarela, que puxava toda a atenção. */
+  /* bloco chapado com sombra dura, como no original.
+     A diferença: fundo amarelo com texto preto em vez de branco sobre
+     violeta, que dava 3,4:1 e era ilegível no texto pequeno. */
   .featured {
     display: block;
-    background: var(--bg-2);
-    border: 1px solid var(--line);
-    border-left: 2px solid var(--accent);
-    padding: 26px 28px;
-    margin-bottom: 28px;
+    background: var(--ylw);
+    color: #000;
+    padding: 18px 22px;
+    border: var(--loud) solid #000;
+    margin-bottom: 24px;
+    box-shadow: 8px 8px 0 var(--vio);
     cursor: pointer;
-    color: var(--fg);
   }
-  .featured:hover { background: var(--bg-3); color: var(--fg); }
+  .featured:hover { background: var(--ylw); color: #000; transform: translate(-2px, -2px); box-shadow: 10px 10px 0 var(--vio); }
+  .featured { transition: transform 0.08s linear, box-shadow 0.08s linear; }
   .ft-kicker {
     font-family: var(--mono);
     font-size: 10px;
+    font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--accent);
+    color: #000;
     margin-bottom: 12px;
   }
   .ft-title {
@@ -185,9 +188,8 @@ const archiveItems = [...archiveCounts.entries()]
   .ft-desc {
     font-family: var(--serif);
     font-size: 17px;
-    line-height: 1.6;
-    color: var(--fg-2);
-    margin: 0 0 16px;
+    line-height: 1.5;
+    margin: 0 0 14px;
     max-width: 56ch;
   }
   .ft-meta {
@@ -195,7 +197,6 @@ const archiveItems = [...archiveCounts.entries()]
     font-size: var(--t-meta);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--fg-3);
   }
 
   .post-row {
@@ -203,9 +204,9 @@ const archiveItems = [...archiveCounts.entries()]
     grid-template-columns: 88px minmax(0, 1fr) 100px 56px 20px;
     gap: 16px;
     padding: 18px 0;
-    border-bottom: 1px solid var(--line);
+    border-bottom: var(--hair) solid var(--fg);
     align-items: baseline;
-    transition: padding-left 0.16s ease;
+    transition: padding-left 0.12s linear;
   }
   .post-row:hover { padding-left: 10px; }
   .post-row:hover .rtitle,
@@ -248,34 +249,36 @@ const archiveItems = [...archiveCounts.entries()]
   .aside { display: flex; flex-direction: column; gap: 28px; }
 
   .newsletter {
-    border: 1px solid var(--line);
-    padding: 20px;
-    background: var(--bg-2);
+    border: var(--loud) solid var(--ylw);
+    padding: 16px 18px;
+    background: #000;
+    color: var(--ylw);
   }
   .nl-kicker {
     font-family: var(--mono);
     font-size: 10px;
+    font-weight: 700;
     letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
+    color: var(--ylw);
     margin-bottom: 10px;
   }
   .nl-title {
-    font-size: 20px;
-    margin: 0 0 10px;
-    line-height: 1.05;
+    font-size: 22px;
+    margin: 0 0 8px;
+    line-height: 0.95;
     text-transform: uppercase;
-    color: var(--fg);
+    color: var(--ylw);
   }
   .nl-copy {
     font-family: var(--mono);
-    font-size: 12px;
-    line-height: 1.6;
-    color: var(--fg-2);
-    margin: 0 0 14px;
+    font-size: 11px;
+    line-height: 1.5;
+    color: #fff;
+    margin: 0 0 12px;
   }
-  .nl-form { display: flex; flex-direction: column; gap: 10px; }
-  .nl-input { width: 100%; font-size: 12px; }
+  .nl-form { display: flex; flex-direction: column; gap: 8px; }
+  .nl-input { width: 100%; font-size: 11px; color: var(--ylw); border-color: var(--ylw); }
+  .nl-input::placeholder { color: var(--ylw); opacity: 0.6; }
   .nl-submit { justify-content: center; font-size: 12px; }
 
   .archive { display: flex; flex-direction: column; }
@@ -290,13 +293,14 @@ const archiveItems = [...archiveCounts.entries()]
   .arch-row {
     font-family: var(--mono);
     font-size: 12px;
-    padding: 7px 0;
-    border-bottom: 1px solid var(--line);
+    padding: 5px 0;
+    border-bottom: var(--hair) dashed var(--fg);
     display: flex;
     justify-content: space-between;
-    color: var(--fg-2);
+    color: var(--fg);
   }
-  .arch-row .arch-n { color: var(--fg-3); }
+  .arch-row .arch-n { color: var(--vio); }
+  .arch-row:hover .arch-n { color: #000; }
 
   @media (max-width: 900px) {
     .blog-grid { grid-template-columns: 1fr; gap: 36px; }

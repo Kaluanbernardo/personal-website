@@ -20,7 +20,9 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
 
 <header class="head">
   <div class="kicker ed-kicker">{eyebrow}</div>
-  <h1 class="ed-bungee headline">{lang === 'en' ? 'PUBLICATIONS' : 'PUBLICAÇÕES'}</h1>
+  <h1 class="ed-bungee headline">
+    {lang === 'en' ? 'PUBLICATIONS' : 'PUBLICAÇÕES'} <span class="mark mark-acid" aria-hidden="true">◆</span>
+  </h1>
   <div class="scholar-row">
     {t.academico.scholarIds.map((s) => (
       <a class="ed-btn scholar-btn" href={s.href} target="_blank" rel="noreferrer noopener">
@@ -31,18 +33,18 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
 </header>
 
 <section class="lines">
-  <h2 class="section-kicker">{linesHeading}</h2>
-  <hr class="ed-rule" />
+  <h2 class="section-kicker acid">{linesHeading}</h2>
+  <hr class="ed-rule acid" />
   <div class="line-tags">
-    {t.academico.lines.map((l) => (
-      <span class="ed-tag line-tag">{l}</span>
+    {t.academico.lines.map((l, i) => (
+      <span class={`ed-tag line-tag c-${['acid', 'hot', 'cyan', 'ylw'][i % 4]}`}>{l}</span>
     ))}
   </div>
 </section>
 
 <section class="pubs">
-  <h2 class="section-kicker">{pubsHeading}</h2>
-  <hr class="ed-rule" />
+  <h2 class="section-kicker vio">{pubsHeading}</h2>
+  <hr class="ed-rule vio" />
   {publications.length === 0 ? (
     <div class="empty">
       {lang === 'en' ? 'no publications listed yet.' : 'sem publicações listadas ainda.'}
@@ -56,7 +58,7 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
             <h3 class="ed-bungee pub-title">{p.title}</h3>
             <div class="pub-venue">{p.venue}</div>
           </div>
-          <span class="pub-tag">{tagDisplay[lang][p.kind] ?? p.kind}</span>
+          <span class="pub-tag">#{tagDisplay[lang][p.kind] ?? p.kind}</span>
           <span class="pub-arrow">↗</span>
         </a>
       ))}
@@ -81,26 +83,28 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
   }
   .scholar-btn { font-size: 12px; padding: 8px 12px; }
 
-  /* cabeçalho de seção: mesmo peso em toda a página, sem cor própria */
   .section-kicker {
     font-family: var(--mono);
-    font-size: 15px;
-    font-weight: 400;
-    letter-spacing: 0.18em;
-    color: var(--fg-2);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
-    margin: 0 0 10px;
+    margin: 0 0 6px;
   }
-  .ed-rule { margin: 0 0 24px; }
+  .section-kicker.acid { color: var(--acid); }
+  .section-kicker.vio { color: var(--vio); }
+  .ed-rule { margin: 0 0 20px; }
+  .ed-rule.acid { border-top-color: var(--acid); }
+  .ed-rule.vio { border-top-color: var(--vio); }
 
   .lines { margin-bottom: 56px; }
   .line-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 8px;
+    margin-top: 14px;
   }
-  .line-tag { cursor: default; }
-  .line-tag:hover { color: var(--fg-2); border-color: var(--line-2); }
+  .line-tag { font-size: 11px; padding: 4px 8px; cursor: default; }
 
   .pub-list { margin-top: 4px; }
   .pub-row {
@@ -108,18 +112,18 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
     grid-template-columns: 64px minmax(0, 1fr) 120px 20px;
     gap: 18px;
     padding: 18px 0;
-    border-bottom: 1px solid var(--line);
+    border-bottom: var(--hair) solid var(--fg);
     align-items: baseline;
-    transition: padding-left 0.16s ease;
+    transition: padding-left 0.12s linear;
   }
   .pub-row:hover { padding-left: 10px; }
   .pub-row:hover .pub-title,
-  .pub-row:hover .pub-arrow { color: var(--accent); }
+  .pub-row:hover .pub-arrow { color: var(--vio); }
   .pub-year {
     font-family: var(--mono);
     font-size: 12px;
     letter-spacing: 0.06em;
-    color: var(--fg-3);
+    color: var(--vio);
   }
   .pub-title {
     font-size: 17px;
@@ -129,21 +133,22 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
     line-height: 1.2;
   }
   .pub-venue {
-    font-family: var(--serif);
-    font-size: 15px;
-    color: var(--fg-3);
+    font-family: var(--mono);
+    font-size: var(--t-meta);
+    letter-spacing: 0.04em;
+    color: var(--fg-2);
   }
   .pub-tag {
     font-family: var(--mono);
     font-size: 10px;
     letter-spacing: 0.1em;
-    color: var(--fg-3);
+    color: var(--vio);
     text-transform: uppercase;
     text-align: right;
   }
   .pub-arrow {
-    font-size: 15px;
-    color: var(--fg-3);
+    font-size: 16px;
+    color: var(--vio);
     text-align: right;
     transition: color 0.12s ease;
   }

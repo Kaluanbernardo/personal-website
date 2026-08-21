@@ -66,7 +66,9 @@ const skillTags = lang === 'en'
 
 <div class="cv-head" id="cv-top">
   <div class="kicker ed-kicker">{eyebrow}</div>
-  <h1 class="ed-bungee headline">{lang === 'en' ? 'RESUME' : 'CURRÍCULO'}</h1>
+  <h1 class="ed-bungee headline">
+    {lang === 'en' ? 'RESUME' : 'CURRÍCULO'} <span class="mark mark-ylw" aria-hidden="true">▲</span>
+  </h1>
 </div>
 
 <div class="cv-grid">
@@ -85,11 +87,11 @@ const skillTags = lang === 'en'
       <div class="info-val is-live">{statusVal}</div>
     </div>
 
-    <a class="ed-btn primary download-btn" href={pdfHref} download>↓ {t.cv.download}</a>
+    <a class="ed-btn ylw download-btn" href={pdfHref} download>↓ {t.cv.download}</a>
   </aside>
 
   <main>
-    <details class="section" id="experience" open>
+    <details class="section c-ylw" id="experience" open>
       <summary class="section-summary">
         <span class="section-kicker">{expHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
@@ -117,7 +119,7 @@ const skillTags = lang === 'en'
       ))}
     </details>
 
-    <details class="section" id="education">
+    <details class="section c-cyan" id="education">
       <summary class="section-summary">
         <span class="section-kicker">{formHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
@@ -133,17 +135,19 @@ const skillTags = lang === 'en'
       ))}
     </details>
 
-    <details class="section" id="skills">
+    <details class="section c-hot" id="skills">
       <summary class="section-summary">
         <span class="section-kicker">{skillsHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
       </summary>
       <div class="skill-tags">
-        {skillTags.map((s) => <span class="ed-tag">{s}</span>)}
+        {skillTags.map((s, i) => (
+          <span class={`ed-tag ${['c-hot', 'c-cyan', 'c-ylw', ''][i % 4]}`}>{s}</span>
+        ))}
       </div>
     </details>
 
-    <details class="section" id="languages">
+    <details class="section c-vio" id="languages">
       <summary class="section-summary">
         <span class="section-kicker">{langHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
@@ -201,27 +205,27 @@ const skillTags = lang === 'en'
     color: var(--fg-2);
     text-decoration: none;
   }
-  .section-link.on { color: var(--fg); }
-  .section-link:hover { color: var(--accent); }
+  .section-link.on { color: var(--ylw); font-weight: 700; }
+  .section-link:hover { background: var(--ylw); color: #000; }
 
   .section[id], .cv-head[id] { scroll-margin-top: 24px; }
 
   .info-box {
-    margin-top: 28px;
-    border: 1px solid var(--line);
-    padding: 14px 16px;
+    margin-top: 24px;
+    border: var(--edge) solid var(--acid);
+    padding: 10px 12px;
     font-family: var(--mono);
   }
   .info-kicker {
     font-size: 9px;
-    color: var(--fg-3);
+    color: var(--acid);
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    margin-top: 12px;
+    margin-top: 10px;
   }
   .info-kicker:first-child { margin-top: 0; }
   .info-val { font-size: 12px; margin-top: 5px; color: var(--fg-2); }
-  .info-val.is-live { color: var(--accent); }
+  .info-val.is-live { color: var(--acid); }
   .download-btn { margin-top: 20px; width: 100%; justify-content: center; }
 
   /* seções: um único tratamento, sem cor por bloco */
@@ -234,36 +238,50 @@ const skillTags = lang === 'en'
     gap: 16px;
     list-style: none;
     cursor: pointer;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--line-2);
+    padding: 8px 0;
+    border-bottom: var(--edge) solid currentColor;
   }
+  .section.c-ylw  .section-summary { color: var(--ylw); }
+  .section.c-cyan .section-summary { color: var(--cyan); }
+  .section.c-hot  .section-summary { color: var(--hot); }
+  .section.c-vio  .section-summary { color: var(--vio); }
   .section-summary::-webkit-details-marker { display: none; }
   .section-summary::marker { content: ''; }
   .section-summary:hover .section-kicker { color: var(--accent); }
   .section-kicker {
     font-family: var(--mono);
-    font-size: 15px;
-    font-weight: 400;
-    letter-spacing: 0.18em;
-    color: var(--fg-2);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: currentColor;
     text-transform: uppercase;
     margin: 0;
-    transition: color 0.12s ease;
   }
+  /* caixa do "+" volta, com a cor da seção */
   .section-toggle {
-    font-family: var(--mono);
-    font-size: 20px;
+    width: 36px;
+    height: 36px;
+    flex: none;
+    border: var(--edge) solid currentColor;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--display);
+    font-size: 18px;
     line-height: 1;
-    color: var(--fg-3);
-    transition: transform 0.2s ease, color 0.12s ease;
+    transition: transform 0.18s ease, background 0.12s linear, color 0.12s linear;
   }
-  .section[open] .section-toggle { transform: rotate(45deg); color: var(--accent); }
-  .section-summary:hover .section-toggle { color: var(--accent); }
+  .section[open] .section-toggle { transform: rotate(45deg); }
+  .section[open].c-ylw  .section-toggle { background: var(--ylw);  color: #000; }
+  .section[open].c-cyan .section-toggle { background: var(--cyan); color: #000; }
+  .section[open].c-hot  .section-toggle { background: var(--hot);  color: #000; }
+  .section[open].c-vio  .section-toggle { background: var(--vio);  color: #000; }
 
   .exp-row {
-    padding: 20px 0;
-    border-bottom: 1px solid var(--line);
+    padding: 16px 0;
+    border-bottom: var(--hair) dashed var(--fg);
   }
+  .exp-row:hover { background: rgba(255,255,255,0.02); }
   .exp-summary {
     display: grid;
     grid-template-columns: 120px minmax(0, 1fr) 32px;
@@ -289,43 +307,57 @@ const skillTags = lang === 'en'
     text-transform: uppercase;
     letter-spacing: -0.02em;
   }
-  /* 14 cargos na página: o nome da empresa em acento repetiria a cor
-     14 vezes e esvaziaria o destaque. Fica em neutro claro. */
   .exp-org {
     font-family: var(--mono);
-    font-size: 13px;
-    letter-spacing: 0.06em;
-    color: var(--fg-2);
-    margin: 6px 0 10px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--ylw);
+    margin: 5px 0 9px;
   }
-  .exp-row:hover .exp-org { color: var(--accent); }
   .exp-desc {
-    font-family: var(--serif);
-    font-size: 16px;
+    font-family: var(--mono);
+    font-size: 13px;
     color: var(--fg-2);
-    margin: 0 0 12px;
+    margin: 0 0 10px;
     line-height: 1.6;
-    max-width: 60ch;
+    max-width: 70ch;
   }
   .exp-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-  .exp-tags .ed-tag { font-size: 10px; padding: 3px 8px; cursor: default; }
+  .exp-tags .ed-tag {
+    font-size: 10px;
+    padding: 3px 8px;
+    cursor: default;
+    color: var(--fg);
+    border-color: var(--ylw);
+    font-weight: 700;
+  }
+  .exp-tags .ed-tag:hover { background: transparent; color: var(--fg); border-color: var(--ylw); }
 
   .exp-plus {
     justify-self: end;
-    font-family: var(--mono);
-    font-size: 22px;
+    align-self: center;
+    width: 40px;
+    height: 40px;
+    flex: none;
+    border: var(--edge) solid var(--ylw);
+    color: var(--ylw);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--display);
+    font-size: 20px;
     line-height: 1;
-    color: var(--fg-3);
-    padding-top: 2px;
-    transition: transform 0.2s ease, color 0.12s ease;
+    transition: transform 0.18s ease, background 0.12s linear, color 0.12s linear;
   }
-  .exp-row:hover .exp-plus { color: var(--accent); }
-  .exp-row[open] .exp-plus { transform: rotate(45deg); color: var(--accent); }
+  .exp-row:hover .exp-plus,
+  .exp-row[open] .exp-plus { background: var(--ylw); color: #000; }
+  .exp-row[open] .exp-plus { transform: rotate(45deg); }
 
   .exp-details {
-    padding: 16px 0 4px 140px;
-    font-family: var(--serif);
-    font-size: 16px;
+    padding: 14px 0 4px 140px;
+    font-family: var(--mono);
+    font-size: 13px;
     line-height: 1.7;
     color: var(--fg-2);
   }
@@ -337,8 +369,8 @@ const skillTags = lang === 'en'
     display: grid;
     grid-template-columns: 120px minmax(0, 1fr);
     gap: 20px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--line);
+    padding: 12px 0;
+    border-bottom: 1px dotted var(--fg);
   }
   .form-period {
     font-family: var(--mono);
@@ -373,13 +405,13 @@ const skillTags = lang === 'en'
   }
   .lang-cell { min-width: 150px; }
   .lang-greet {
-    font-family: var(--serif);
+    font-family: var(--mono);
     font-size: 20px;
     line-height: 1;
     color: var(--fg-3);
     margin-bottom: 8px;
   }
-  .lang-mark { display: inline-block; margin-left: 4px; color: var(--accent); }
+  .lang-mark { display: inline-block; margin-left: 4px; color: var(--vio); }
   .lang-l { font-size: 26px; line-height: 1; }
   .lang-n {
     font-family: var(--mono);

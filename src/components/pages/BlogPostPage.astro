@@ -29,7 +29,7 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
     {t.post.metaJoin(formatLongDate(post.data.pubDate, lang), post.data.readingTime)}
   </div>
 
-  <hr class="ed-rule-accent" />
+  <hr class="ed-rule-rainbow" />
 
   <p class="lead">{post.data.description}</p>
 
@@ -37,7 +37,7 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
     <Content />
   </div>
 
-  <hr class="ed-rule sep" />
+  <hr class="ed-rule-dashed sep" />
   <nav class="post-nav">
     {prev ? <a class="nav-link" href={postHref(prev.id)}>{t.post.prev}</a> : <span></span>}
     <a class="nav-link accent" href="https://kaluanbernardo.substack.com" target="_blank" rel="noreferrer noopener">{t.post.subscribe}</a>
@@ -100,23 +100,21 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
     margin: 40px 0 14px;
   }
   .prose :global(p) { margin: 0 0 22px; }
-  /* citação em serifa: em Bungee caixa-alta virava um segundo título */
   .prose :global(blockquote) {
-    border-left: 2px solid var(--accent);
-    padding: 2px 0 2px 24px;
+    border-left: var(--loud) solid var(--vio);
+    padding: 4px 0 4px 24px;
     margin: 40px 0;
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 20px;
-    color: var(--fg-2);
-    line-height: 1.5;
+    font-family: var(--display);
+    font-size: 19px;
+    color: var(--fg);
+    line-height: 1.25;
+    text-transform: uppercase;
   }
   .prose :global(blockquote p) { margin: 0; }
   .prose :global(a) {
-    color: var(--fg);
-    border-bottom: 1px solid var(--accent);
+    color: var(--vio);
+    border-bottom: var(--hair) solid var(--vio);
   }
-  .prose :global(a:hover) { color: var(--accent); }
   .prose :global(code) {
     font-family: var(--mono);
     font-size: 0.82em;
@@ -129,7 +127,7 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
     overflow-x: auto;
     font-family: var(--mono);
     font-size: 13px;
-    border: 1px solid var(--line);
+    border: var(--edge) solid var(--fg);
   }
   .prose :global(pre code) { background: none; padding: 0; }
   .prose :global(ul), .prose :global(ol) {
@@ -138,7 +136,7 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
   }
   .prose :global(li) { margin-bottom: 10px; }
   .prose :global(li)::marker { color: var(--fg-3); }
-  .prose :global(hr) { border: none; border-top: 1px solid var(--line); margin: 40px 0; }
+  .prose :global(hr) { border: none; border-top: var(--edge) solid var(--fg); margin: 40px 0; }
 
   .sep { margin: 64px 0 24px; }
   .post-nav {
@@ -154,16 +152,16 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
     letter-spacing: 0.08em;
     color: var(--fg-2);
     text-transform: uppercase;
-    border: 1px solid var(--line-2);
-    padding: 8px 12px;
+    border: var(--edge) solid var(--fg);
+    padding: 7px 11px;
   }
-  .nav-link:hover { color: var(--accent); border-color: var(--accent); }
+  .nav-link:hover { background: var(--ylw); color: #000; border-color: #000; }
   .nav-link.accent {
-    background: var(--accent);
-    color: var(--accent-ink);
-    border-color: var(--accent);
+    background: var(--vio);
+    color: #000;
+    border-color: #000;
   }
-  .nav-link.accent:hover { background: transparent; color: var(--accent); }
+  .nav-link.accent:hover { background: var(--ylw); color: #000; }
 
   @media (max-width: 720px) {
     .lead { font-size: 18px; }

@@ -3,6 +3,7 @@ import { ui, type Lang } from '../../i18n/ui';
 import { link } from '../../lib/links';
 import { socials } from '../../lib/social';
 import PageHead from '../PageHead.astro';
+import PressBadge from '../PressBadge.astro';
 
 interface Props {
   lang: Lang;
@@ -59,7 +60,6 @@ const notDoingItems = lang === 'en'
 
 const ctaCV = lang === 'en' ? 'See CV →' : 'Ver CV →';
 const ctaEmail = lang === 'en' ? 'Send email' : 'Mandar e-mail';
-const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
 ---
 
 <div class="sobre-grid">
@@ -97,11 +97,7 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
   </article>
 
   <aside class="sidebar">
-    <div class="ed-imgframe photo">
-      <img src={link('/img/portrait.png')} alt="" onerror="this.remove()" />
-      <div class="ph">{photoLabel}</div>
-    </div>
-    <div class="label muted photo-credit">FOTO: ALGUM AMIGO · 2025</div>
+    <PressBadge lang={lang} photo="/img/portrait-badge.jpg" />
 
     <div class="factsheet">
       <div class="label">Factsheet</div>
@@ -142,7 +138,7 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
 <style>
   .sobre-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 310px;
+    grid-template-columns: minmax(0, 1fr) 360px;
     gap: 56px;
   }
 
@@ -191,9 +187,7 @@ const photoLabel = lang === 'en' ? 'portrait.png' : 'retrato.png';
   }
   .box li::marker { color: var(--accent); }
 
-  .sidebar { display: flex; flex-direction: column; gap: 22px; }
-  .photo { aspect-ratio: 4/5; color: var(--accent); }
-  .photo-credit { text-align: right; margin-top: -12px; }
+  .sidebar { display: flex; flex-direction: column; gap: 34px; padding-right: 20px; }
 
   .factsheet {
     border: var(--edge) solid var(--fg);

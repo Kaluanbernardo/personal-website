@@ -103,7 +103,7 @@ const skillTags = lang === 'en'
   </aside>
 
   <div class="cv-main">
-    <details class="section" id="experience" open>
+    <details class="section c-ylw" id="experience" open>
       <summary class="sec-h section-summary">
         <span class="sec-h-text">{expHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
@@ -154,7 +154,7 @@ const skillTags = lang === 'en'
       })}
     </details>
 
-    <details class="section" id="education">
+    <details class="section c-cyan" id="education">
       <summary class="sec-h section-summary">
         <span class="sec-h-text">{formHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
@@ -170,7 +170,7 @@ const skillTags = lang === 'en'
       ))}
     </details>
 
-    <details class="section" id="skills">
+    <details class="section c-hot" id="skills">
       <summary class="sec-h section-summary">
         <span class="sec-h-text">{skillsHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
@@ -180,7 +180,7 @@ const skillTags = lang === 'en'
       </div>
     </details>
 
-    <details class="section" id="languages">
+    <details class="section c-vio" id="languages">
       <summary class="sec-h section-summary">
         <span class="sec-h-text">{langHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
@@ -235,7 +235,12 @@ const skillTags = lang === 'en'
   .info-box dd.is-live { color: var(--accent); }
   .download-btn { width: 100%; justify-content: center; }
 
-  /* blocos: o mesmo título de bloco do site todo, na cor da seção */
+  /* cada bloco do CV mantém a sua cor */
+  .section.c-ylw  { --accent: var(--ylw); }
+  .section.c-cyan { --accent: var(--cyan); }
+  .section.c-hot  { --accent: var(--hot); }
+  .section.c-vio  { --accent: var(--vio); }
+
   .section { margin-top: 48px; }
   .section:first-of-type { margin-top: 0; }
   .section-summary { list-style: none; cursor: pointer; align-items: center; margin-bottom: 0; }

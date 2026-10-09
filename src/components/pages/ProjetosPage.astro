@@ -12,7 +12,8 @@ const t = ui[lang];
 const en = lang === 'en';
 
 /* A descrição de cada projeto já existia no corpo do arquivo .mdoc e
-   nunca aparecia; o campo thumb existia no schema e nunca era lido. */
+   nunca aparecia; o campo thumb existia no schema e nunca era lido.
+   Sem thumb, a moldura 4:3 fica reservada para a imagem. */
 const projects = (await getCollection('projects', ({ data }) => data.lang === lang))
   .map((p) => ({ ...p.data, desc: (p.body ?? '').trim() }))
   .sort((a, b) => b.year - a.year);
@@ -60,15 +61,10 @@ const filters = [
       style={`--rot:${i % 2 === 0 ? '0.4deg' : '-0.4deg'}`}
     >
       <Card class:list={['card', !p.url && 'is-static']} href={p.url} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
-        {p.thumb ? (
-          <div class="thumb ed-imgframe">
-            <img src={link(p.thumb)} alt="" loading="lazy" />
-          </div>
-        ) : (
-          /* sem imagem, só a faixa de hachura: a textura fica,
-             a moldura vazia de 4:3 sai */
-          <div class="strip ed-imgframe" aria-hidden="true"></div>
-        )}
+        <div class="thumb ed-imgframe">
+          {p.thumb && <img src={link(p.thumb)} alt="" loading="lazy" />}
+          <div class="ph">thumb · 4×3</div>
+        </div>
         <div class="card-body">
           <span class="label">#{tagDisplay[lang][p.kind] ?? p.kind}</span>
           <h2 class="ed-bungee card-title">{p.title}</h2>
@@ -163,11 +159,6 @@ const filters = [
   .card.is-static { cursor: default; }
   .thumb {
     aspect-ratio: 4/3;
-    border-bottom: var(--edge) solid var(--fg);
-    color: var(--accent);
-  }
-  .strip {
-    height: 18px;
     border-bottom: var(--edge) solid var(--fg);
     color: var(--accent);
   }

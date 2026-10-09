@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import { ui, type Lang, tagDisplay } from '../../i18n/ui';
+import PageHead from '../PageHead.astro';
 
 interface Props {
   lang: Lang;
@@ -13,38 +14,32 @@ const publications = allPubs
   .map((p) => p.data)
   .sort((a, b) => b.year - a.year);
 
-const eyebrow = '03 / LATTES.CNPQ.BR';
-const linesHeading = lang === 'en' ? '>> RESEARCH LINES' : '>> LINHAS DE PESQUISA';
-const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕES SELECIONADAS';
+const linesHeading = lang === 'en' ? 'Research lines' : 'Linhas de pesquisa';
+const pubsHeading = lang === 'en' ? 'Selected publications' : 'Publicações selecionadas';
 ---
 
-<header class="head">
-  <div class="kicker ed-kicker">{eyebrow}</div>
-  <h1 class="ed-bungee headline">
-    {lang === 'en' ? 'PUBLICATIONS' : 'PUBLICAÇÕES'} <span class="ed-blink mark mark-acid" aria-hidden="true">◆</span>
-  </h1>
-  <div class="scholar-row">
+<PageHead section="academico" lang={lang} note={lang === 'en' ? '~/research' : '~/pesquisa'}>
+  {lang === 'en' ? 'Academic' : 'Acadêmico'}
+  <div class="scholar-row" slot="after">
     {t.academico.scholarIds.map((s) => (
       <a class="ed-btn scholar-btn" href={s.href} target="_blank" rel="noreferrer noopener">
         {s.label} ↗
       </a>
     ))}
   </div>
-</header>
+</PageHead>
 
-<section class="lines">
-  <h2 class="section-kicker acid">{linesHeading}</h2>
-  <hr class="ed-rule acid" />
-  <div class="line-tags">
-    {t.academico.lines.map((l, i) => (
-      <span class={`ed-tag line-tag c-${['acid', 'hot', 'cyan', 'ylw'][i % 4]}`}>{l}</span>
-    ))}
-  </div>
+<section class="lines" aria-labelledby="lines-h">
+  <h2 class="sec-h" id="lines-h"><span class="sec-h-text">{linesHeading}</span></h2>
+  {/* as linhas de pesquisa são o conteúdo da seção, não legenda:
+      corpo de leitura, e uma cor só — a do acadêmico */}
+  <ul class="line-list">
+    {t.academico.lines.map((l) => <li class="line-item">{l}</li>)}
+  </ul>
 </section>
 
-<section class="pubs">
-  <h2 class="section-kicker vio">{pubsHeading}</h2>
-  <hr class="ed-rule vio" />
+<section class="pubs" aria-labelledby="pubs-h">
+  <h2 class="sec-h" id="pubs-h"><span class="sec-h-text">{pubsHeading}</span></h2>
   {publications.length === 0 ? (
     <div class="empty">
       {lang === 'en' ? 'no publications listed yet.' : 'sem publicações listadas ainda.'}
@@ -70,112 +65,90 @@ const pubsHeading = lang === 'en' ? '>> SELECTED PUBLICATIONS' : '>> PUBLICAÇÕ
 </section>
 
 <style>
-  .head { padding-top: 6px; margin-bottom: 48px; }
-  .kicker { margin-bottom: 10px; }
-  .headline {
-    font-size: clamp(44px, 8vw, 76px);
-    margin: 0 0 22px;
-    line-height: 0.9;
-    letter-spacing: -0.04em;
-    text-transform: uppercase;
-  }
   .scholar-row {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    margin-top: 24px;
   }
-  .scholar-btn { font-size: 12px; padding: 8px 12px; }
+  .scholar-btn { font-size: var(--t-meta); padding: 8px 12px; }
 
-  .section-kicker {
-    font-family: var(--mono);
-    font-size: 24px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    margin: 0 0 6px;
-  }
-  .section-kicker.acid { color: var(--acid); }
-  .section-kicker.vio { color: var(--vio); }
-  .ed-rule { margin: 0 0 20px; }
-  .ed-rule.acid { border-top-color: var(--acid); }
-  .ed-rule.vio { border-top-color: var(--vio); }
-
-  .lines { margin-bottom: 56px; }
-  .line-tags {
+  .lines { margin-bottom: 64px; }
+  .line-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 16px;
   }
-  /* as linhas de pesquisa são o conteúdo da seção, não legenda:
-     ganham corpo de leitura em vez de tamanho de metadado */
-  .line-tag {
-    font-size: 15px;
-    letter-spacing: 0.04em;
+  .line-item {
+    font-family: var(--mono);
+    font-size: var(--t-body);
     padding: 9px 14px;
-    border-width: var(--edge);
-    cursor: default;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: var(--edge) solid var(--accent);
   }
 
-  .pub-list { margin-top: 4px; }
   .pub-row {
     display: grid;
     grid-template-columns: 64px minmax(0, 1fr) 120px 20px;
     gap: 18px;
-    padding: 18px 0;
+    padding: 20px 0;
     border-bottom: var(--hair) solid var(--fg);
     align-items: baseline;
     transition: padding-left 0.12s linear;
   }
-  .pub-row:hover { padding-left: 10px; }
+  .pub-row:first-child { padding-top: 4px; }
+  .pub-row:hover { padding-left: 10px; color: var(--fg); }
   .pub-row.is-static { cursor: default; }
   .pub-row.is-static:hover { padding-left: 0; }
   .pub-row:hover .pub-title,
-  .pub-row:hover .pub-arrow { color: var(--vio); }
+  .pub-row:hover .pub-arrow { color: var(--accent); }
   .pub-year {
     font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.06em;
-    color: var(--vio);
+    font-size: var(--t-meta);
+    letter-spacing: var(--track);
+    color: var(--accent);
   }
   .pub-title {
-    font-size: 17px;
+    font-size: var(--t-item);
     margin: 0 0 6px;
     text-transform: uppercase;
     letter-spacing: -0.02em;
-    line-height: 1.2;
+    line-height: 1.15;
   }
   .pub-venue {
     font-family: var(--mono);
-    font-size: var(--t-meta);
-    letter-spacing: 0.04em;
+    font-size: var(--t-ui);
     color: var(--fg-2);
   }
   .pub-tag {
     font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    color: var(--vio);
+    font-size: var(--t-meta);
+    letter-spacing: var(--track);
+    color: var(--fg-3);
     text-transform: uppercase;
     text-align: right;
   }
   .pub-arrow {
     font-size: 16px;
-    color: var(--vio);
+    color: var(--accent);
     text-align: right;
     transition: color 0.12s ease;
   }
   .empty {
     padding: 18px 0;
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: var(--t-meta);
     color: var(--fg-3);
-    letter-spacing: 0.06em;
+    letter-spacing: var(--track);
     text-transform: uppercase;
   }
 
   @media (max-width: 900px) {
-    .pub-row { grid-template-columns: 60px minmax(0, 1fr) 20px; }
+    .pub-row { grid-template-columns: 52px minmax(0, 1fr) 20px; gap: 12px; }
     .pub-tag { grid-column: 2; text-align: left; }
     .pub-arrow { grid-row: 1; grid-column: 3; text-align: right; }
   }

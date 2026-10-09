@@ -1,6 +1,7 @@
 ---
 import { ui, type Lang } from '../../i18n/ui';
 import { link } from '../../lib/links';
+import PageHead from '../PageHead.astro';
 interface Props {
   lang: Lang;
 }
@@ -8,31 +9,43 @@ const { lang } = Astro.props;
 const t = ui[lang];
 const pdfHref = link(lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf');
 
-const eyebrow = '02 / CV.PROFISSIONAL';
-const updatedLabel = '';
-
 const sections = lang === 'en'
   ? [
-      { l: 'Current', c: 'ylw', h: '#cv-top' },
-      { l: 'Experience', c: 'fg', h: '#experience' },
-      { l: 'Education', c: 'fg', h: '#education' },
-      { l: 'Skills', c: 'fg', h: '#skills' },
-      { l: 'Languages', c: 'fg', h: '#languages' },
+      { l: 'Experience', h: '#experience' },
+      { l: 'Education', h: '#education' },
+      { l: 'Skills', h: '#skills' },
+      { l: 'Languages', h: '#languages' },
     ]
   : [
-      { l: 'Atual', c: 'ylw', h: '#cv-top' },
-      { l: 'Experiência', c: 'fg', h: '#experience' },
-      { l: 'Formação', c: 'fg', h: '#education' },
-      { l: 'Skills', c: 'fg', h: '#skills' },
-      { l: 'Idiomas', c: 'fg', h: '#languages' },
+      { l: 'Experiência', h: '#experience' },
+      { l: 'Formação', h: '#education' },
+      { l: 'Skills', h: '#skills' },
+      { l: 'Idiomas', h: '#languages' },
     ];
 
-const expHeading = lang === 'en' ? '>> EXPERIENCE' : '>> EXPERIÊNCIA';
-const formHeading = lang === 'en' ? '>> EDUCATION' : '>> FORMAÇÃO';
-const skillsHeading = lang === 'en' ? '>> SKILLS' : '>> SKILLS';
-const langHeading = lang === 'en' ? '>> LANGUAGES' : '>> IDIOMAS';
-const whereLabel = 'WHERE';
-const statusLabel = 'STATUS';
+const expHeading = lang === 'en' ? 'Experience' : 'Experiência';
+const formHeading = lang === 'en' ? 'Education' : 'Formação';
+const skillsHeading = 'Skills';
+const langHeading = lang === 'en' ? 'Languages' : 'Idiomas';
+const sectionsLabel = lang === 'en' ? 'Sections' : 'Seções';
+const whereLabel = lang === 'en' ? 'Where' : 'Onde';
+const statusLabel = 'Status';
+
+/* 14 cargos com todas as tags abertas davam 91 chips na primeira
+   leitura. Na lista ficam as 3 primeiras; o resto entra no "+". */
+const TAGS_VISIBLE = 3;
+
+/* Os 8 cargos mais recentes ficam à vista; os anteriores (o começo da
+   carreira) entram num bloco recolhido, com o período no rótulo. */
+const ROLES_VISIBLE = 8;
+const recentRoles = t.cv.experience.slice(0, ROLES_VISIBLE);
+const olderRoles = t.cv.experience.slice(ROLES_VISIBLE);
+const yearsOf = (p: string) => (p.match(/\d{4}/g) ?? []).map(Number);
+const olderYears = olderRoles.flatMap((e) => yearsOf(e.p));
+const olderSpan = olderYears.length ? `${Math.min(...olderYears)}–${Math.max(...olderYears)}` : '';
+const olderLabel = lang === 'en'
+  ? `Earlier: ${olderRoles.length} roles · ${olderSpan}`
+  : `Antes: ${olderRoles.length} cargos · ${olderSpan}`;
 const whereVal = 'São Paulo / -3 GMT';
 const statusVal = lang === 'en' ? '● PM @ SENAI · PhD @ ESPM' : '● PM @ SENAI · doutorando ESPM';
 
@@ -50,13 +63,13 @@ const formationItems = lang === 'en'
 
 const langs = lang === 'en'
   ? [
-      { l: 'Portuguese', n: 'native', g: 'Olá', mark: '●' },
-      { l: 'English', n: 'fluent', g: 'Hello', mark: '▲' },
-      { l: 'Spanish', n: 'basic', g: '¡Hola!', mark: '■' },
+      { l: 'Portuguese', n: 'native', g: 'Olá' },
+      { l: 'English', n: 'fluent', g: 'Hello' },
+      { l: 'Spanish', n: 'basic', g: '¡Hola!' },
     ]
   : [
-      { l: 'Inglês', n: 'fluente', g: 'Hello', mark: '▲' },
-      { l: 'Espanhol', n: 'básico', g: '¡Hola!', mark: '■' },
+      { l: 'Inglês', n: 'fluente', g: 'Hello' },
+      { l: 'Espanhol', n: 'básico', g: '¡Hola!' },
     ];
 
 const skillTags = lang === 'en'
@@ -64,203 +77,173 @@ const skillTags = lang === 'en'
   : ['product management', 'product discovery', 'JTBD', 'double diamond', 'design sprints', 'UX research', 'OKRs', 'testes A/B', 'SQL', 'SEO', 'estratégia de conteúdo', 'edição', 'reportagem', 'gestão de times', 'Notion', 'Figma'];
 ---
 
-<div class="cv-head" id="cv-top">
-  <div class="kicker ed-kicker">{eyebrow}</div>
-  <h1 class="ed-bungee headline">
-    {lang === 'en' ? 'RESUME' : 'CURRÍCULO'} <span class="ed-blink mark mark-ylw" aria-hidden="true">▲</span>
-  </h1>
-</div>
+<PageHead section="cv" lang={lang} note={lang === 'en' ? '~/career' : '~/carreira'}>
+  {lang === 'en' ? 'Resume' : 'Currículo'}
+</PageHead>
 
 <div class="cv-grid">
   <aside class="cv-aside">
-    <div class="aside-kicker">{lang === 'en' ? 'SECTIONS' : 'SEÇÕES'}</div>
-    {sections.map((s, i) => (
-      <a class={`section-link ${s.c === 'ylw' ? 'on' : ''}`} href={s.h}>
-        {i === 0 ? '▶ ' : '· '}{s.l}
-      </a>
-    ))}
+    <nav class="section-nav" aria-label={sectionsLabel}>
+      <div class="label muted">{sectionsLabel}</div>
+      <div class="section-links">
+        {sections.map((s) => (
+          <a class="section-link" href={s.h}>{s.l}</a>
+        ))}
+      </div>
+    </nav>
 
-    <div class="info-box">
-      <div class="info-kicker">{whereLabel}</div>
-      <div class="info-val">{whereVal}</div>
-      <div class="info-kicker">{statusLabel}</div>
-      <div class="info-val is-live">{statusVal}</div>
-    </div>
+    <dl class="info-box">
+      <dt class="label">{whereLabel}</dt>
+      <dd>{whereVal}</dd>
+      <dt class="label">{statusLabel}</dt>
+      <dd class="is-live">{statusVal}</dd>
+    </dl>
 
-    <a class="ed-btn ylw download-btn" href={pdfHref} download>↓ {t.cv.download}</a>
+    <a class="ed-btn primary download-btn" href={pdfHref} download>↓ {t.cv.download}</a>
   </aside>
 
-  <main>
-    <details class="section c-ylw" id="experience" open>
-      <summary class="section-summary">
-        <span class="section-kicker">{expHeading}</span>
+  <div class="cv-main">
+    <details class="section" id="experience" open>
+      <summary class="sec-h section-summary">
+        <span class="sec-h-text">{expHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
       </summary>
-      {t.cv.experience.map((e) => (
-          <details class="exp-row">
-            <summary class="exp-summary">
-              <div class="exp-period">{e.p}</div>
-              <div class="exp-body">
-                <div class="ed-bungee exp-role">{e.r}</div>
-                <div class="exp-org">{e.o}</div>
-                <p class="exp-desc">{e.d}</p>
-                <div class="exp-tags">
-                  {e.tags.map((tg) => <span class="ed-tag">{tg}</span>)}
+      {[recentRoles, olderRoles].map((group, gi) => {
+        const rows = group.map((e) => {
+          const shown = e.tags.slice(0, TAGS_VISIBLE);
+          const more = e.tags.slice(TAGS_VISIBLE);
+          return (
+            <details class="exp-row">
+              <summary class="exp-summary">
+                <div class="exp-period">{e.p}</div>
+                <div class="exp-body">
+                  <div class="ed-bungee exp-role">{e.r}</div>
+                  <div class="exp-org">{e.o}</div>
+                  <p class="exp-desc">{e.d}</p>
+                  <div class="exp-tags">
+                    {shown.map((tg) => <span class="ed-tag">{tg}</span>)}
+                    {more.length > 0 && <span class="exp-more">+{more.length}</span>}
+                  </div>
                 </div>
+                <span class="exp-plus" aria-hidden="true">+</span>
+              </summary>
+              <div class="exp-details">
+                <ul>
+                  {e.full.map((line) => <li>{line}</li>)}
+                </ul>
+                {more.length > 0 && (
+                  <div class="exp-tags">
+                    {more.map((tg) => <span class="ed-tag">{tg}</span>)}
+                  </div>
+                )}
               </div>
-              <span class="exp-plus" aria-hidden="true">+</span>
+            </details>
+          );
+        });
+        if (gi === 0) return rows;
+        if (group.length === 0) return null;
+        return (
+          <details class="older">
+            <summary class="older-summary">
+              <span>{olderLabel}</span>
+              <span class="older-plus" aria-hidden="true">+</span>
             </summary>
-            <div class="exp-details">
-              <ul>
-                {e.full.map((line) => <li>{line}</li>)}
-              </ul>
-            </div>
+            {rows}
           </details>
-      ))}
+        );
+      })}
     </details>
 
-    <details class="section c-cyan" id="education">
-      <summary class="section-summary">
-        <span class="section-kicker">{formHeading}</span>
+    <details class="section" id="education">
+      <summary class="sec-h section-summary">
+        <span class="sec-h-text">{formHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
       </summary>
       {formationItems.map((e) => (
         <div class="form-row">
-          <div class="form-period">{e.p}</div>
+          <div class="exp-period">{e.p}</div>
           <div>
-            <div class="ed-bungee form-role">{e.r}</div>
+            <div class="ed-bungee exp-role">{e.r}</div>
             <div class="form-org">{e.o}</div>
           </div>
         </div>
       ))}
     </details>
 
-    <details class="section c-hot" id="skills">
-      <summary class="section-summary">
-        <span class="section-kicker">{skillsHeading}</span>
+    <details class="section" id="skills">
+      <summary class="sec-h section-summary">
+        <span class="sec-h-text">{skillsHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
       </summary>
       <div class="skill-tags">
-        {skillTags.map((s, i) => (
-          <span class={`ed-tag ${['c-hot', 'c-cyan', 'c-ylw', ''][i % 4]}`}>{s}</span>
-        ))}
+        {skillTags.map((s) => <span class="ed-tag">{s}</span>)}
       </div>
     </details>
 
-    <details class="section c-vio" id="languages">
-      <summary class="section-summary">
-        <span class="section-kicker">{langHeading}</span>
+    <details class="section" id="languages">
+      <summary class="sec-h section-summary">
+        <span class="sec-h-text">{langHeading}</span>
         <span class="section-toggle" aria-hidden="true">+</span>
       </summary>
       <div class="langs">
         {langs.map((id) => (
           <div class="lang-cell">
-            <div class="lang-greet">{id.g} <span class="lang-mark">{id.mark}</span></div>
+            <div class="lang-greet">{id.g}</div>
             <div class="ed-bungee lang-l">{id.l}</div>
-            <div class="lang-n">{id.n}</div>
+            <div class="label muted lang-n">{id.n}</div>
           </div>
         ))}
       </div>
     </details>
-  </main>
+  </div>
 </div>
 
 <style>
-  .cv-head { padding-top: 6px; margin-bottom: 40px; }
-  .kicker { margin-bottom: 10px; }
-  .headline {
-    font-size: clamp(44px, 8vw, 76px);
-    margin: 0;
-    line-height: 0.9;
-    letter-spacing: -0.04em;
-    text-transform: uppercase;
-  }
-
   .cv-grid {
     display: grid;
-    grid-template-columns: 190px minmax(0, 1fr);
+    grid-template-columns: 200px minmax(0, 1fr);
     gap: 56px;
     align-items: flex-start;
   }
   .cv-aside {
     position: sticky;
-    top: 24px;
+    top: calc(var(--header-h) + 24px);
     align-self: start;
-    max-height: calc(100vh - 48px);
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
   }
-  .aside-kicker {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--fg-3);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
+  .section-links { display: flex; flex-direction: column; margin-top: 8px; }
   .section-link {
-    display: block;
     font-family: var(--mono);
-    font-size: 13px;
-    padding: 6px 0;
+    font-size: var(--t-ui);
+    padding: 6px 0 6px 12px;
+    border-left: var(--edge) solid var(--fg-3);
     color: var(--fg-2);
-    text-decoration: none;
   }
-  .section-link.on { color: var(--ylw); font-weight: 700; }
-  .section-link:hover { background: var(--ylw); color: #000; }
-
-  .section[id], .cv-head[id] { scroll-margin-top: 24px; }
+  .section-link:hover { background: var(--accent); color: var(--accent-ink); border-left-color: var(--accent); }
 
   .info-box {
-    margin-top: 24px;
-    border: var(--edge) solid var(--acid);
-    padding: 10px 12px;
+    margin: 0;
+    border: var(--edge) solid var(--fg);
+    padding: 12px 14px;
     font-family: var(--mono);
   }
-  .info-kicker {
-    font-size: 9px;
-    color: var(--acid);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin-top: 10px;
-  }
-  .info-kicker:first-child { margin-top: 0; }
-  .info-val { font-size: 12px; margin-top: 5px; color: var(--fg-2); }
-  .info-val.is-live { color: var(--acid); }
-  .download-btn { margin-top: 20px; width: 100%; justify-content: center; }
+  .info-box dt { margin-top: 10px; }
+  .info-box dt:first-child { margin-top: 0; }
+  .info-box dd { font-size: var(--t-ui); margin: 3px 0 0; color: var(--fg); }
+  .info-box dd.is-live { color: var(--accent); }
+  .download-btn { width: 100%; justify-content: center; }
 
-  /* seções: um único tratamento, sem cor por bloco */
-  .section { margin-top: 44px; }
+  /* blocos: o mesmo título de bloco do site todo, na cor da seção */
+  .section { margin-top: 48px; }
   .section:first-of-type { margin-top: 0; }
-  .section-summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    list-style: none;
-    cursor: pointer;
-    padding: 8px 0;
-    border-bottom: var(--edge) solid currentColor;
-  }
-  .section.c-ylw  .section-summary { color: var(--ylw); }
-  .section.c-cyan .section-summary { color: var(--cyan); }
-  .section.c-hot  .section-summary { color: var(--hot); }
-  .section.c-vio  .section-summary { color: var(--vio); }
+  .section-summary { list-style: none; cursor: pointer; align-items: center; margin-bottom: 0; }
   .section-summary::-webkit-details-marker { display: none; }
   .section-summary::marker { content: ''; }
-  .section-summary:hover .section-kicker { color: var(--accent); }
-  .section-kicker {
-    font-family: var(--mono);
-    font-size: 24px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: currentColor;
-    text-transform: uppercase;
-    margin: 0;
-  }
-  /* caixa do "+" volta, com a cor da seção */
   .section-toggle {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     flex: none;
     border: var(--edge) solid currentColor;
     display: inline-flex;
@@ -271,20 +254,15 @@ const skillTags = lang === 'en'
     line-height: 1;
     transition: transform 0.18s ease, background 0.12s linear, color 0.12s linear;
   }
-  .section[open] .section-toggle { transform: rotate(45deg); }
-  .section[open].c-ylw  .section-toggle { background: var(--ylw);  color: #000; }
-  .section[open].c-cyan .section-toggle { background: var(--cyan); color: #000; }
-  .section[open].c-hot  .section-toggle { background: var(--hot);  color: #000; }
-  .section[open].c-vio  .section-toggle { background: var(--vio);  color: #000; }
+  .section[open] .section-toggle { transform: rotate(45deg); background: var(--accent); color: var(--accent-ink); }
 
   .exp-row {
-    padding: 16px 0;
-    border-bottom: var(--hair) dashed var(--fg);
+    padding: 20px 0;
+    border-bottom: var(--hair) dashed var(--fg-3);
   }
-  .exp-row:hover { background: rgba(255,255,255,0.02); }
   .exp-summary {
     display: grid;
-    grid-template-columns: 120px minmax(0, 1fr) 32px;
+    grid-template-columns: 120px minmax(0, 1fr) 40px;
     gap: 20px;
     align-items: start;
     list-style: none;
@@ -296,52 +274,48 @@ const skillTags = lang === 'en'
   .exp-period {
     font-family: var(--mono);
     font-size: var(--t-meta);
-    letter-spacing: 0.1em;
+    letter-spacing: var(--track);
     text-transform: uppercase;
     color: var(--fg-3);
-    padding-top: 4px;
+    padding-top: 5px;
   }
   .exp-role {
-    font-size: 19px;
-    line-height: 1.15;
+    font-size: var(--t-item);
+    line-height: 1.12;
     text-transform: uppercase;
     letter-spacing: -0.02em;
   }
+  .exp-summary:hover .exp-role { color: var(--accent); }
   .exp-org {
     font-family: var(--mono);
-    font-size: 14px;
+    font-size: var(--t-ui);
     font-weight: 700;
-    letter-spacing: 0.04em;
-    color: var(--ylw);
-    margin: 5px 0 9px;
+    color: var(--accent);
+    margin: 6px 0 10px;
   }
   .exp-desc {
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 15px;
     color: var(--fg-2);
-    margin: 0 0 10px;
-    line-height: 1.6;
-    max-width: 70ch;
+    margin: 0 0 12px;
+    line-height: 1.65;
+    max-width: 64ch;
   }
-  .exp-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-  .exp-tags .ed-tag {
-    font-size: 10px;
-    padding: 3px 8px;
-    cursor: default;
-    color: var(--fg);
-    border-color: var(--ylw);
-    font-weight: 700;
+  .exp-tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .exp-tags .ed-tag { color: var(--fg-2); border-color: var(--fg-3); }
+  .exp-more {
+    font-family: var(--mono);
+    font-size: var(--t-meta);
+    color: var(--fg-3);
+    padding: 0 4px;
   }
-  .exp-tags .ed-tag:hover { background: transparent; color: var(--fg); border-color: var(--ylw); }
 
   .exp-plus {
     justify-self: end;
-    align-self: center;
     width: 40px;
     height: 40px;
-    flex: none;
-    border: var(--edge) solid var(--ylw);
-    color: var(--ylw);
+    border: var(--edge) solid var(--accent);
+    color: var(--accent);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -351,84 +325,102 @@ const skillTags = lang === 'en'
     transition: transform 0.18s ease, background 0.12s linear, color 0.12s linear;
   }
   .exp-row:hover .exp-plus,
-  .exp-row[open] .exp-plus { background: var(--ylw); color: #000; }
+  .exp-row[open] .exp-plus { background: var(--accent); color: var(--accent-ink); }
   .exp-row[open] .exp-plus { transform: rotate(45deg); }
 
   .exp-details {
-    padding: 14px 0 4px 140px;
+    padding: 16px 60px 4px 140px;
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.7;
     color: var(--fg-2);
   }
-  .exp-details ul { margin: 0; padding-left: 18px; max-width: 62ch; }
+  .exp-details ul { margin: 0 0 14px; padding-left: 18px; max-width: 64ch; }
   .exp-details li { margin-bottom: 8px; }
-  .exp-details li::marker { color: var(--fg-3); }
+  .exp-details li::marker { color: var(--accent); }
+
+  /* começo de carreira: recolhido, com o período no rótulo */
+  .older { border-bottom: var(--hair) dashed var(--fg-3); }
+  .older-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    list-style: none;
+    cursor: pointer;
+    padding: 18px 0;
+    font-family: var(--mono);
+    font-size: var(--t-ui);
+    font-weight: 700;
+    letter-spacing: var(--track);
+    text-transform: uppercase;
+    color: var(--fg-2);
+  }
+  .older-summary::-webkit-details-marker { display: none; }
+  .older-summary::marker { content: ''; }
+  .older-summary:hover { color: var(--accent); }
+  .older-plus {
+    width: 40px;
+    height: 40px;
+    flex: none;
+    border: var(--edge) dashed var(--accent);
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--display);
+    font-size: 20px;
+    transition: transform 0.18s ease;
+  }
+  .older[open] .older-plus { transform: rotate(45deg); }
+  .older[open] > .older-summary { border-bottom: var(--hair) dashed var(--fg-3); }
+  .older .exp-row:last-child { border-bottom: none; }
 
   .form-row {
     display: grid;
     grid-template-columns: 120px minmax(0, 1fr);
     gap: 20px;
-    padding: 12px 0;
-    border-bottom: 1px dotted var(--fg);
-  }
-  .form-period {
-    font-family: var(--mono);
-    font-size: var(--t-meta);
-    color: var(--fg-3);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding-top: 3px;
-  }
-  .form-role {
-    font-size: 17px;
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
+    padding: 18px 0;
+    border-bottom: var(--hair) dashed var(--fg-3);
   }
   .form-org {
     font-family: var(--mono);
-    font-size: var(--t-meta);
-    color: var(--fg-3);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin-top: 5px;
+    font-size: var(--t-ui);
+    color: var(--fg-2);
+    margin-top: 6px;
   }
 
-  .skill-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 20px; }
-  .skill-tags .ed-tag { cursor: default; }
+  .skill-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
 
   .langs {
     display: flex;
     gap: 56px;
     flex-wrap: wrap;
-    margin-top: 24px;
+    margin-top: 12px;
   }
   .lang-cell { min-width: 150px; }
   .lang-greet {
     font-family: var(--mono);
-    font-size: 20px;
-    line-height: 1;
-    color: var(--fg-3);
+    font-size: 18px;
+    color: var(--accent);
     margin-bottom: 8px;
   }
-  .lang-mark { display: inline-block; margin-left: 4px; color: var(--vio); }
-  .lang-l { font-size: 26px; line-height: 1; }
-  .lang-n {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--fg-3);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-top: 8px;
-  }
+  .lang-l { font-size: 26px; line-height: 1; text-transform: uppercase; }
+  .lang-n { margin-top: 8px; }
 
   @media (max-width: 900px) {
     .cv-grid { grid-template-columns: 1fr; gap: 32px; }
-    .cv-aside { position: static; max-height: none; overflow: visible; }
-    .form-row { grid-template-columns: 1fr; gap: 8px; }
-    .exp-summary { grid-template-columns: minmax(0, 1fr) 32px; gap: 10px; }
+    /* no celular o índice da página vira uma faixa de atalhos */
+    .cv-aside { position: static; gap: 16px; }
+    .section-links { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+    .section-link { border: var(--hair) solid var(--fg-3); padding: 6px 10px; }
+    .info-box { display: none; }
+    .download-btn { width: auto; align-self: flex-start; }
+    .form-row { grid-template-columns: 1fr; gap: 6px; }
+    .exp-summary { grid-template-columns: minmax(0, 1fr) 40px; gap: 6px 12px; }
     .exp-period { grid-column: 1 / -1; padding-top: 0; }
-    .exp-details { padding-left: 0; }
+    .exp-plus { grid-column: 2; grid-row: 2; }
+    .exp-details { padding: 14px 0 4px; }
   }
 </style>
 
@@ -450,14 +442,12 @@ const skillTags = lang === 'en'
       if (!id) return;
       const el = document.getElementById(id);
       if (el && el.tagName.toLowerCase() === 'details') {
+        /* atalho sempre leva ao bloco: antes, clicar num bloco já
+           aberto o fechava, e o atalho parecia não fazer nada */
         ev.preventDefault();
-        const det = el as HTMLDetailsElement;
-        if (det.open) {
-          det.open = false;
-        } else {
-          det.open = true;
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        (el as HTMLDetailsElement).open = true;
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.replaceState(null, '', `#${id}`);
       }
     });
   });

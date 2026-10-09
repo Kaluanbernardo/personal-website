@@ -25,13 +25,13 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
 <div class="read-progress" data-progress role="presentation"></div>
 
 <article class="post">
-  <div class="kicker ed-kicker">{tagLabel}</div>
+  <div class="label">#{tagLabel}</div>
   <h1 class="ed-bungee title">{post.data.title}</h1>
-  <div class="meta">
+  <div class="label muted">
     {t.post.metaJoin(formatLongDate(post.data.pubDate, lang), post.data.readingTime)}
   </div>
 
-  <hr class="ed-rule-rainbow" />
+  <hr class="ed-rule-accent rule" />
 
   <p class="lead">{post.data.description}</p>
 
@@ -39,12 +39,22 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
     <Content />
   </div>
 
-  <hr class="ed-rule-dashed sep" />
-  <nav class="post-nav">
-    {prev ? <a class="nav-link" href={postHref(prev.id)}>{t.post.prev}</a> : <span></span>}
-    <a class="nav-link accent" href="https://kaluanbernardo.substack.com" target="_blank" rel="noreferrer noopener">{t.post.subscribe}</a>
-    {next ? <a class="nav-link" href={postHref(next.id)}>{t.post.next}</a> : <span></span>}
+  {/* "próximo post" sem dizer qual não ajuda ninguém a decidir */}
+  <nav class="post-nav" aria-label={lang === 'en' ? 'More posts' : 'Mais posts'}>
+    {prev ? (
+      <a class="nav-card" href={postHref(prev.id)}>
+        <span class="label muted">{t.post.prev}</span>
+        <span class="ed-bungee nav-title">{prev.data.title}</span>
+      </a>
+    ) : <span></span>}
+    {next ? (
+      <a class="nav-card is-next" href={postHref(next.id)}>
+        <span class="label muted">{t.post.next}</span>
+        <span class="ed-bungee nav-title">{next.data.title}</span>
+      </a>
+    ) : <span></span>}
   </nav>
+  <a class="ed-btn primary subscribe" href="https://kaluanbernardo.substack.com" target="_blank" rel="noreferrer noopener">{t.post.subscribe}</a>
 </article>
 
 <script>
@@ -74,71 +84,60 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
   .post {
     max-width: 680px;
     margin: 0 auto;
-    padding-top: 6px;
   }
-  .kicker { margin-bottom: 16px; }
   .title {
-    font-size: clamp(32px, 5vw, 50px);
-    margin: 0 0 16px;
+    font-size: clamp(32px, 5vw, 52px);
+    margin: 14px 0 14px;
     line-height: 1.02;
     text-transform: uppercase;
     letter-spacing: -0.03em;
   }
-  .meta {
-    font-family: var(--mono);
-    font-size: var(--t-meta);
-    letter-spacing: 0.08em;
-    color: var(--fg-3);
-    text-transform: uppercase;
-    margin-bottom: 24px;
-  }
+  .rule { margin-top: 26px; }
   .lead {
     font-family: var(--serif);
-    font-size: 21px;
+    font-size: 23px;
     color: var(--fg-2);
-    line-height: 1.55;
+    line-height: 1.5;
     margin: 32px 0 40px;
   }
   .prose {
     font-family: var(--serif);
     font-size: var(--t-read);
-    line-height: 1.75;
+    line-height: 1.7;
     color: var(--fg);
   }
   .prose :global(h2) {
     font-family: var(--display);
     font-weight: 400;
-    font-size: 24px;
+    font-size: var(--t-item);
     text-transform: uppercase;
-    letter-spacing: -0.03em;
-    color: var(--fg);
+    letter-spacing: -0.02em;
     margin: 56px 0 18px;
     line-height: 1.1;
   }
   .prose :global(h3) {
-    font-family: var(--display);
-    font-weight: 400;
-    font-size: 19px;
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: var(--t-body);
     text-transform: uppercase;
-    letter-spacing: -0.02em;
-    color: var(--fg);
-    margin: 40px 0 14px;
+    letter-spacing: var(--track);
+    color: var(--accent);
+    margin: 40px 0 12px;
   }
   .prose :global(p) { margin: 0 0 22px; }
   .prose :global(blockquote) {
-    border-left: var(--loud) solid var(--vio);
+    border-left: var(--loud) solid var(--accent);
     padding: 4px 0 4px 24px;
     margin: 40px 0;
     font-family: var(--display);
-    font-size: 19px;
-    color: var(--fg);
+    font-size: var(--t-item);
     line-height: 1.25;
     text-transform: uppercase;
   }
   .prose :global(blockquote p) { margin: 0; }
   .prose :global(a) {
-    color: var(--vio);
-    border-bottom: var(--hair) solid var(--vio);
+    color: var(--accent);
+    border-bottom: var(--hair) solid var(--accent);
   }
   .prose :global(code) {
     font-family: var(--mono);
@@ -151,7 +150,7 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
     padding: 18px 20px;
     overflow-x: auto;
     font-family: var(--mono);
-    font-size: 13px;
+    font-size: var(--t-ui);
     border: var(--edge) solid var(--fg);
   }
   .prose :global(pre code) { background: none; padding: 0; }
@@ -160,38 +159,40 @@ const tagLabel = tagDisplay[lang][post.data.tag] ?? post.data.tag;
     margin: 0 0 22px;
   }
   .prose :global(li) { margin-bottom: 10px; }
-  .prose :global(li)::marker { color: var(--fg-3); }
-  .prose :global(hr) { border: none; border-top: var(--edge) solid var(--fg); margin: 40px 0; }
+  .prose :global(li)::marker { color: var(--accent); }
+  .prose :global(hr) { border: none; border-top: var(--edge) dashed var(--fg); margin: 40px 0; }
 
-  .sep { margin: 64px 0 24px; }
   .post-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-top: 64px;
+  }
+  .nav-card {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .nav-link {
-    font-family: var(--mono);
-    font-size: var(--t-meta);
-    letter-spacing: 0.08em;
-    color: var(--fg-2);
-    text-transform: uppercase;
+    flex-direction: column;
+    gap: 8px;
+    padding: 18px 20px;
     border: var(--edge) solid var(--fg);
-    padding: 7px 11px;
+    color: var(--fg);
   }
-  .nav-link:hover { background: var(--zap); color: var(--zap-ink); border-color: #000; }
-  .nav-link.accent {
-    background: var(--vio);
-    color: #000;
-    border-color: #000;
+  .nav-card + .nav-card { margin-left: -2px; }
+  .nav-card.is-next { text-align: right; align-items: flex-end; }
+  .nav-card:hover { background: var(--bg-2); color: var(--fg); }
+  .nav-card:hover .nav-title { color: var(--accent); }
+  .nav-title {
+    font-size: var(--t-item);
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
   }
-  .nav-link.accent:hover { background: transparent; color: var(--vio); }
+  .subscribe { margin-top: 24px; }
 
   @media (max-width: 720px) {
-    .lead { font-size: 18px; }
-    .prose { font-size: 17px; }
-    .post-nav { flex-direction: column; align-items: stretch; gap: 8px; }
-    .nav-link { text-align: center; }
+    .lead { font-size: 20px; }
+    .prose { font-size: 18px; }
+    .post-nav { grid-template-columns: 1fr; }
+    .nav-card + .nav-card { margin-left: 0; margin-top: -2px; }
+    .nav-card.is-next { text-align: left; align-items: flex-start; }
   }
 </style>

@@ -14,22 +14,23 @@ const destinations = primaryNavOrder
   .filter((key) => key !== 'home')
   .map((key) => ({
     n: sections[key].number,
+    color: sections[key].accent,
     label: t.nav[key],
     href: link(sections[key].slug ? `${prefix}/${sections[key].slug}` : `${prefix}/`),
   }));
 ---
 
 <div class="nf">
-  <div class="kicker ed-kicker">{t.ux.notFound.code} / NOT_FOUND</div>
+  <div class="kicker"><span class="tape">{t.ux.notFound.code} / not_found</span></div>
   <h1 class="ed-bungee nf-title">{t.ux.notFound.title}</h1>
   <p class="nf-body">{t.ux.notFound.body}</p>
 
-  <a class="ed-btn acid nf-home" href={link(`${prefix}/`)}>← {t.nav.home}</a>
+  <a class="ed-btn primary nf-home" href={link(`${prefix}/`)}>← {t.nav.home}</a>
 
-  <div class="nf-kicker">{t.ux.notFound.whereTo}</div>
+  <div class="label muted nf-kicker">{t.ux.notFound.whereTo}</div>
   <div class="nf-list">
     {destinations.map((d) => (
-      <a class="nf-row" href={d.href}>
+      <a class="nf-row" href={d.href} style={`--row-c:${d.color}`}>
         <span class="nf-num">[{d.n}]</span>
         <span class="ed-bungee nf-label">{d.label}</span>
         <span class="nf-arr" aria-hidden="true">→</span>
@@ -57,14 +58,7 @@ const destinations = primaryNavOrder
     max-width: 60ch;
   }
   .nf-home { margin-bottom: 44px; }
-  .nf-kicker {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--fg-3);
-    margin-bottom: 8px;
-  }
+  .nf-kicker { margin-bottom: 8px; }
   .nf-list { display: flex; flex-direction: column; }
   .nf-row {
     display: grid;
@@ -75,12 +69,12 @@ const destinations = primaryNavOrder
     border-bottom: var(--hair) solid var(--fg);
     transition: padding-left 0.12s linear;
   }
-  .nf-row:hover { padding-left: 10px; color: var(--accent); }
+  .nf-row:hover { padding-left: 10px; color: var(--row-c); }
   .nf-num {
     font-family: var(--mono);
     font-size: var(--t-meta);
-    letter-spacing: 0.15em;
-    color: var(--fg-3);
+    letter-spacing: var(--track);
+    color: var(--row-c);
   }
   .nf-label {
     font-size: clamp(20px, 3vw, 28px);
@@ -88,5 +82,5 @@ const destinations = primaryNavOrder
     text-transform: uppercase;
   }
   .nf-arr { text-align: right; color: var(--fg-3); font-size: 18px; }
-  .nf-row:hover .nf-arr, .nf-row:hover .nf-num { color: var(--accent); }
+  .nf-row:hover .nf-arr { color: var(--row-c); }
 </style>

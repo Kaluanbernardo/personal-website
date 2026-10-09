@@ -2,89 +2,79 @@
 import { getCollection } from 'astro:content';
 import { ui, type Lang, formatDate, tagDisplay } from '../../i18n/ui';
 import { link } from '../../lib/links';
-import { sections } from '../../lib/sections';
+import { homePortrait } from '../../lib/profile';
+import { primaryNavOrder, sections } from '../../lib/sections';
+import Glyph from '../Glyph.astro';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 const t = ui[lang];
+const en = lang === 'en';
 
 const allPosts = await getCollection('posts', ({ data }) => !data.draft && data.lang === lang);
 const recentPosts = allPosts
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
-
 const allProjects = await getCollection('projects', ({ data }) => data.lang === lang);
+const allPubs = await getCollection('pubs', ({ data }) => data.lang === lang);
 
-const prefix = lang === 'en' ? '/en' : '';
+const prefix = en ? '/en' : '';
 const postHref = (slug: string) => link(`${prefix}/blog/${slug}`);
 const blogHref = link(`${prefix}/blog`);
+const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
-const indexEntries = [
-  {
-    n: sections.sobre.number,
-    t: lang === 'en' ? 'ABOUT' : 'SOBRE',
-    sub: '> who_is_this.txt',
-    meta: lang === 'en' ? '2 min' : '2 min',
-    href: link(`${prefix}/sobre`),
-    color: sections.sobre.accent,
+/* O índice usa o mesmo nome do menu. A piada de terminal continua,
+   mas descreve o destino de verdade: antes prometia um PDF
+   (work_history.pdf) e um site externo (lattes.cnpq.br) e abria
+   páginas internas. A coluna da direita diz o que há lá dentro. */
+const indexInfo: Record<string, { sub: string; meta: string }> = {
+  sobre: { sub: en ? '> cat about.txt' : '> cat sobre.txt', meta: 'bio' },
+  cv: {
+    sub: en ? '> ls ./career' : '> ls ./carreira',
+    meta: plural(t.cv.experience.length, en ? 'role' : 'cargo', en ? 'roles' : 'cargos'),
   },
-  {
-    n: sections.cv.number,
-    t: lang === 'en' ? 'PROFESSIONAL CV' : 'CV PROFISSIONAL',
-    sub: '> work_history.pdf',
-    meta: 'PDF',
-    href: link(`${prefix}/cv`),
-    color: sections.cv.accent,
+  academico: {
+    sub: en ? '> ls ./research' : '> ls ./pesquisa',
+    meta: plural(allPubs.length, en ? 'paper' : 'pub', en ? 'papers' : 'pubs'),
   },
-  {
-    n: sections.academico.number,
-    t: lang === 'en' ? 'ACADEMIC CV' : 'CV ACADÊMICO',
-    sub: '> lattes.cnpq.br',
-    meta: 'CV',
-    href: link(`${prefix}/academico`),
-    color: sections.academico.accent,
+  projetos: {
+    sub: en ? '> ls ./projects' : '> ls ./projetos',
+    meta: plural(allProjects.length, en ? 'item' : 'item', en ? 'items' : 'itens'),
   },
-  {
-    n: sections.projetos.number,
-    t: lang === 'en' ? 'PROJECTS' : 'PROJETOS',
-    sub: '> ./output/*',
-    meta: lang === 'en'
-      ? `${allProjects.length} ${allProjects.length === 1 ? 'item' : 'items'}`
-      : `${allProjects.length} ${allProjects.length === 1 ? 'item' : 'itens'}`,
-    href: link(`${prefix}/projetos`),
-    color: sections.projetos.accent,
-  },
-  {
-    n: sections.blog.number,
-    t: 'BLOG',
-    sub: '> cat *.md',
-    meta: lang === 'en'
-      ? `${allPosts.length} ${allPosts.length === 1 ? 'post' : 'posts'}`
-      : `${allPosts.length} posts`,
-    href: blogHref,
-    color: sections.blog.accent,
-  },
-  {
-    n: sections.contato.number,
-    t: lang === 'en' ? 'CONTACT' : 'CONTATO',
-    sub: '> echo $EMAIL',
-    meta: '@',
-    href: link(`${prefix}/contato`),
-    color: sections.contato.accent,
-  },
-];
+  blog: { sub: '> cat *.md', meta: plural(allPosts.length, 'post', 'posts') },
+  contato: { sub: '> echo $EMAIL', meta: 'e-mail' },
+};
+const indexEntries = primaryNavOrder
+  .filter((key) => key !== 'home')
+  .map((key) => ({
+    key,
+    n: sections[key].number,
+    glyph: sections[key].glyph,
+    t: t.nav[key],
+    sub: indexInfo[key].sub,
+    meta: indexInfo[key].meta,
+    href: link(`${prefix}/${sections[key].slug}`),
+    color: sections[key].accent,
+  }));
 
-const heroTags = lang === 'en'
-  ? ['Product', 'Journalism', 'Content', 'Technology', 'Games', 'Culture', 'Strategy', 'AI', 'Education']
-  : ['Produto', 'Jornalismo', 'Conteúdo', 'Tecnologia', 'Games', 'Cultura', 'Estratégia', 'IA', 'Educação'];
+/* Quem chega precisa saber em dez segundos o que você faz e por onde
+   passou. As 9 hashtags repetiam o parágrafo de cima; a ficha diz
+   o que o parágrafo não diz. */
+const facts = en
+  ? [
+      { k: 'Now', v: ['Product Manager · SENAI São Paulo', 'PhD candidate in Communication · ESPM'] },
+      { k: 'Before', v: ['CNN Brasil · Gizmodo Brasil · Terra · UOL · Nexo'] },
+    ]
+  : [
+      { k: 'Agora', v: ['Product Manager · SENAI São Paulo', 'Doutorando em Comunicação · ESPM'] },
+      { k: 'Antes', v: ['CNN Brasil · Gizmodo Brasil · Terra · UOL · Nexo'] },
+    ];
 
-const indexHeading = lang === 'en' ? 'INDEX / RAW NAVIGATION' : 'ÍNDICE / NAVEGAÇÃO RAW';
-const entriesLabel = lang === 'en' ? `0${indexEntries.length}_ENTRIES` : `0${indexEntries.length}_ENTRADAS`;
-
-const fromBlogHeading = lang === 'en' ? 'FROM THE BLOG.' : 'DO BLOG.';
-const allPostsLabel = lang === 'en' ? 'ALL POSTS →' : 'TODOS OS POSTS →';
+const indexHeading = en ? 'Index' : 'Índice';
+const fromBlogHeading = en ? 'From the blog' : 'Do blog';
+const allPostsLabel = en ? 'All posts →' : 'Todos os posts →';
 
 const heroTitle = (t.brand || '').split(' ');
 const firstName = heroTitle[0] || 'NOME';
@@ -95,7 +85,9 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
   <div class="hero-grid-bg" aria-hidden="true"></div>
 
   <div class="hero-visual">
-    <div class="hero-photo" aria-hidden="true"></div>
+    <div class="hero-photo">
+      {homePortrait && <img src={link(homePortrait)} alt={en ? 'Portrait of Kaluan Bernardo' : 'Retrato de Kaluan Bernardo'} />}
+    </div>
 
     <div class="ai-seal" role="img" aria-label="Selo: Inteligência as a service">
       <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -128,68 +120,71 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
   <div class="hero-main">
     <h1 class="hero-title ed-bungee">
       <span class="t-fg">{firstName.toUpperCase()}</span><br />
-      <span class="t-stroke">{lastName.toUpperCase()}</span><svg class="ed-blink hero-star" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M12 .8l3.09 7.03 7.66.67-5.79 5.06 1.72 7.49L12 17.1l-6.68 3.95 1.72-7.49L1.25 8.5l7.66-.67z" />
-      </svg>
+      <span class="t-stroke">{lastName.toUpperCase()}</span><Glyph name="star" class="ed-blink hero-star" />
     </h1>
 
     <p class="hero-intro hero-intro-long">
-      {lang === 'en' ? (
+      {en ? (
         <>
-          I create <span class="ed-mark-hot">products</span>, develop <span class="ed-mark-cyan">strategies</span>, do research and analysis, teach classes, think up and execute ideas, all with a touch of <span class="ed-mark-orng">groove</span>. I like technology, culture, games, music and journalism. I also like potatoes and <span class="ed-mark-acid">studying</span>.
+          I create <span class="ed-mark">products</span>, develop <span class="ed-mark">strategies</span>, do research and analysis, teach classes, think up and execute ideas, all with a touch of <span class="ed-mark">groove</span>. I like technology, culture, games, music and journalism. I also like potatoes and <span class="ed-mark">studying</span>.
         </>
       ) : (
         <>
-          Crio <span class="ed-mark-hot">produtos</span>, desenvolvo <span class="ed-mark-cyan">estratégias</span>, faço pesquisas e análises, dou aulas, penso e executo ideias — tudo com um tiquinho de <span class="ed-mark-orng">carimbó</span>. Gosto de tecnologia, cultura, games, música e jornalismo. Também gosto de batata e de <span class="ed-mark-acid">estudar</span>.
+          Crio <span class="ed-mark">produtos</span>, desenvolvo <span class="ed-mark">estratégias</span>, faço pesquisas e análises, dou aulas, penso e executo ideias — tudo com um tiquinho de <span class="ed-mark">carimbó</span>. Gosto de tecnologia, cultura, games, música e jornalismo. Também gosto de batata e de <span class="ed-mark">estudar</span>.
         </>
       )}
     </p>
 
     <p class="hero-intro hero-intro-short">
-      {lang === 'en'
+      {en
         ? 'I create products and strategies, research, teach, and turn curiosity into work, with a touch of Brazilian groove.'
         : 'Crio produtos e estratégias, faço pesquisa, dou aulas e transformo curiosidade em trabalho, com um tiquinho de carimbó.'}
     </p>
-  </div>
 
-  <div class="hero-tags">
-    {heroTags.map((tag, i) => (
-      <span class={`ed-tag c-${['hot', 'acid', 'cyan', 'ylw'][i % 4]}`}>#{tag}</span>
-    ))}
+    <dl class="facts">
+      {facts.map((f) => (
+        <div class="fact">
+          <dt class="label muted">{f.k}</dt>
+          <dd>{f.v.map((line) => <span>{line}</span>)}</dd>
+        </div>
+      ))}
+    </dl>
   </div>
 </section>
 
-<section class="brutal-index">
-  <div class="bi-head">
-    <div class="bi-kicker ed-kicker">{'>>>'} {indexHeading}</div>
-    <div class="bi-counter ed-tiny">{entriesLabel}</div>
+<section class="index" aria-labelledby="index-h">
+  <h2 class="sec-h index-h" id="index-h"><span class="sec-h-text">{indexHeading}</span></h2>
+  {/* a régua é a legenda do site: as seis cores, na ordem do menu */}
+  <div class="legend" aria-hidden="true">
+    {indexEntries.map((s) => <span style={`background:${s.color}`}></span>)}
   </div>
-  <hr class="ed-rule-rainbow" />
 
   {indexEntries.map((s) => (
     <a class="bi-row" href={s.href} style={`--row-c:${s.color}`}>
-      <span class="bi-num">[{s.n}]</span>
+      <span class="bi-num"><Glyph name={s.glyph} />{s.n}</span>
       <span class="bi-title ed-bungee">{s.t}</span>
       <span class="bi-sub">{s.sub}</span>
       <span class="bi-meta">{s.meta}</span>
-      <span class="bi-arr">→</span>
+      <span class="bi-arr" aria-hidden="true">→</span>
     </a>
   ))}
 </section>
 
 {recentPosts.length > 0 && (
-  <section class="from-blog">
-    <div class="fb-head">
-      <h2 class="ed-bungee fb-title">{fromBlogHeading}</h2>
-      <a class="fb-all" href={blogHref}>{allPostsLabel}</a>
-    </div>
+  /* o bloco do blog veste a cor do blog, também aqui */
+  <section class="from-blog theme-blog" aria-labelledby="fb-h">
+    <h2 class="sec-h" id="fb-h">
+      <span class="sec-h-text">{fromBlogHeading}</span>
+      <a class="sec-h-aside" href={blogHref}>{allPostsLabel}</a>
+    </h2>
     <div class="fb-grid">
       {recentPosts.map((p) => (
         <a class="fb-card" href={postHref(p.id)}>
-          <span class="fb-tag">#{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
+          <span class="label">#{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
           <h3 class="ed-bungee fb-card-title">{p.data.title}</h3>
-          <div class="fb-meta">
-            {formatDate(p.data.pubDate, lang).toUpperCase()} · {p.data.readingTime} MIN
+          <p class="fb-desc">{p.data.description}</p>
+          <div class="label muted">
+            {formatDate(p.data.pubDate, lang)} · {p.data.readingTime} min
           </div>
         </a>
       ))}
@@ -200,11 +195,11 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
 <style>
   .hero {
     position: relative;
-    padding: 8px 0 40px;
+    padding: 8px 0 56px;
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 18px;
-    align-items: flex-start;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    column-gap: 48px;
+    align-items: start;
   }
   .hero-grid-bg {
     position: absolute;
@@ -217,27 +212,28 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     pointer-events: none;
     z-index: 0;
   }
-  .hero-main, .hero-tags { position: relative; z-index: 1; }
-  .hero-main { grid-column: 1; grid-row: 1; min-width: 0; }
+  .hero-main { position: relative; z-index: 1; grid-column: 1; grid-row: 1; min-width: 0; }
 
   .hero-visual {
     position: relative;
     grid-column: 2;
     grid-row: 1;
     width: 260px;
+    margin-top: 8px;
     z-index: 2;
   }
 
-  /* foto: borda grossa, sombra dura ciano e a inclinação de colagem */
+  /* foto: borda grossa, sombra dura na cor da marca e a inclinação de colagem */
   .hero-photo {
     width: 100%;
     aspect-ratio: 4 / 5;
     overflow: hidden;
     border: var(--loud) solid var(--fg);
     background: var(--bg-2);
-    box-shadow: 8px 8px 0 var(--cyan);
+    box-shadow: 8px 8px 0 var(--hot);
     transform: rotate(1deg);
   }
+  .hero-photo img { width: 100%; height: 100%; object-fit: cover; }
 
   /* selo: continua torto, só parou de balançar sozinho */
   .ai-seal {
@@ -253,26 +249,6 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
   }
   .ai-seal svg { width: 100%; height: 100%; display: block; }
 
-  @media (max-width: 1100px) {
-    .hero {
-      grid-template-columns: minmax(0, 1fr) 210px;
-      column-gap: 24px;
-    }
-    .hero-visual { width: 210px; }
-    .ai-seal { width: 92px; height: 92px; right: -8px; bottom: -24px; }
-  }
-  @media (max-width: 880px) {
-    .hero { grid-template-columns: 1fr; }
-    .hero-visual {
-      grid-column: 1;
-      grid-row: 2;
-      width: 100%;
-      margin-bottom: 14px;
-    }
-    .hero-photo { aspect-ratio: 4 / 3; }
-    .ai-seal { width: 98px; height: 98px; right: 8px; bottom: -20px; }
-  }
-
   .hero-title {
     font-size: clamp(54px, 10.4vw, 142px);
     margin: 0;
@@ -286,190 +262,189 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     color: var(--bg);
     -webkit-text-stroke: 2.5px var(--fg);
   }
-  /* Estrela em SVG, não em texto: ★ (U+2605) não existe no subset
-     latin das fontes auto-hospedadas e cairia num tofu. Em SVG o
-     desenho é sempre o mesmo e acompanha o tamanho do título. */
-  .hero-star {
+  /* a estrela é o glifo da home e veste o magenta da marca */
+  .hero-title :global(.hero-star) {
     width: 0.42em;
     height: 0.42em;
-    fill: var(--acid);
+    color: var(--hot);
     stroke: #000;
     stroke-width: 1;
     stroke-linejoin: round;
-    display: inline-block;
     margin-left: 0.04em;
     vertical-align: 0.1em;
-    overflow: visible;
   }
 
   .hero-intro {
     font-family: var(--mono);
-    font-size: 16px;
-    max-width: 68ch;
-    margin-top: 24px;
+    font-size: 17px;
+    max-width: 62ch;
+    margin: 28px 0 0;
     line-height: 1.7;
   }
   .hero-intro-short { display: none; }
-  .hero-intro :global([class^="ed-mark"]) { padding: 0 3px; }
+  .hero-intro :global(.ed-mark) { padding: 0 3px; }
 
-  .hero-tags {
-    grid-column: 1 / -1;
-    display: flex;
-    gap: 6px;
-    max-width: 100%;
-    flex-wrap: wrap;
+  /* ficha: o que você faz e por onde passou, em duas linhas */
+  .facts {
+    margin: 28px 0 0;
+    max-width: 640px;
+    border-top: var(--hair) solid var(--fg);
   }
-  .hero-tags .ed-tag {
-    font-size: 13px;
-    padding: 6px 10px;
-    letter-spacing: 0.1em;
-    max-width: 100%;
-    overflow-wrap: anywhere;
-  }
-
-  .brutal-index { margin: 16px 0 0; }
-  .bi-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
+  .fact {
+    display: grid;
+    grid-template-columns: 84px minmax(0, 1fr);
     gap: 16px;
-    margin-bottom: 6px;
+    align-items: baseline;
+    padding: 12px 0;
+    border-bottom: var(--hair) solid var(--fg);
   }
-  .bi-kicker { letter-spacing: 0.2em; }
-  .bi-counter { color: var(--fg); }
+  .fact dd {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: var(--t-body);
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .index { margin-top: 8px; }
+  .index-h { border-bottom: none; padding-bottom: 0; margin-bottom: 10px; }
+  .legend {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    height: 8px;
+  }
 
   .bi-row {
     display: grid;
-    grid-template-columns: 50px minmax(0, 1fr) 220px 90px 28px;
+    grid-template-columns: 64px minmax(0, 1fr) 200px 96px 28px;
     align-items: center;
-    padding: 15px 0;
+    padding: 16px 0;
     border-bottom: var(--hair) solid var(--fg);
     gap: 14px;
     color: var(--fg);
     transition: padding-left 0.12s linear;
   }
   .bi-row > * { min-width: 0; }
-  .bi-row:hover { padding-left: 10px; }
-  .bi-row .bi-num {
+  .bi-row:hover { padding-left: 10px; color: var(--fg); }
+  .bi-num {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     font-family: var(--mono);
     font-size: var(--t-meta);
-    letter-spacing: 0.15em;
+    letter-spacing: var(--track);
     color: var(--row-c);
   }
-  .bi-row .bi-title {
-    font-size: clamp(24px, 4vw, 42px);
+  .bi-num :global(.glyph) { width: 11px; height: 11px; }
+  .bi-title {
+    font-size: clamp(24px, 3.6vw, 40px);
     letter-spacing: -0.03em;
-    color: var(--fg);
+    text-transform: uppercase;
     overflow-wrap: anywhere;
+    line-height: 1.05;
   }
   .bi-row:hover .bi-title { color: var(--row-c); }
-  .bi-row .bi-sub {
+  .bi-sub {
     font-family: var(--mono);
-    font-size: 12px;
-    color: var(--fg);
-    opacity: 0.7;
+    font-size: var(--t-ui);
+    color: var(--fg-3);
   }
-  .bi-row .bi-meta {
+  .bi-meta {
     font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.1em;
+    font-size: var(--t-meta);
+    letter-spacing: var(--track);
     color: var(--row-c);
     text-align: right;
     text-transform: uppercase;
+    white-space: nowrap;
   }
-  .bi-row .bi-arr {
+  .bi-arr {
     font-size: 22px;
     color: var(--row-c);
     text-align: right;
   }
 
-  .from-blog { margin-top: 60px; }
-  .fb-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    margin-bottom: 18px;
-    gap: 16px;
-  }
-  .fb-title {
-    font-size: 36px;
-    margin: 0;
-    letter-spacing: -0.03em;
-  }
-  .fb-all {
-    font-family: var(--mono);
-    font-size: var(--t-meta);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--vio);
-    white-space: nowrap;
-  }
-  .fb-all:hover { background: var(--zap); color: var(--zap-ink); }
-  /* auto-fit p/ trilha vazia colapsar: em EN só há 2 posts */
+  .from-blog { margin-top: 72px; }
   .fb-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 0;
   }
   .fb-card {
-    display: block;
-    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
     border: var(--edge) solid var(--fg);
     margin-left: -2px;
-    cursor: pointer;
+    color: var(--fg);
   }
-  .fb-card:hover { background: var(--bg-2); color: inherit; }
-  .fb-tag {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    color: var(--vio);
-    text-transform: uppercase;
-  }
+  .fb-card:first-child { margin-left: 0; }
+  .fb-card:hover { background: var(--bg-2); color: var(--fg); }
+  .fb-card:hover .fb-card-title { color: var(--accent); }
   .fb-card-title {
-    font-size: 21px;
-    margin: 8px 0 12px;
+    font-size: var(--t-item);
+    margin: 0;
     letter-spacing: -0.02em;
-    line-height: 1.05;
+    line-height: 1.08;
     text-transform: uppercase;
   }
-  .fb-meta {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.06em;
-    color: var(--fg-3);
-    text-transform: uppercase;
+  .fb-desc {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.45;
+    color: var(--fg-2);
+    margin: 0 0 4px;
+    flex: 1;
   }
 
+  @media (max-width: 1100px) {
+    .hero { grid-template-columns: minmax(0, 1fr) 210px; column-gap: 28px; }
+    .hero-visual { width: 210px; }
+    .ai-seal { width: 92px; height: 92px; right: -8px; bottom: -24px; }
+  }
   @media (max-width: 960px) {
     .hero-title { font-size: clamp(56px, 9vw, 96px); }
-    .bi-row {
-      grid-template-columns: 36px minmax(0, 1fr) 60px 22px;
-      gap: 10px;
-    }
-    .bi-row .bi-title { font-size: clamp(22px, 5vw, 34px); }
-    .bi-row .bi-sub { display: none; }
+    .bi-row { grid-template-columns: 56px minmax(0, 1fr) auto 22px; gap: 12px; }
+    .bi-sub { display: none; }
     .fb-card { margin-left: 0; margin-top: -2px; }
+    .fb-card:first-child { margin-top: 0; }
+  }
+  @media (max-width: 880px) {
+    .hero { grid-template-columns: 1fr; }
+    /* no celular a moldura vem depois do texto e da ficha: quem chega
+       lê primeiro quem é você, e o índice sobe */
+    .hero-visual {
+      grid-column: 1;
+      grid-row: 2;
+      width: min(72%, 320px);
+      margin-top: 32px;
+    }
+    .hero-photo { aspect-ratio: 4 / 3; }
+    .ai-seal { width: 92px; height: 92px; right: -6px; bottom: -22px; }
   }
   @media (max-width: 720px) {
+    .hero { padding-bottom: 48px; }
     .hero-title { font-size: clamp(40px, 13vw, 80px); }
     .hero-intro-long { display: none; }
     .hero-intro-short {
       display: block;
-      font-size: 14px;
+      font-size: var(--t-body);
       line-height: 1.6;
-      margin-top: 16px;
-      max-width: 40ch;
+      margin-top: 18px;
     }
-    .fb-title { font-size: 28px; }
-    .brutal-index { margin-top: 8px; }
+    .fact { grid-template-columns: 1fr; gap: 4px; }
+    .fact dd { font-size: 15px; }
     .bi-row {
-      grid-template-columns: 30px minmax(0, 1fr) 52px 18px;
-      gap: 7px;
+      grid-template-columns: 50px minmax(0, 1fr) auto 18px;
+      gap: 10px;
+      padding: 14px 0;
     }
-    .bi-row .bi-title { font-size: clamp(19px, 6vw, 28px); }
-    .bi-row .bi-meta { font-size: 8px; }
-    .bi-row .bi-arr { font-size: 18px; }
+    .bi-title { font-size: clamp(20px, 6.4vw, 28px); }
+    .bi-arr { font-size: 18px; }
+    .from-blog { margin-top: 56px; }
   }
   @media (max-width: 380px) {
     .hero-title { font-size: clamp(36px, 12vw, 80px); }

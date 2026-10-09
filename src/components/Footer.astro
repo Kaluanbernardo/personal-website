@@ -1,22 +1,42 @@
 ---
 import { ui, type Lang } from '../i18n/ui';
+import { link } from '../lib/links';
+import { email } from '../lib/profile';
+import { primaryNavOrder, sections, type SectionKey } from '../lib/sections';
+import Glyph from './Glyph.astro';
+
 interface Props {
   lang: Lang;
+  active?: SectionKey;
 }
-const { lang } = Astro.props;
+const { lang, active } = Astro.props;
 const t = ui[lang];
+const prefix = lang === 'en' ? '/en' : '';
+const items = primaryNavOrder.map((key) => ({
+  key,
+  n: sections[key].number,
+  glyph: sections[key].glyph,
+  color: sections[key].accent,
+  label: t.nav[key],
+  href: link(sections[key].slug ? `${prefix}/${sections[key].slug}` : `${prefix}/`),
+}));
+const navLabel = lang === 'en' ? 'Site map' : 'Mapa do site';
 ---
 
 <footer class="site-footer">
-  <span>{t.footer.note}</span>
+  <nav class="footer-nav" aria-label={navLabel}>
+    {items.map((it) => (
+      <a
+        href={it.href}
+        style={`--sec-c:${it.color}`}
+        aria-current={active === it.key ? 'page' : undefined}
+      >
+        <Glyph name={it.glyph} /><span class="num">{it.n}</span>{it.label}
+      </a>
+    ))}
+  </nav>
+  <div class="footer-base">
+    <span>{t.footer.note}</span>
+    <a href={`mailto:${email}`}>{email}</a>
+  </div>
 </footer>
-
-<style>
-  .site-footer .middle {
-    color: var(--accent);
-    letter-spacing: 0.1em;
-  }
-  @media (max-width: 720px) {
-    .site-footer .middle { display: none; }
-  }
-</style>

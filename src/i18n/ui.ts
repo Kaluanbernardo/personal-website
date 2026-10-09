@@ -62,7 +62,6 @@ type Dict = {
     eyebrow: string;
     title: { line1: string; emph: string };
     meta: (count: number) => string;
-    filters: string[];
     featuredKicker: string;
     newsletterKicker: string;
     newsletterTitle: string;
@@ -80,8 +79,6 @@ type Dict = {
   projetos: {
     eyebrow: string;
     title: string;
-    sub: string;
-    filters: string[];
   };
   contato: {
     eyebrow: string;
@@ -442,7 +439,6 @@ export const ui: Record<Lang, Dict> = {
       title: { line1: 'Notas, ', emph: 'ensaios.' },
       meta: (count: number) =>
         `${count} texto${count === 1 ? '' : 's'} · escritos em markdown · sincronizados com substack`,
-      filters: ['todos', 'produto', 'jornalismo', 'academia', 'leituras', 'notas'],
       featuredKicker: 'em destaque',
       newsletterKicker: 'newsletter',
       newsletterTitle: 'Receba no e-mail',
@@ -460,8 +456,6 @@ export const ui: Record<Lang, Dict> = {
     projetos: {
       eyebrow: '04 · projetos',
       title: 'Projetos',
-      sub: 'reportagens · produtos · papers · palestras · pessoais',
-      filters: ['todos', 'jornalismo', 'produto', 'academia', 'palestras', 'pessoal'],
     },
     contato: {
       eyebrow: '06 · contato',
@@ -826,7 +820,6 @@ export const ui: Record<Lang, Dict> = {
       title: { line1: 'Notes, ', emph: 'essays.' },
       meta: (count: number) =>
         `${count} ${count === 1 ? 'piece' : 'pieces'} · written in markdown · synced with substack`,
-      filters: ['all', 'product', 'journalism', 'academia', 'reading', 'notes'],
       featuredKicker: 'featured',
       newsletterKicker: 'newsletter',
       newsletterTitle: 'Get it by email',
@@ -844,8 +837,6 @@ export const ui: Record<Lang, Dict> = {
     projetos: {
       eyebrow: '04 · projects',
       title: 'Projects',
-      sub: 'reporting · products · papers · talks · personal',
-      filters: ['all', 'journalism', 'product', 'academia', 'talks', 'personal'],
     },
     contato: {
       eyebrow: '06 · contact',

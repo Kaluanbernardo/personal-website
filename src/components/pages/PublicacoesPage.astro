@@ -1,0 +1,155 @@
+---
+import { getCollection } from 'astro:content';
+import { ui, type Lang, tagDisplay } from '../../i18n/ui';
+import PageHead from '../PageHead.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+const en = lang === 'en';
+
+/* Página só de publicações acadêmicas, agrupadas por ano. O resumo
+   vem do corpo de cada arquivo em src/content/pubs. */
+const pubs = (await getCollection('pubs', ({ data }) => data.lang === lang))
+  .map((p) => ({ ...p.data, desc: (p.body ?? '').trim() }))
+  .sort((a, b) => b.year - a.year);
+const years = [...new Set(pubs.map((p) => p.year))];
+const lede = en
+  ? 'Articles, chapters, and proceedings. PhD in Communication and Consumption at ESPM, in progress.'
+  : 'Artigos, capítulos e anais. Doutorado em Comunicação e Consumo na ESPM, em curso.';
+const readLabel = en ? 'Read' : 'Ler';
+---
+
+<PageHead section="academico" lang={lang} note={en ? '~/research' : '~/pesquisa'}>
+  {en ? 'Publications' : 'Publicações'}
+  <div slot="after">
+    <p class="lede">{lede}</p>
+    <div class="profiles">
+      {t.academico.scholarIds.map((s) => (
+        <a class="ed-btn profile-btn" href={s.href} target="_blank" rel="noreferrer noopener">{s.label} ↗</a>
+      ))}
+    </div>
+  </div>
+</PageHead>
+
+{pubs.length === 0 ? (
+  <p class="empty">{en ? 'No publications listed yet.' : 'Sem publicações listadas ainda.'}</p>
+) : (
+  <div class="pubs">
+    {years.map((y) => (
+      <section class="pub-year" aria-label={String(y)}>
+        <span class="year ed-bungee">{y}</span>
+        <div class="year-list">
+          {pubs.filter((p) => p.year === y).map((p) => (
+            <article class="pub">
+              <div class="pub-body">
+                <h2 class="ed-bungee pub-title">{p.title}</h2>
+                <div class="pub-venue">{p.venue}</div>
+                {p.desc && <p class="pub-desc">{p.desc}</p>}
+              </div>
+              <div class="pub-side">
+                <span class="pub-kind">{tagDisplay[lang][p.kind] ?? p.kind}</span>
+                {p.url && <a class="pub-link" href={p.url} target="_blank" rel="noreferrer noopener">{readLabel} ↗</a>}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+)}
+
+<style>
+  .lede {
+    font-family: var(--mono);
+    font-size: var(--t-body);
+    color: var(--fg-2);
+    max-width: 60ch;
+    margin: 20px 0 0;
+  }
+  .profiles { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .profile-btn { font-size: var(--t-meta); padding: 8px 12px; }
+
+  .pubs { border-top: var(--loud) solid var(--fg); }
+  .pub-year {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr);
+    gap: 24px;
+    padding: 24px 0;
+    border-bottom: var(--hair) solid var(--fg);
+  }
+  .year {
+    font-size: 44px;
+    line-height: 0.9;
+    color: var(--accent);
+  }
+  .pub {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 16px;
+    padding-bottom: 14px;
+  }
+  .pub + .pub { border-top: var(--hair) dashed var(--fg-3); padding-top: 14px; }
+  .pub-title {
+    font-size: var(--t-item);
+    line-height: 1.12;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .pub:hover .pub-title { color: var(--accent); }
+  .pub-venue {
+    font-family: var(--mono);
+    font-size: var(--t-ui);
+    color: var(--fg-2);
+    margin-top: 6px;
+  }
+  .pub-desc {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--fg-2);
+    margin: 8px 0 0;
+    max-width: 56ch;
+  }
+  .pub-side { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+  .pub-kind {
+    font-family: var(--mono);
+    font-size: var(--t-meta);
+    font-weight: 700;
+    letter-spacing: var(--track);
+    text-transform: uppercase;
+    background: var(--accent);
+    color: var(--accent-ink);
+    padding: 1px 6px;
+  }
+  .pub-link {
+    font-family: var(--mono);
+    font-size: var(--t-meta);
+    letter-spacing: var(--track);
+    text-transform: uppercase;
+    border: var(--edge) solid var(--accent);
+    color: var(--accent);
+    padding: 5px 10px;
+    white-space: nowrap;
+  }
+  .pub-link:hover { background: var(--accent); color: var(--accent-ink); }
+  .empty {
+    font-family: var(--mono);
+    font-size: var(--t-meta);
+    color: var(--fg-3);
+    text-transform: uppercase;
+    letter-spacing: var(--track);
+  }
+
+  @media (max-width: 900px) {
+    .pub-year { grid-template-columns: 1fr; gap: 12px; }
+    .year { font-size: 36px; }
+  }
+  @media (max-width: 600px) {
+    .pub { grid-template-columns: 1fr; }
+    .pub-side { flex-direction: row; align-items: center; }
+  }
+</style>

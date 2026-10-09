@@ -1,6 +1,6 @@
 ---
-/* Crachá de imprensa do Sobre: foto, cargo atual, as três frentes,
-   números da carreira e o selo. Pendurado num cordão, levemente torto. */
+/* Crachá do Sobre: foto, as três frentes e números da
+   carreira. Pendurado num cordão, levemente torto. */
 import type { Lang } from '../i18n/ui';
 import { link } from '../lib/links';
 import { frentes, frenteOrder } from '../lib/frentes';
@@ -21,7 +21,6 @@ const nums: [string, string][] = en
   <div class="clip" aria-hidden="true"></div>
   <div class="badge">
     <div class="badge-top">
-      <span class="press ed-bungee">{en ? 'Press' : 'Imprensa'}</span>
       <span class="access">{en ? 'All access' : 'Acesso total'} · 2026</span>
     </div>
     <div class="badge-body">
@@ -31,10 +30,7 @@ const nums: [string, string][] = en
       <div class="badge-id">
         <p class="badge-name ed-bungee">Kaluan Bernardo</p>
         <p class="badge-role">
-          Product Manager<br />
-          SENAI-SP<br />
-          {en ? 'PhD candidate · ESPM' : 'Doutorando · ESPM'}<br />
-          <span class="badge-base">São Paulo</span>
+          São Paulo
         </p>
         <div class="badge-access">
           {frenteOrder.map((a) => <span style={`background:${frentes[a].color}`}>{frentes[a].nome[lang]}</span>)}
@@ -49,33 +45,6 @@ const nums: [string, string][] = en
     <div class="badge-foot">
       <span class="barcode" aria-hidden="true"></span>
       <span class="badge-code">KB-2012-2026</span>
-    </div>
-    <div class="badge-seal" role="img" aria-label="Selo: Inteligência as a service">
-      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="badgeSealGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="200" y2="200">
-            <stop offset="0%" stop-color="#ff2d55" />
-            <stop offset="20%" stop-color="#ff6a00" />
-            <stop offset="40%" stop-color="#ffe600" />
-            <stop offset="55%" stop-color="#c4ff00" />
-            <stop offset="75%" stop-color="#00f0ff" />
-            <stop offset="100%" stop-color="#b400ff" />
-          </linearGradient>
-        </defs>
-        <polygon
-          class="badge-burst"
-          points="100,4 111.2,14.7 124.9,7.3 132.9,20.5 148,16.9 152.4,31.8 167.9,32.1 168.2,47.6 183.1,52 179.5,67.1 192.7,75.2 185.3,88.8 196,100 185.3,111.2 192.7,124.9 179.5,132.9 183.1,148 168.2,152.4 167.9,167.9 152.4,168.2 148,183.1 132.9,179.5 124.9,192.7 111.2,185.3 100,196 88.8,185.3 75.2,192.7 67.1,179.5 52,183.1 47.6,168.2 32.1,167.9 31.8,152.4 16.9,148 20.5,132.9 7.3,124.9 14.7,111.2 4,100 14.7,88.8 7.3,75.2 20.5,67.1 16.9,52 31.8,47.6 32.1,32.1 47.6,31.8 52,16.9 67.1,20.5 75.2,7.3 88.8,14.7"
-          fill="url(#badgeSealGrad)"
-          stroke="#000"
-          stroke-width="3"
-          stroke-linejoin="round"
-        />
-        <g font-family="Bungee, sans-serif" font-weight="700" fill="#000" stroke="#fff" stroke-width="1" paint-order="stroke" text-anchor="middle">
-          <text x="100" y="92" font-size="36" letter-spacing="2.5">I.A.S</text>
-          <text x="100" y="124" font-size="16" letter-spacing="1.5">INTELIGÊNCIA</text>
-          <text x="100" y="147" font-size="16" letter-spacing="1.5">AS A SERVICE</text>
-        </g>
-      </svg>
     </div>
   </div>
 </div>
@@ -108,7 +77,6 @@ const nums: [string, string][] = en
     color: var(--fg);
     padding: 10px 14px;
   }
-  .press { font-size: 22px; color: var(--ylw); letter-spacing: -0.02em; }
   .access { font-family: var(--mono); font-size: var(--t-meta); letter-spacing: var(--track); text-transform: uppercase; }
   .badge-body { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 14px; padding: 16px; }
   .badge-photo { aspect-ratio: 3 / 4; border: var(--loud) solid #000; overflow: hidden; background: #000; }
@@ -116,7 +84,6 @@ const nums: [string, string][] = en
   .badge-id { min-width: 0; }
   .badge-name { font-size: 26px; line-height: 0.9; letter-spacing: -0.05em; text-transform: uppercase; margin: 0; }
   .badge-role { font-family: var(--mono); font-size: var(--t-meta); font-weight: 700; line-height: 1.4; margin: 10px 0 0; }
-  .badge-base { font-weight: 400; }
   .badge-access { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
   .badge-access span {
     font-family: var(--mono);
@@ -156,27 +123,8 @@ const nums: [string, string][] = en
   }
   .badge-code { font-family: var(--mono); font-size: var(--t-meta); font-weight: 700; letter-spacing: var(--track); }
 
-  /* o selo também vive aqui: borda girando, selo balançando */
-  .badge-seal {
-    position: absolute;
-    left: -36px;
-    bottom: 152px;
-    width: 88px;
-    height: 88px;
-    filter: drop-shadow(3px 4px 0 rgba(0, 0, 0, 0.5));
-    animation: badge-sway 1.6s ease-in-out infinite;
-  }
-  .badge-seal svg { width: 100%; height: 100%; display: block; overflow: visible; }
-  .badge-burst { transform-box: fill-box; transform-origin: center; animation: badge-spin 7s linear infinite; }
-  @keyframes badge-spin { to { transform: rotate(360deg); } }
-  @keyframes badge-sway {
-    0%, 100% { transform: rotate(-14deg) scale(1); }
-    50% { transform: rotate(6deg) scale(1.12); }
-  }
-
   @media (max-width: 420px) {
     .badge-body { grid-template-columns: 92px minmax(0, 1fr); }
     .badge-name { font-size: 22px; }
-    .badge-seal { left: -10px; width: 70px; height: 70px; }
   }
 </style>

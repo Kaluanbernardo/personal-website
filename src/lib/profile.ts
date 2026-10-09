@@ -24,4 +24,4 @@ export const scholarProfiles = [
 /* Foto da home. A moldura fica vazia enquanto isto for
    null; para usar uma foto, aponte para um arquivo em public/, por
    exemplo '/img/portrait-home.jpg'. */
-export const homePortrait: string | null = null;
+export const homePortrait: string | null = '/img/portrait-hero.jpg';

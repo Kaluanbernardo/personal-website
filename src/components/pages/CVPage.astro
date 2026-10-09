@@ -1,282 +1,145 @@
 ---
 import { ui, type Lang } from '../../i18n/ui';
 import { link } from '../../lib/links';
+import { frentes, frenteOrder } from '../../lib/frentes';
+import Glyph from '../Glyph.astro';
 import PageHead from '../PageHead.astro';
+
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 const t = ui[lang];
-const pdfHref = link(lang === 'en' ? '/cv-en.pdf' : '/cv-pt.pdf');
+const en = lang === 'en';
+const pdfHref = link(en ? '/cv-en.pdf' : '/cv-pt.pdf');
 
-const sections = lang === 'en'
-  ? [
-      { l: 'Experience', h: '#experience' },
-      { l: 'Education', h: '#education' },
-      { l: 'Skills', h: '#skills' },
-      { l: 'Languages', h: '#languages' },
-    ]
-  : [
-      { l: 'Experiência', h: '#experience' },
-      { l: 'Formação', h: '#education' },
-      { l: 'Skills', h: '#skills' },
-      { l: 'Idiomas', h: '#languages' },
-    ];
-
-const expHeading = lang === 'en' ? 'Experience' : 'Experiência';
-const formHeading = lang === 'en' ? 'Education' : 'Formação';
-const skillsHeading = 'Skills';
-const langHeading = lang === 'en' ? 'Languages' : 'Idiomas';
-const sectionsLabel = lang === 'en' ? 'Sections' : 'Seções';
-const whereLabel = lang === 'en' ? 'Where' : 'Onde';
-const statusLabel = 'Status';
-
-/* 14 cargos com todas as tags abertas davam 91 chips na primeira
-   leitura. Na lista ficam as 3 primeiras; o resto entra no "+". */
-const TAGS_VISIBLE = 3;
-
-/* Os 8 cargos mais recentes ficam à vista; os anteriores (o começo da
-   carreira) entram num bloco recolhido, com o período no rótulo. */
-const ROLES_VISIBLE = 8;
-const recentRoles = t.cv.experience.slice(0, ROLES_VISIBLE);
-const olderRoles = t.cv.experience.slice(ROLES_VISIBLE);
-const yearsOf = (p: string) => (p.match(/\d{4}/g) ?? []).map(Number);
-const olderYears = olderRoles.flatMap((e) => yearsOf(e.p));
-const olderSpan = olderYears.length ? `${Math.min(...olderYears)}–${Math.max(...olderYears)}` : '';
-const olderLabel = lang === 'en'
-  ? `Earlier: ${olderRoles.length} roles · ${olderSpan}`
-  : `Antes: ${olderRoles.length} cargos · ${olderSpan}`;
-const whereVal = 'São Paulo / -3 GMT';
-const statusVal = lang === 'en' ? '● PM @ SENAI · PhD @ ESPM' : '● PM @ SENAI · doutorando ESPM';
-
-const formationItems = lang === 'en'
-  ? [
-      { p: '2024 →', r: 'PhD in Communication & Consumption', o: 'ESPM · in progress' },
-      { p: '2014—16', r: 'MA in Communication', o: 'Faculdade Cásper Líbero' },
-      { p: '2010—13', r: 'BA in Journalism', o: 'Faculdade Cásper Líbero' },
-    ]
-  : [
-      { p: '2024 →', r: 'Doutorado em Comunicação e Consumo', o: 'ESPM · em curso' },
-      { p: '2014—16', r: 'Mestrado em Comunicação', o: 'Faculdade Cásper Líbero' },
-      { p: '2010—13', r: 'Bacharelado em Jornalismo', o: 'Faculdade Cásper Líbero' },
-    ];
-
-const langs = lang === 'en'
-  ? [
-      { l: 'Portuguese', n: 'native', g: 'Olá' },
-      { l: 'English', n: 'fluent', g: 'Hello' },
-      { l: 'Spanish', n: 'basic', g: '¡Hola!' },
-    ]
-  : [
-      { l: 'Inglês', n: 'fluente', g: 'Hello' },
-      { l: 'Espanhol', n: 'básico', g: '¡Hola!' },
-    ];
-
-const skillTags = lang === 'en'
-  ? ['product management', 'product discovery', 'JTBD', 'double diamond', 'design sprints', 'UX research', 'OKRs', 'A/B testing', 'SQL', 'SEO', 'content strategy', 'editing', 'reporting', 'team leadership', 'Notion', 'Figma']
-  : ['product management', 'product discovery', 'JTBD', 'double diamond', 'design sprints', 'UX research', 'OKRs', 'testes A/B', 'SQL', 'SEO', 'estratégia de conteúdo', 'edição', 'reportagem', 'gestão de times', 'Notion', 'Figma'];
+/* O CV mostra só a trajetória. Cada cargo fechado traz período, cargo,
+   empresa e uma linha; aberto, o que foi feito lá e as competências.
+   O filtro por frente chega pela URL (?area=prod|cont|pesq), que é
+   para onde apontam os links das frentes na home. */
+const jobs = t.cv.experience;
+const counts = Object.fromEntries(frenteOrder.map((a) => [a, jobs.filter((j) => j.a === a).length]));
+const lede = en
+  ? `${jobs.length} roles since 2012. Open any of them to see what I did there.`
+  : `${jobs.length} cargos desde 2012. Abra qualquer um para ver o que fiz lá.`;
+const allLabel = en ? 'All' : 'Tudo';
+const skillsLabel = en ? 'Skills' : 'Competências';
 ---
 
-<PageHead section="cv" lang={lang} note={lang === 'en' ? '~/career' : '~/carreira'}>
-  {lang === 'en' ? 'Resume' : 'Currículo'}
+<PageHead section="cv" lang={lang} note={en ? '~/career' : '~/carreira'}>
+  {en ? 'Career' : 'Trajetória'}
+  <p class="lede" slot="after">{lede}</p>
 </PageHead>
 
-<div class="cv-grid">
-  <aside class="cv-aside">
-    <nav class="section-nav" aria-label={sectionsLabel}>
-      <div class="label muted">{sectionsLabel}</div>
-      <div class="section-links">
-        {sections.map((s) => (
-          <a class="section-link" href={s.h}>{s.l}</a>
-        ))}
-      </div>
-    </nav>
-
-    <dl class="info-box">
-      <dt class="label">{whereLabel}</dt>
-      <dd>{whereVal}</dd>
-      <dt class="label">{statusLabel}</dt>
-      <dd class="is-live">{statusVal}</dd>
-    </dl>
-
-    <a class="ed-btn primary download-btn" href={pdfHref} download>↓ {t.cv.download}</a>
-  </aside>
-
-  <div class="cv-main">
-    <details class="section c-ylw" id="experience">
-      <summary class="sec-h section-summary">
-        <span class="sec-h-text">{expHeading}</span>
-        <span class="section-toggle" aria-hidden="true">+</span>
-      </summary>
-      {[recentRoles, olderRoles].map((group, gi) => {
-        const rows = group.map((e) => {
-          const shown = e.tags.slice(0, TAGS_VISIBLE);
-          const more = e.tags.slice(TAGS_VISIBLE);
-          return (
-            <details class="exp-row">
-              <summary class="exp-summary">
-                <div class="exp-period">{e.p}</div>
-                <div class="exp-body">
-                  <div class="ed-bungee exp-role">{e.r}</div>
-                  <div class="exp-org">{e.o}</div>
-                  <p class="exp-desc">{e.d}</p>
-                  <div class="exp-tags">
-                    {shown.map((tg) => <span class="ed-tag">{tg}</span>)}
-                    {more.length > 0 && <span class="exp-more">+{more.length}</span>}
-                  </div>
-                </div>
-                <span class="exp-plus" aria-hidden="true">+</span>
-              </summary>
-              <div class="exp-details">
-                <ul>
-                  {e.full.map((line) => <li>{line}</li>)}
-                </ul>
-                {more.length > 0 && (
-                  <div class="exp-tags">
-                    {more.map((tg) => <span class="ed-tag">{tg}</span>)}
-                  </div>
-                )}
-              </div>
-            </details>
-          );
-        });
-        if (gi === 0) return rows;
-        if (group.length === 0) return null;
-        return (
-          <details class="older">
-            <summary class="older-summary">
-              <span>{olderLabel}</span>
-              <span class="older-plus" aria-hidden="true">+</span>
-            </summary>
-            {rows}
-          </details>
-        );
-      })}
-    </details>
-
-    <details class="section c-cyan" id="education">
-      <summary class="sec-h section-summary">
-        <span class="sec-h-text">{formHeading}</span>
-        <span class="section-toggle" aria-hidden="true">+</span>
-      </summary>
-      {formationItems.map((e) => (
-        <div class="form-row">
-          <div class="exp-period">{e.p}</div>
-          <div>
-            <div class="ed-bungee exp-role">{e.r}</div>
-            <div class="form-org">{e.o}</div>
-          </div>
-        </div>
-      ))}
-    </details>
-
-    <details class="section c-hot" id="skills">
-      <summary class="sec-h section-summary">
-        <span class="sec-h-text">{skillsHeading}</span>
-        <span class="section-toggle" aria-hidden="true">+</span>
-      </summary>
-      <div class="skill-tags">
-        {skillTags.map((s) => <span class="ed-tag">{s}</span>)}
-      </div>
-    </details>
-
-    <details class="section c-vio" id="languages">
-      <summary class="sec-h section-summary">
-        <span class="sec-h-text">{langHeading}</span>
-        <span class="section-toggle" aria-hidden="true">+</span>
-      </summary>
-      <div class="langs">
-        {langs.map((id) => (
-          <div class="lang-cell">
-            <div class="lang-greet">{id.g}</div>
-            <div class="ed-bungee lang-l">{id.l}</div>
-            <div class="label muted lang-n">{id.n}</div>
-          </div>
-        ))}
-      </div>
-    </details>
+<div class="cv-bar">
+  <div class="filters" role="group" aria-label={en ? 'Filter by area' : 'Filtrar por frente'}>
+    <button type="button" class="ed-tag filter-btn is-active" data-area="" aria-pressed="true" aria-controls="jobs">
+      {allLabel}<span class="n">{jobs.length}</span>
+    </button>
+    {frenteOrder.map((a) => (
+      <button type="button" class="ed-tag filter-btn" data-area={a} aria-pressed="false" aria-controls="jobs" style={`--fc:${frentes[a].color}`}>
+        <Glyph name={frentes[a].glyph} class="fg" />{frentes[a].nome[lang]}<span class="n">{counts[a]}</span>
+      </button>
+    ))}
+    <span class="sr-only" data-count aria-live="polite"></span>
   </div>
+  <a class="ed-btn primary" href={pdfHref} download>↓ {en ? 'Download CV (PDF)' : 'Baixar CV em PDF'}</a>
 </div>
 
+<div id="jobs">
+  {jobs.map((j) => (
+    <details class="job" data-area={j.a} style={`--fc:${frentes[j.a].color}`}>
+      <summary class="job-sum">
+        <span class="job-period">{j.p}</span>
+        <span class="job-main">
+          <span class="ed-bungee job-role">{j.r}</span>
+          <span class="job-org">{j.o}</span>
+          <span class="job-desc">{j.d}</span>
+        </span>
+        <span class="job-area">{frentes[j.a].nome[lang]}</span>
+        <span class="job-plus" aria-hidden="true">+</span>
+      </summary>
+      <div class="job-more">
+        <ul>{j.full.map((line) => <li>{line}</li>)}</ul>
+        <div class="job-tags">
+          <span class="label muted">{skillsLabel}</span>
+          {j.tags.map((tg) => <span class="ed-tag">{tg}</span>)}
+        </div>
+      </div>
+    </details>
+  ))}
+</div>
+
+<script>
+  const btns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const jobs = document.querySelectorAll<HTMLElement>('.job');
+  const countEl = document.querySelector<HTMLElement>('[data-count]');
+  const isEn = document.documentElement.lang === 'en';
+
+  function apply(area: string, push: boolean) {
+    let shown = 0;
+    jobs.forEach((j) => {
+      const match = !area || j.dataset.area === area;
+      j.hidden = !match;
+      if (match) shown += 1;
+    });
+    btns.forEach((b) => {
+      const on = (b.dataset.area ?? '') === area;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-pressed', String(on));
+    });
+    if (countEl) countEl.textContent = isEn ? `${shown} roles` : `${shown} cargos`;
+    if (push) {
+      const url = new URL(window.location.href);
+      if (area) url.searchParams.set('area', area); else url.searchParams.delete('area');
+      history.pushState({ area }, '', url);
+    }
+  }
+  const read = () => {
+    const a = new URL(window.location.href).searchParams.get('area') ?? '';
+    return ['prod', 'cont', 'pesq'].includes(a) ? a : '';
+  };
+  btns.forEach((b) => b.addEventListener('click', () => apply(b.dataset.area ?? '', true)));
+  window.addEventListener('popstate', () => apply(read(), false));
+  apply(read(), false);
+</script>
+
 <style>
-  .cv-grid {
-    display: grid;
-    grid-template-columns: 200px minmax(0, 1fr);
-    gap: 56px;
-    align-items: flex-start;
-  }
-  .cv-aside {
-    position: sticky;
-    top: calc(var(--header-h) + 24px);
-    align-self: start;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-  .section-links { display: flex; flex-direction: column; margin-top: 8px; }
-  .section-link {
+  .lede {
     font-family: var(--mono);
-    font-size: var(--t-ui);
-    padding: 6px 0 6px 12px;
-    border-left: var(--edge) solid var(--fg-3);
+    font-size: var(--t-body);
     color: var(--fg-2);
+    max-width: 60ch;
+    margin: 18px 0 0;
   }
-  .section-link:hover { background: var(--accent); color: var(--accent-ink); border-left-color: var(--accent); }
-
-  .info-box {
-    margin: 0;
-    border: var(--edge) solid var(--fg);
-    padding: 12px 14px;
-    font-family: var(--mono);
-  }
-  .info-box dt { margin-top: 10px; }
-  .info-box dt:first-child { margin-top: 0; }
-  .info-box dd { font-size: var(--t-ui); margin: 3px 0 0; color: var(--fg); }
-  .info-box dd.is-live { color: var(--accent); }
-  .download-btn { width: 100%; justify-content: center; }
-
-  /* cada bloco do CV mantém a sua cor */
-  .section.c-ylw  { --accent: var(--ylw); }
-  .section.c-cyan { --accent: var(--cyan); }
-  .section.c-hot  { --accent: var(--hot); }
-  .section.c-vio  { --accent: var(--vio); }
-
-  .section { margin-top: 48px; }
-  .section:first-of-type { margin-top: 0; }
-  .section-summary { list-style: none; cursor: pointer; align-items: center; margin-bottom: 0; }
-  .section-summary::-webkit-details-marker { display: none; }
-  .section-summary::marker { content: ''; }
-  .section-toggle {
-    width: 34px;
-    height: 34px;
-    flex: none;
-    border: var(--edge) solid currentColor;
-    display: inline-flex;
+  .cv-bar {
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
-    font-family: var(--display);
-    font-size: 18px;
-    line-height: 1;
-    transition: transform 0.18s ease, background 0.12s linear, color 0.12s linear;
+    justify-content: space-between;
+    gap: 14px;
+    padding-bottom: 16px;
+    border-bottom: var(--loud) solid var(--fg);
   }
-  .section[open] .section-toggle { transform: rotate(45deg); background: var(--accent); color: var(--accent-ink); }
+  .cv-bar .filters { margin: 0; }
+  .filter-btn { display: inline-flex; align-items: center; gap: 7px; border-color: var(--fc, var(--fg)); }
+  .filter-btn :global(.fg) { width: 10px; height: 10px; color: var(--fc); }
+  .filter-btn.is-active { background: var(--fc, var(--fg)); border-color: var(--fc, var(--fg)); color: #000; }
+  .filter-btn.is-active :global(.fg) { color: #000; }
 
-  .exp-row {
-    padding: 20px 0;
-    border-bottom: var(--hair) dashed var(--fg-3);
-  }
-  .exp-summary {
+  .job { border-bottom: var(--hair) dashed var(--fg-3); }
+  .job-sum {
     display: grid;
-    grid-template-columns: 120px minmax(0, 1fr) 40px;
+    grid-template-columns: 130px minmax(0, 1fr) auto 40px;
     gap: 20px;
     align-items: start;
+    padding: 22px 0;
     list-style: none;
     cursor: pointer;
   }
-  .exp-summary::-webkit-details-marker { display: none; }
-  .exp-summary::marker { content: ''; }
-  .exp-body { min-width: 0; }
-  .exp-period {
+  .job-sum::-webkit-details-marker { display: none; }
+  .job-sum::marker { content: ''; }
+  .job-period {
     font-family: var(--mono);
     font-size: var(--t-meta);
     letter-spacing: var(--track);
@@ -284,43 +147,46 @@ const skillTags = lang === 'en'
     color: var(--fg-3);
     padding-top: 5px;
   }
-  .exp-role {
+  .job-main { display: flex; flex-direction: column; min-width: 0; }
+  .job-role {
     font-size: var(--t-item);
     line-height: 1.12;
     text-transform: uppercase;
     letter-spacing: -0.02em;
   }
-  .exp-summary:hover .exp-role { color: var(--accent); }
-  .exp-org {
+  .job-sum:hover .job-role { color: var(--fc); }
+  .job-org {
     font-family: var(--mono);
     font-size: var(--t-ui);
     font-weight: 700;
-    color: var(--accent);
-    margin: 6px 0 10px;
+    color: var(--fc);
+    margin-top: 6px;
   }
-  .exp-desc {
+  .job-desc {
     font-family: var(--mono);
     font-size: 15px;
+    line-height: 1.6;
     color: var(--fg-2);
-    margin: 0 0 12px;
-    line-height: 1.65;
+    margin-top: 8px;
     max-width: 64ch;
   }
-  .exp-tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-  .exp-tags .ed-tag { color: var(--fg-2); border-color: var(--fg-3); }
-  .exp-more {
+  .job-area {
     font-family: var(--mono);
     font-size: var(--t-meta);
-    color: var(--fg-3);
-    padding: 0 4px;
+    font-weight: 700;
+    letter-spacing: var(--track);
+    text-transform: uppercase;
+    background: var(--fc);
+    color: #000;
+    padding: 1px 6px;
+    margin-top: 4px;
+    white-space: nowrap;
   }
-
-  .exp-plus {
-    justify-self: end;
+  .job-plus {
     width: 40px;
     height: 40px;
-    border: var(--edge) solid var(--accent);
-    color: var(--accent);
+    border: var(--edge) solid var(--fc);
+    color: var(--fc);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -329,131 +195,34 @@ const skillTags = lang === 'en'
     line-height: 1;
     transition: transform 0.18s ease, background 0.12s linear, color 0.12s linear;
   }
-  .exp-row:hover .exp-plus,
-  .exp-row[open] .exp-plus { background: var(--accent); color: var(--accent-ink); }
-  .exp-row[open] .exp-plus { transform: rotate(45deg); }
+  .job-sum:hover .job-plus,
+  .job[open] .job-plus { background: var(--fc); color: #000; }
+  .job[open] .job-plus { transform: rotate(45deg); }
 
-  .exp-details {
-    padding: 16px 60px 4px 140px;
+  .job-more {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: 28px;
+    padding: 0 60px 26px 150px;
+  }
+  .job-more ul {
+    margin: 0;
+    padding-left: 18px;
     font-family: var(--mono);
     font-size: 15px;
     line-height: 1.7;
-    color: var(--fg-2);
   }
-  .exp-details ul { margin: 0 0 14px; padding-left: 18px; max-width: 64ch; }
-  .exp-details li { margin-bottom: 8px; }
-  .exp-details li::marker { color: var(--accent); }
-
-  /* começo de carreira: recolhido, com o período no rótulo */
-  .older { border-bottom: var(--hair) dashed var(--fg-3); }
-  .older-summary {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    list-style: none;
-    cursor: pointer;
-    padding: 18px 0;
-    font-family: var(--mono);
-    font-size: var(--t-ui);
-    font-weight: 700;
-    letter-spacing: var(--track);
-    text-transform: uppercase;
-    color: var(--fg-2);
-  }
-  .older-summary::-webkit-details-marker { display: none; }
-  .older-summary::marker { content: ''; }
-  .older-summary:hover { color: var(--accent); }
-  .older-plus {
-    width: 40px;
-    height: 40px;
-    flex: none;
-    border: var(--edge) dashed var(--accent);
-    color: var(--accent);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--display);
-    font-size: 20px;
-    transition: transform 0.18s ease;
-  }
-  .older[open] .older-plus { transform: rotate(45deg); }
-  .older[open] > .older-summary { border-bottom: var(--hair) dashed var(--fg-3); }
-  .older .exp-row:last-child { border-bottom: none; }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: 120px minmax(0, 1fr);
-    gap: 20px;
-    padding: 18px 0;
-    border-bottom: var(--hair) dashed var(--fg-3);
-  }
-  .form-org {
-    font-family: var(--mono);
-    font-size: var(--t-ui);
-    color: var(--fg-2);
-    margin-top: 6px;
-  }
-
-  .skill-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-
-  .langs {
-    display: flex;
-    gap: 56px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-  }
-  .lang-cell { min-width: 150px; }
-  .lang-greet {
-    font-family: var(--mono);
-    font-size: 18px;
-    color: var(--accent);
-    margin-bottom: 8px;
-  }
-  .lang-l { font-size: 26px; line-height: 1; text-transform: uppercase; }
-  .lang-n { margin-top: 8px; }
+  .job-more li { margin-bottom: 8px; }
+  .job-more li::marker { color: var(--fc); }
+  .job-tags { display: flex; flex-wrap: wrap; gap: 6px; align-content: start; }
+  .job-tags .label { width: 100%; }
+  .job-tags .ed-tag { color: var(--fg-2); border-color: var(--fg-3); }
 
   @media (max-width: 900px) {
-    .cv-grid { grid-template-columns: 1fr; gap: 32px; }
-    /* no celular o índice da página vira uma faixa de atalhos */
-    .cv-aside { position: static; gap: 16px; }
-    .section-links { flex-direction: row; flex-wrap: wrap; gap: 6px; }
-    .section-link { border: var(--hair) solid var(--fg-3); padding: 6px 10px; }
-    .info-box { display: none; }
-    .download-btn { width: auto; align-self: flex-start; }
-    .form-row { grid-template-columns: 1fr; gap: 6px; }
-    .exp-summary { grid-template-columns: minmax(0, 1fr) 40px; gap: 6px 12px; }
-    .exp-period { grid-column: 1 / -1; padding-top: 0; }
-    .exp-plus { grid-column: 2; grid-row: 2; }
-    .exp-details { padding: 14px 0 4px; }
+    .job-sum { grid-template-columns: minmax(0, 1fr) 40px; gap: 8px 14px; }
+    .job-period { grid-column: 1 / -1; padding-top: 0; }
+    .job-area { grid-column: 1; justify-self: start; }
+    .job-plus { grid-column: 2; grid-row: 2; }
+    .job-more { grid-template-columns: 1fr; gap: 16px; padding: 0 0 22px; }
   }
 </style>
-
-<script>
-  function openFromHash() {
-    const hash = window.location.hash.slice(1);
-    if (!hash) return;
-    const el = document.getElementById(hash);
-    if (el && el.tagName.toLowerCase() === 'details') {
-      (el as HTMLDetailsElement).open = true;
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }
-  openFromHash();
-  window.addEventListener('hashchange', openFromHash);
-  document.querySelectorAll<HTMLAnchorElement>('a.section-link[href^="#"]').forEach((a) => {
-    a.addEventListener('click', (ev) => {
-      const id = a.getAttribute('href')?.slice(1);
-      if (!id) return;
-      const el = document.getElementById(id);
-      if (el && el.tagName.toLowerCase() === 'details') {
-        /* atalho sempre leva ao bloco: antes, clicar num bloco já
-           aberto o fechava, e o atalho parecia não fazer nada */
-        ev.preventDefault();
-        (el as HTMLDetailsElement).open = true;
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        history.replaceState(null, '', `#${id}`);
-      }
-    });
-  });
-</script>

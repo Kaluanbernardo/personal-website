@@ -1,9 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
-import { ui, type Lang, formatDate, tagDisplay } from '../../i18n/ui';
+import { ui, type Lang, type Frente, formatDate } from '../../i18n/ui';
 import { link } from '../../lib/links';
-import { homePortrait } from '../../lib/profile';
-import { primaryNavOrder, sections } from '../../lib/sections';
+import { email, homePortrait } from '../../lib/profile';
+import { frentes } from '../../lib/frentes';
 import Glyph from '../Glyph.astro';
 
 interface Props {
@@ -12,186 +12,209 @@ interface Props {
 const { lang } = Astro.props;
 const t = ui[lang];
 const en = lang === 'en';
+const prefix = en ? '/en' : '';
 
-const allPosts = await getCollection('posts', ({ data }) => !data.draft && data.lang === lang);
-const recentPosts = allPosts
+const posts = (await getCollection('posts', ({ data }) => !data.draft && data.lang === lang))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
-const allProjects = await getCollection('projects', ({ data }) => data.lang === lang);
-const allPubs = await getCollection('pubs', ({ data }) => data.lang === lang);
+const projects = await getCollection('projects', ({ data }) => data.lang === lang);
+const pubs = (await getCollection('pubs', ({ data }) => data.lang === lang))
+  .sort((a, b) => b.data.year - a.data.year);
 
-const prefix = en ? '/en' : '';
-const postHref = (slug: string) => link(`${prefix}/blog/${slug}`);
-const blogHref = link(`${prefix}/blog`);
-const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+const jobs = t.cv.experience;
+const firstProject = (kind: string) => projects
+  .filter((p) => p.data.kind === kind)
+  .sort((a, b) => b.data.year - a.data.year)[0];
 
-/* O índice usa o mesmo nome do menu. A piada de terminal continua,
-   mas descreve o destino de verdade: antes prometia um PDF
-   (work_history.pdf) e um site externo (lattes.cnpq.br) e abria
-   páginas internas. A coluna da direita diz o que há lá dentro. */
-const indexInfo: Record<string, { sub: string; meta: string }> = {
-  sobre: { sub: en ? '> cat about.txt' : '> cat sobre.txt', meta: 'bio' },
-  cv: {
-    sub: en ? '> ls ./career' : '> ls ./carreira',
-    meta: plural(t.cv.experience.length, en ? 'role' : 'cargo', en ? 'roles' : 'cargos'),
-  },
-  academico: {
-    sub: en ? '> ls ./research' : '> ls ./pesquisa',
-    meta: plural(allPubs.length, en ? 'paper' : 'pub', en ? 'papers' : 'pubs'),
-  },
-  projetos: {
-    sub: en ? '> ls ./projects' : '> ls ./projetos',
-    meta: plural(allProjects.length, en ? 'item' : 'item', en ? 'items' : 'itens'),
-  },
-  blog: { sub: '> cat *.md', meta: plural(allPosts.length, 'post', 'posts') },
-  contato: { sub: '> echo $EMAIL', meta: 'e-mail' },
+/* Três frentes: recolhidas por padrão, cada uma com uma frase curta.
+   Abertas, mostram número de destaque, cargos principais, um trabalho
+   em destaque e o caminho para aprofundar. */
+type Card = {
+  a: Frente;
+  sum: string;
+  stat: [string, string];
+  roles: { p: string; r: string; o: string }[];
+  pick?: { kind: string; title: string; sub: string; href: string };
+  more: { label: string; href: string };
 };
-const indexEntries = primaryNavOrder
-  .filter((key) => key !== 'home')
-  .map((key) => ({
-    key,
-    n: sections[key].number,
-    glyph: sections[key].glyph,
-    t: t.nav[key],
-    sub: indexInfo[key].sub,
-    meta: indexInfo[key].meta,
-    href: link(`${prefix}/${sections[key].slug}`),
-    color: sections[key].accent,
-  }));
-
-const heroTags = en
-  ? ['Product', 'Journalism', 'Content', 'Technology', 'Games', 'Culture', 'Strategy', 'AI', 'Education']
-  : ['Produto', 'Jornalismo', 'Conteúdo', 'Tecnologia', 'Games', 'Cultura', 'Estratégia', 'IA', 'Educação'];
-const tagColors = ['var(--hot)', 'var(--acid)', 'var(--cyan)', 'var(--ylw)'];
-
-const indexHeading = en ? 'Index' : 'Índice';
-const fromBlogHeading = en ? 'From the blog' : 'Do blog';
-const allPostsLabel = en ? 'All posts →' : 'Todos os posts →';
+const projPick = (kind: string, kindLabel: string) => {
+  const p = firstProject(kind);
+  return p ? { kind: kindLabel, title: p.data.title, sub: (p.body ?? '').trim() || p.data.place, href: p.data.url ?? link(`${prefix}/projetos`) } : undefined;
+};
+const doutorado = en
+  ? { p: '2024 — present', r: 'PhD in Communication and Consumption', o: 'ESPM' }
+  : { p: '2024 — atual', r: 'Doutorado em Comunicação e Consumo', o: 'ESPM' };
+const cards: Card[] = [
+  {
+    a: 'prod',
+    sum: en ? 'Discovery, strategy, and digital products for education and media.' : 'Discovery, estratégia e produto digital para educação e mídia.',
+    stat: ['12+', en ? 'digital products · 1M+ users' : 'produtos digitais · 1M+ usuários'],
+    roles: jobs.filter((j) => j.a === 'prod').slice(0, 3),
+    pick: projPick('produto', en ? 'Project' : 'Projeto'),
+    more: { label: en ? 'Product career' : 'Trajetória em produto', href: link(`${prefix}/cv?area=prod`) },
+  },
+  {
+    a: 'cont',
+    sum: en ? 'Twelve years of newsrooms and content strategy, from reporting to leading teams.' : 'Doze anos de redação e estratégia de conteúdo, da reportagem ao comando de equipes.',
+    stat: ['3', en ? 'newsrooms led or edited · CNN, Gizmodo, UOL' : 'redações lideradas ou editadas · CNN, Gizmodo, UOL'],
+    roles: jobs.filter((j) => j.a === 'cont').slice(0, 3),
+    pick: projPick('jornalismo', en ? 'Reporting' : 'Reportagem'),
+    more: { label: en ? 'Content career' : 'Trajetória em conteúdo', href: link(`${prefix}/cv?area=cont`) },
+  },
+  {
+    a: 'pesq',
+    sum: en ? 'PhD at ESPM and six years of teaching.' : 'Doutorado na ESPM e seis anos de sala de aula.',
+    stat: [String(pubs.length), en ? 'publications · PhD in progress' : 'publicações · doutorado em curso'],
+    roles: [doutorado, ...jobs.filter((j) => j.a === 'pesq').slice(0, 2)],
+    pick: pubs[0] ? { kind: en ? 'Paper' : 'Paper', title: pubs[0].data.title, sub: pubs[0].data.venue, href: link(`${prefix}/publicacoes`) } : undefined,
+    more: { label: en ? 'Academic publications' : 'Publicações acadêmicas', href: link(`${prefix}/publicacoes`) },
+  },
+];
+const period = (p: string) => p.replace(/\s—\s(atual|present)$/, ' →').replace(/\s—\s/, '–');
 
 const heroTitle = (t.brand || '').split(' ');
-const firstName = heroTitle[0] || 'NOME';
-const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
+const firstName = (heroTitle[0] || 'NOME').toUpperCase();
+const lastName = (heroTitle.slice(1).join(' ') || 'SOBRENOME').toUpperCase();
+const pdfHref = link(en ? '/cv-en.pdf' : '/cv-pt.pdf');
 ---
 
 <section class="hero">
-  <div class="hero-grid-bg" aria-hidden="true"></div>
-
-  <div class="hero-visual">
-    <div class="hero-photo">
-      {homePortrait && <img src={link(homePortrait)} alt={en ? 'Portrait of Kaluan Bernardo' : 'Retrato de Kaluan Bernardo'} />}
-    </div>
-
-    <div class="ai-seal" role="img" aria-label="Selo: Inteligência as a service">
-      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="aiSealGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="200" y2="200">
-          <stop offset="0%" stop-color="#ff2d55" />
-          <stop offset="20%" stop-color="#ff6a00" />
-          <stop offset="40%" stop-color="#ffe600" />
-          <stop offset="55%" stop-color="#c4ff00" />
-          <stop offset="75%" stop-color="#00f0ff" />
-          <stop offset="100%" stop-color="#b400ff" />
-        </linearGradient>
-      </defs>
-      <polygon
-        points="100,4 111.2,14.7 124.9,7.3 132.9,20.5 148,16.9 152.4,31.8 167.9,32.1 168.2,47.6 183.1,52 179.5,67.1 192.7,75.2 185.3,88.8 196,100 185.3,111.2 192.7,124.9 179.5,132.9 183.1,148 168.2,152.4 167.9,167.9 152.4,168.2 148,183.1 132.9,179.5 124.9,192.7 111.2,185.3 100,196 88.8,185.3 75.2,192.7 67.1,179.5 52,183.1 47.6,168.2 32.1,167.9 31.8,152.4 16.9,148 20.5,132.9 7.3,124.9 14.7,111.2 4,100 14.7,88.8 7.3,75.2 20.5,67.1 16.9,52 31.8,47.6 32.1,32.1 47.6,31.8 52,16.9 67.1,20.5 75.2,7.3 88.8,14.7"
-        fill="url(#aiSealGrad)"
-        stroke="#000"
-        stroke-width="3"
-        stroke-linejoin="round"
-      />
-      <g font-family="Bungee, sans-serif" font-weight="700" fill="#000" stroke="#fff" stroke-width="1" paint-order="stroke" text-anchor="middle">
-        <text x="100" y="92" font-size="36" letter-spacing="2.5">I.A.S</text>
-        <text x="100" y="124" font-size="16" letter-spacing="1.5">INTELIGÊNCIA</text>
-        <text x="100" y="147" font-size="16" letter-spacing="1.5">AS A SERVICE</text>
-      </g>
-      </svg>
-    </div>
-  </div>
-
   <div class="hero-main">
     <h1 class="hero-title ed-bungee">
-      <span class="t-fg">{firstName.toUpperCase()}</span><br />
-      <span class="t-stroke">{lastName.toUpperCase()}</span><Glyph name="star" class="ed-blink hero-star" />
+      <span class="t-fg">{firstName}</span>
+      <span class="t-stroke">{lastName}</span>
     </h1>
-
-    <p class="hero-intro hero-intro-long">
-      {en ? (
-        <>
-          I create <span class="ed-mark">products</span>, develop <span class="ed-mark">strategies</span>, do research and analysis, teach classes, think up and execute ideas, all with a touch of <span class="ed-mark">groove</span>. I like technology, culture, games, music and journalism. I also like potatoes and <span class="ed-mark">studying</span>.
-        </>
-      ) : (
-        <>
-          Crio <span class="ed-mark">produtos</span>, desenvolvo <span class="ed-mark">estratégias</span>, faço pesquisas e análises, dou aulas, penso e executo ideias — tudo com um tiquinho de <span class="ed-mark">carimbó</span>. Gosto de tecnologia, cultura, games, música e jornalismo. Também gosto de batata e de <span class="ed-mark">estudar</span>.
-        </>
-      )}
+    <p class="hero-intro">
+      {en ? 'Fourteen years across ' : 'Quatorze anos entre '}
+      <mark style={`--mk:${frentes.prod.color}`}>{en ? 'product' : 'produto'}</mark>,{' '}
+      <mark style={`--mk:${frentes.cont.color}`}>{en ? 'content' : 'conteúdo'}</mark>{en ? ', and ' : ' e '}
+      <mark style={`--mk:${frentes.pesq.color}`}>{en ? 'research' : 'pesquisa'}</mark>.
+      {en ? ' Pick where to start.' : ' Escolha por onde entrar.'}
     </p>
-
-    <p class="hero-intro hero-intro-short">
-      {en
-        ? 'I create products and strategies, research, teach, and turn curiosity into work, with a touch of Brazilian groove.'
-        : 'Crio produtos e estratégias, faço pesquisa, dou aulas e transformo curiosidade em trabalho, com um tiquinho de carimbó.'}
-    </p>
-
+    <div class="hero-ctas">
+      <a class="ed-btn hero-cv" href={pdfHref} download>↓ {en ? 'Download CV' : 'Baixar CV'}</a>
+      <a class="ed-btn" href={link(`${prefix}/contato`)}>{en ? 'Get in touch' : 'Fala comigo'}</a>
+    </div>
   </div>
 
-  <div class="hero-tags">
-    {heroTags.map((tag, i) => (
-      <span class="ed-tag hero-tag" style={`background:${tagColors[i % 4]}`}>#{tag}</span>
-    ))}
-  </div>
+  <figure class="hero-visual">
+    <div class="hero-photo">
+      {homePortrait && <img src={link(homePortrait)} alt={en ? 'Portrait of Kaluan Bernardo' : 'Retrato de Kaluan Bernardo'} width="720" height="960" />}
+    </div>
+    <div class="ai-seal" role="img" aria-label="Selo: Inteligência as a service">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="aiSealGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="200" y2="200">
+            <stop offset="0%" stop-color="#ff2d55" />
+            <stop offset="20%" stop-color="#ff6a00" />
+            <stop offset="40%" stop-color="#ffe600" />
+            <stop offset="55%" stop-color="#c4ff00" />
+            <stop offset="75%" stop-color="#00f0ff" />
+            <stop offset="100%" stop-color="#b400ff" />
+          </linearGradient>
+        </defs>
+        <polygon
+          class="seal-burst"
+          points="100,4 111.2,14.7 124.9,7.3 132.9,20.5 148,16.9 152.4,31.8 167.9,32.1 168.2,47.6 183.1,52 179.5,67.1 192.7,75.2 185.3,88.8 196,100 185.3,111.2 192.7,124.9 179.5,132.9 183.1,148 168.2,152.4 167.9,167.9 152.4,168.2 148,183.1 132.9,179.5 124.9,192.7 111.2,185.3 100,196 88.8,185.3 75.2,192.7 67.1,179.5 52,183.1 47.6,168.2 32.1,167.9 31.8,152.4 16.9,148 20.5,132.9 7.3,124.9 14.7,111.2 4,100 14.7,88.8 7.3,75.2 20.5,67.1 16.9,52 31.8,47.6 32.1,32.1 47.6,31.8 52,16.9 67.1,20.5 75.2,7.3 88.8,14.7"
+          fill="url(#aiSealGrad)"
+          stroke="#000"
+          stroke-width="3"
+          stroke-linejoin="round"
+        />
+        <g font-family="Bungee, sans-serif" font-weight="700" fill="#000" stroke="#fff" stroke-width="1" paint-order="stroke" text-anchor="middle">
+          <text x="100" y="92" font-size="36" letter-spacing="2.5">I.A.S</text>
+          <text x="100" y="124" font-size="16" letter-spacing="1.5">INTELIGÊNCIA</text>
+          <text x="100" y="147" font-size="16" letter-spacing="1.5">AS A SERVICE</text>
+        </g>
+      </svg>
+    </div>
+  </figure>
 </section>
 
-<section class="index" aria-labelledby="index-h">
-  <h2 class="sec-h index-h" id="index-h"><span class="sec-h-text">{indexHeading}</span></h2>
-  {/* a régua é a legenda do site: as seis cores, na ordem do menu */}
-  <div class="legend" aria-hidden="true">
-    {indexEntries.map((s) => <span style={`background:${s.color}`}></span>)}
-  </div>
-
-  {indexEntries.map((s) => (
-    <a class="bi-row" href={s.href} style={`--row-c:${s.color}`}>
-      <span class="bi-num"><Glyph name={s.glyph} />{s.n}</span>
-      <span class="bi-title ed-bungee">{s.t}</span>
-      <span class="bi-sub">{s.sub}</span>
-      <span class="bi-meta">{s.meta}</span>
-      <span class="bi-arr" aria-hidden="true">→</span>
-    </a>
+<section class="fronts" aria-label={en ? 'Areas of work' : 'Frentes de trabalho'}>
+  {cards.map((c) => (
+    <article class="front" style={`--fc:${frentes[c.a].color}`}>
+      <div class="front-h">
+        <h2 class="ed-bungee">{frentes[c.a].nome[lang]}</h2>
+        <Glyph name={frentes[c.a].glyph} class="front-glyph" />
+      </div>
+      <p class="front-sum">{c.sum}</p>
+      <button
+        class="front-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls={`front-${c.a}`}
+        data-open={`${en ? 'See' : 'Ver'} ${frentes[c.a].nome[lang].toLowerCase()}`}
+        data-close={en ? 'Close' : 'Recolher'}
+      >
+        <span class="ft-label">{en ? 'See' : 'Ver'} {frentes[c.a].nome[lang].toLowerCase()}</span><span class="ft-plus" aria-hidden="true">+</span>
+      </button>
+      <div class="front-detail" id={`front-${c.a}`} hidden>
+        <div class="front-stat"><b class="ed-bungee">{c.stat[0]}</b><span>{c.stat[1]}</span></div>
+        <ul class="front-roles">
+          {c.roles.map((r) => (
+            <li><span class="fr-y">{period(r.p)}</span><span><b>{r.r}</b><span class="fr-o">{r.o}</span></span></li>
+          ))}
+        </ul>
+        {c.pick && (
+          <a class="front-pick" href={c.pick.href}>
+            <span class="label">{en ? 'Highlight' : 'Destaque'} · {c.pick.kind}</span>
+            <span class="ed-bungee fp-title">{c.pick.title}</span>
+            <span class="fp-sub">{c.pick.sub}</span>
+          </a>
+        )}
+        <a class="front-more" href={c.more.href}>{c.more.label} →</a>
+      </div>
+    </article>
   ))}
 </section>
 
-{recentPosts.length > 0 && (
-  /* o bloco do blog veste a cor do blog, também aqui */
-  <section class="from-blog theme-blog" aria-labelledby="fb-h">
-    <h2 class="sec-h" id="fb-h">
-      <span class="sec-h-text">{fromBlogHeading}</span>
-      <a class="sec-h-aside" href={blogHref}>{allPostsLabel}</a>
-    </h2>
-    <div class="fb-grid">
-      {recentPosts.map((p) => (
-        <a class="fb-card" href={postHref(p.id)}>
-          <span class="label">#{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
-          <h3 class="ed-bungee fb-card-title">{p.data.title}</h3>
-          <p class="fb-desc">{p.data.description}</p>
-          <div class="label muted">
-            {formatDate(p.data.pubDate, lang)} · {p.data.readingTime} min
-          </div>
+<section class="home-foot">
+  <div class="hf-blog theme-blog">
+    <div class="label muted">{en ? 'I also write · blog' : 'Também escrevo · blog'}</div>
+    <div class="hf-posts">
+      {posts.map((p) => (
+        <a href={link(`${prefix}/blog/${p.id}`)}>
+          <span class="ed-bungee">{p.data.title}</span>
+          <span class="hf-meta">{formatDate(p.data.pubDate, lang)} · {p.data.readingTime} min</span>
         </a>
       ))}
     </div>
-  </section>
-)}
+    <a class="hf-all" href={link(`${prefix}/blog`)}>{en ? 'All posts →' : 'Todos os posts →'}</a>
+  </div>
+  <div class="hf-contact">
+    <div class="label">{en ? 'Contact' : 'Contato'}</div>
+    <a class="ed-bungee hf-mail" href={`mailto:${email}`}>{email}</a>
+    <div class="label">{en ? 'Reply within 2 business days' : 'Resposta em até 48h úteis'}</div>
+  </div>
+</section>
+
+<script>
+  /* frentes recolhidas: o botão abre e fecha o detalhe */
+  document.querySelectorAll<HTMLButtonElement>('.front-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') !== 'true';
+      const detail = document.getElementById(btn.getAttribute('aria-controls') ?? '');
+      if (detail) detail.hidden = !open;
+      btn.setAttribute('aria-expanded', String(open));
+      btn.closest('.front')?.classList.toggle('is-open', open);
+      const label = btn.querySelector('.ft-label');
+      if (label) label.textContent = open ? btn.dataset.close ?? '' : btn.dataset.open ?? '';
+    });
+  });
+</script>
 
 <style>
   .hero {
     position: relative;
-    padding: 8px 0 56px;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 260px;
+    grid-template-columns: minmax(0, 1fr) 280px;
     column-gap: 48px;
-    align-items: start;
+    align-items: center;
+    padding: 8px 0 56px;
   }
-  .hero-grid-bg {
+  .hero::before {
+    content: '';
     position: absolute;
     inset: -12px;
     background-image:
@@ -200,233 +223,222 @@ const lastName = heroTitle.slice(1).join(' ') || 'SOBRENOME';
     background-size: 32px 32px;
     opacity: 0.5;
     pointer-events: none;
-    z-index: 0;
   }
-  .hero-main { position: relative; z-index: 1; grid-column: 1; grid-row: 1; min-width: 0; }
+  .hero-main { position: relative; min-width: 0; }
 
-  .hero-visual {
-    position: relative;
-    grid-column: 2;
-    grid-row: 1;
-    width: 260px;
-    margin-top: 8px;
-    z-index: 2;
-  }
-
-  /* foto: borda grossa, sombra dura na cor da marca e a inclinação de colagem */
-  .hero-photo {
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    overflow: hidden;
-    border: var(--loud) solid var(--fg);
-    background: var(--bg-2);
-    box-shadow: 8px 8px 0 var(--hot);
-    transform: rotate(1deg);
-  }
-  .hero-photo img { width: 100%; height: 100%; object-fit: cover; }
-
-  /* selo: continua torto, só parou de balançar sozinho */
-  .ai-seal {
-    position: absolute;
-    right: -14px;
-    bottom: -31px;
-    width: 112px;
-    height: 112px;
-    z-index: 3;
-    transform: rotate(-8deg);
-    filter: drop-shadow(4px 6px 0 rgba(0, 0, 0, 0.55));
-    pointer-events: none;
-  }
-  .ai-seal svg { width: 100%; height: 100%; display: block; }
-
+  /* o nome ocupa a coluna inteira até a foto: o tamanho acompanha a
+     largura disponível (5,6 é a proporção largura/corpo de "BERNARDO") */
   .hero-title {
-    font-size: clamp(54px, 10.4vw, 142px);
+    font-size: clamp(48px, calc((min(100vw, 1280px) - 384px) / 5.6), 160px);
     margin: 0;
-    max-width: 100%;
     line-height: 0.84;
     letter-spacing: -0.06em;
-    text-transform: uppercase;
   }
+  .hero-title span { display: block; }
   .t-fg { color: var(--fg); }
-  .t-stroke {
-    color: var(--bg);
-    -webkit-text-stroke: 2.5px var(--fg);
-  }
-  /* a estrela é o glifo da home e veste o magenta da marca */
-  .hero-title :global(.hero-star) {
-    width: 0.42em;
-    height: 0.42em;
-    color: var(--hot);
-    stroke: #000;
-    stroke-width: 1;
-    stroke-linejoin: round;
-    margin-left: 0.04em;
-    vertical-align: 0.1em;
-  }
+  .t-stroke { color: var(--bg); -webkit-text-stroke: 2.5px var(--fg); }
 
   .hero-intro {
     font-family: var(--mono);
     font-size: 17px;
-    max-width: 62ch;
-    margin: 28px 0 0;
-    line-height: 1.7;
+    line-height: 1.6;
+    max-width: 46ch;
+    margin: 24px 0 0;
   }
-  .hero-intro-short { display: none; }
-  .hero-intro :global(.ed-mark) { padding: 0 3px; }
+  .hero-intro mark { background: var(--mk); color: #000; padding: 0 4px; }
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .hero-cv { background: var(--fg); color: #000; border-color: var(--fg); }
+  .hero-cv:hover { background: var(--fg); color: #000; box-shadow: 4px 4px 0 var(--hot); }
 
-  .hero-tags {
-    position: relative;
-    z-index: 1;
-    grid-column: 1 / -1;
+  .hero-visual { position: relative; margin: 0; z-index: 1; }
+  .hero-photo {
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    border: var(--loud) solid var(--fg);
+    box-shadow: 10px 10px 0 var(--hot);
+    transform: rotate(1.5deg);
+    background: repeating-linear-gradient(-45deg, var(--bg) 0 8px, var(--fg-3) 8px 9px);
+  }
+  .hero-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* selo vivo: a borda serrilhada gira (as cores giram junto) e o selo
+     balança; o texto fica parado para continuar legível */
+  .ai-seal {
+    position: absolute;
+    left: -50px;
+    bottom: -34px;
+    width: 112px;
+    height: 112px;
+    z-index: 3;
+    filter: drop-shadow(4px 6px 0 rgba(0, 0, 0, 0.55));
+    animation: seal-sway 1.6s ease-in-out infinite;
+  }
+  .ai-seal svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .seal-burst { transform-box: fill-box; transform-origin: center; animation: seal-spin 7s linear infinite; }
+  .hero-visual:hover .ai-seal { animation-duration: 0.6s; }
+  @keyframes seal-spin { to { transform: rotate(360deg); } }
+  @keyframes seal-sway {
+    0%, 100% { transform: rotate(-14deg) scale(1); }
+    50% { transform: rotate(6deg) scale(1.14); }
+  }
+
+  /* ---------- frentes ---------- */
+  .fronts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border: var(--loud) solid var(--fg);
+  }
+  .front {
     display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 28px;
+    flex-direction: column;
+    gap: 16px;
+    padding: 22px 22px 24px;
+    border-left: var(--loud) solid var(--fg);
+    min-width: 0;
   }
-  .hero-tag {
-    font-size: 13px;
-    padding: 6px 10px;
-    color: #000;
-    border-color: #000;
+  .front:first-child { border-left: none; }
+  .front-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .front-h h2 {
+    font-size: clamp(26px, 2.8vw, 36px);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    color: var(--fc);
+    margin: 0;
   }
-
-  .index { margin-top: 8px; }
-  .index-h { border-bottom: none; padding-bottom: 0; margin-bottom: 10px; }
-  .legend {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    height: 8px;
+  .front :global(.front-glyph) { width: 26px; height: 26px; color: var(--fc); }
+  .front-sum {
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.45;
+    color: var(--fg-2);
+    margin: 0;
   }
-
-  .bi-row {
-    display: grid;
-    grid-template-columns: 64px minmax(0, 1fr) 200px 96px 28px;
-    align-items: center;
-    padding: 16px 0;
-    border-bottom: var(--hair) solid var(--fg);
-    gap: 14px;
-    color: var(--fg);
-    transition: padding-left 0.12s linear;
-  }
-  .bi-row > * { min-width: 0; }
-  .bi-row:hover { padding-left: 10px; color: var(--fg); }
-  .bi-num {
+  .front-toggle {
+    align-self: flex-start;
+    margin-top: auto;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    border: var(--edge) solid var(--fc);
+    background: transparent;
+    color: var(--fc);
+    padding: 7px 12px;
     font-family: var(--mono);
     font-size: var(--t-meta);
     letter-spacing: var(--track);
-    color: var(--row-c);
-  }
-  .bi-num :global(.glyph) { width: 11px; height: 11px; }
-  .bi-title {
-    font-size: clamp(24px, 3.6vw, 40px);
-    letter-spacing: -0.03em;
     text-transform: uppercase;
-    overflow-wrap: anywhere;
-    line-height: 1.05;
+    cursor: pointer;
   }
-  .bi-row:hover .bi-title { color: var(--row-c); }
-  .bi-sub {
-    font-family: var(--mono);
-    font-size: var(--t-ui);
-    color: var(--fg-3);
-  }
-  .bi-meta {
-    font-family: var(--mono);
-    font-size: var(--t-meta);
-    letter-spacing: var(--track);
-    color: var(--row-c);
-    text-align: right;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-  .bi-arr {
-    font-size: 22px;
-    color: var(--row-c);
-    text-align: right;
-  }
+  .ft-plus { font-family: var(--display); font-size: 16px; line-height: 1; transition: transform 0.18s ease; }
+  .front-toggle:hover,
+  .front.is-open .front-toggle { background: var(--fc); color: #000; }
+  .front.is-open .ft-plus { transform: rotate(45deg); }
+  .front-detail { display: flex; flex-direction: column; gap: 16px; }
 
-  .from-blog { margin-top: 72px; }
-  .fb-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 0;
+  .front-stat { background: var(--fc); color: #000; padding: 12px 14px; display: flex; align-items: baseline; gap: 12px; }
+  .front-stat b { font-weight: 400; font-size: 36px; line-height: 1; }
+  .front-stat span {
+    font-family: var(--mono);
+    font-size: var(--t-meta);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.35;
   }
-  .fb-card {
+  .front-roles { list-style: none; margin: 0; padding: 0; border-top: var(--hair) solid var(--fg); }
+  .front-roles li {
+    display: grid;
+    grid-template-columns: 78px minmax(0, 1fr);
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: var(--hair) dashed var(--fg-3);
+    font-family: var(--mono);
+  }
+  .fr-y { font-size: var(--t-meta); color: var(--fg-3); padding-top: 2px; }
+  .front-roles b { display: block; font-size: var(--t-ui); }
+  .fr-o { font-size: 13px; color: var(--fc); }
+  .front-pick {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border: var(--edge) solid var(--fg);
+    background: var(--bg-2);
+    padding: 12px 14px;
+    transform: rotate(-0.6deg);
+    color: var(--fg);
+  }
+  .front-pick .label { color: var(--fc); }
+  .front-pick:hover { color: var(--fg); box-shadow: 6px 6px 0 var(--fc); }
+  .fp-title { font-size: 18px; line-height: 1.1; text-transform: uppercase; letter-spacing: -0.02em; }
+  .fp-sub { font-family: var(--mono); font-size: 13px; color: var(--fg-2); }
+  .front-more {
+    align-self: flex-start;
+    font-family: var(--mono);
+    font-size: var(--t-meta);
+    letter-spacing: var(--track);
+    text-transform: uppercase;
+    color: var(--fc);
+  }
+  .front-more:hover { background: var(--fc); color: #000; }
+
+  /* ---------- blog + contato ---------- */
+  .home-foot {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    margin-top: 28px;
+    border: var(--loud) solid var(--fg);
+  }
+  .hf-blog { padding: 18px 22px; }
+  .hf-posts { display: flex; flex-direction: column; margin-top: 6px; }
+  .hf-posts a {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: var(--hair) solid var(--fg);
+    color: var(--fg);
+  }
+  .hf-posts a .ed-bungee { font-size: 16px; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1.15; }
+  .hf-posts a:hover .ed-bungee { color: var(--accent); }
+  .hf-meta { font-family: var(--mono); font-size: var(--t-meta); color: var(--fg-3); white-space: nowrap; text-transform: uppercase; }
+  .hf-all {
+    display: inline-block;
+    margin-top: 12px;
+    font-family: var(--mono);
+    font-size: var(--t-meta);
+    letter-spacing: var(--track);
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .hf-all:hover { background: var(--accent); color: #000; }
+  .hf-contact {
+    border-left: var(--loud) solid var(--fg);
+    background: var(--hot);
+    color: #000;
+    padding: 18px 22px;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 20px;
-    border: var(--edge) solid var(--fg);
-    margin-left: -2px;
-    color: var(--fg);
   }
-  .fb-card:first-child { margin-left: 0; }
-  .fb-card:hover { background: var(--bg-2); color: var(--fg); }
-  .fb-card:hover .fb-card-title { color: var(--accent); }
-  .fb-card-title {
-    font-size: var(--t-item);
-    margin: 0;
-    letter-spacing: -0.02em;
-    line-height: 1.08;
-    text-transform: uppercase;
-  }
-  .fb-desc {
-    font-family: var(--serif);
-    font-size: 17px;
-    line-height: 1.45;
-    color: var(--fg-2);
-    margin: 0 0 4px;
-    flex: 1;
-  }
+  .hf-contact .label { color: #000; font-weight: 700; }
+  .hf-mail { font-size: 20px; overflow-wrap: anywhere; color: #000; }
+  .hf-mail:hover { color: #000; text-decoration: underline; }
 
-  @media (max-width: 1100px) {
-    .hero { grid-template-columns: minmax(0, 1fr) 210px; column-gap: 28px; }
-    .hero-visual { width: 210px; }
-    .ai-seal { width: 92px; height: 92px; right: -8px; bottom: -24px; }
-  }
   @media (max-width: 960px) {
-    .hero-title { font-size: clamp(56px, 9vw, 96px); }
-    .bi-row { grid-template-columns: 56px minmax(0, 1fr) auto 22px; gap: 12px; }
-    .bi-sub { display: none; }
-    .fb-card { margin-left: 0; margin-top: -2px; }
-    .fb-card:first-child { margin-top: 0; }
-  }
-  @media (max-width: 880px) {
-    .hero { grid-template-columns: 1fr; }
-    /* no celular a moldura vem depois do texto: quem chega
-       lê primeiro quem é você, e o índice sobe */
-    .hero-visual {
-      grid-column: 1;
-      grid-row: 2;
-      width: min(72%, 320px);
-      margin-top: 32px;
-    }
-    .hero-photo { aspect-ratio: 4 / 3; }
-    .ai-seal { width: 92px; height: 92px; right: -6px; bottom: -22px; }
+    .hero { grid-template-columns: 1fr; row-gap: 40px; }
+    .hero-title { font-size: clamp(44px, 16.5vw, 140px); }
+    .hero-visual { width: min(78%, 300px); }
+    .ai-seal { left: auto; right: -24px; bottom: -30px; width: 92px; height: 92px; }
+    .fronts { grid-template-columns: 1fr; }
+    .front { border-left: none; border-top: var(--loud) solid var(--fg); }
+    .front:first-child { border-top: none; }
+    .home-foot { grid-template-columns: 1fr; }
+    .hf-contact { border-left: none; border-top: var(--loud) solid var(--fg); }
   }
   @media (max-width: 720px) {
-    .hero { padding-bottom: 48px; }
-    .hero-title { font-size: clamp(40px, 13vw, 80px); }
-    .hero-intro-long { display: none; }
-    .hero-intro-short {
-      display: block;
-      font-size: var(--t-body);
-      line-height: 1.6;
-      margin-top: 18px;
-    }
-    .bi-row {
-      grid-template-columns: 50px minmax(0, 1fr) auto 18px;
-      gap: 10px;
-      padding: 14px 0;
-    }
-    .bi-title { font-size: clamp(20px, 6.4vw, 28px); }
-    .bi-arr { font-size: 18px; }
-    .from-blog { margin-top: 56px; }
-  }
-  @media (max-width: 380px) {
-    .hero-title { font-size: clamp(36px, 12vw, 80px); }
+    .hero-intro { font-size: var(--t-body); }
+    .hf-posts a { flex-direction: column; gap: 2px; }
   }
 </style>

@@ -2,6 +2,9 @@ import { email, scholarProfiles } from '../lib/profile';
 
 export type Lang = 'pt' | 'en';
 
+/* as três frentes da home: cada cargo do CV pertence a uma delas */
+export type Frente = 'prod' | 'cont' | 'pesq';
+
 type Dict = {
   brand: string;
   nav: {
@@ -43,7 +46,7 @@ type Dict = {
     title: { line1: string; emph: string };
     download: string;
     experienceHeading: string;
-    experience: { p: string; r: string; o: string; d: string; cta: string; tags: string[]; full: string[] }[];
+    experience: { a: Frente; p: string; r: string; o: string; d: string; cta: string; tags: string[]; full: string[] }[];
     skillsHeading: string;
     skills: { name: string; level: number }[];
   };
@@ -121,7 +124,7 @@ export const ui: Record<Lang, Dict> = {
       home: 'home',
       sobre: 'sobre',
       cv: 'cv',
-      academico: 'acadêmico',
+      academico: 'publicações',
       blog: 'blog',
       projetos: 'projetos',
       contato: 'contato',
@@ -183,6 +186,7 @@ export const ui: Record<Lang, Dict> = {
       experienceHeading: 'experiência',
       experience: [
         {
+          a: 'prod',
           p: '2024 — atual',
           r: 'Product Manager — Inovação em Educação',
           o: 'SENAI São Paulo',
@@ -197,6 +201,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'pesq',
           p: '2023 — 2024',
           r: 'Professor de Jornalismo Digital & Comunicação',
           o: 'FAPCOM — Faculdade Paulus de Comunicação',
@@ -210,6 +215,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'prod',
           p: '2023 — 2024',
           r: 'Data Product Manager',
           o: 'Cortex',
@@ -224,6 +230,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'prod',
           p: '2022 — 2023',
           r: 'Senior Product Manager — Conteúdo & Mídia Digital',
           o: 'Vivo (Telefônica Brasil) · Portal Terra',
@@ -238,6 +245,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2021 — 2022',
           r: 'Executive Editor — Tecnologia, Ciência & Saúde',
           o: 'CNN Brasil',
@@ -252,6 +260,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2020 — 2021',
           r: 'Editor-in-Chief — Tecnologia & Cultura Digital',
           o: 'Gizmodo Brasil',
@@ -267,6 +276,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'pesq',
           p: '2019 — 2021',
           r: 'Professor de Jornalismo Digital & Comunicação',
           o: 'Centro Universitário FMU | FIAM-FAAM',
@@ -281,6 +291,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2018 — 2020',
           r: 'Repórter especial',
           o: 'UOL — Universo Online',
@@ -294,6 +305,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2017 — 2018',
           r: 'Analista de Comunicação',
           o: 'SumUp',
@@ -310,6 +322,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2016 — 2017',
           r: 'Gerente de SEO / Editor assistente',
           o: 'Green Park Content',
@@ -326,6 +339,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2015 — 2016',
           r: 'Repórter',
           o: 'Nexo Jornal',
@@ -340,6 +354,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2014 — 2015',
           r: 'Repórter',
           o: 'Projeto Draft',
@@ -354,6 +369,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2013 — 2014',
           r: 'Editor',
           o: 'Startupi',
@@ -368,6 +384,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2012 — 2013',
           r: 'Redator',
           o: 'Olhar Digital',
@@ -502,7 +519,7 @@ export const ui: Record<Lang, Dict> = {
       home: 'home',
       sobre: 'about',
       cv: 'cv',
-      academico: 'academic',
+      academico: 'publications',
       blog: 'blog',
       projetos: 'projects',
       contato: 'contact',
@@ -564,6 +581,7 @@ export const ui: Record<Lang, Dict> = {
       experienceHeading: 'experience',
       experience: [
         {
+          a: 'prod',
           p: '2024 — present',
           r: 'Product Manager — Education Innovation',
           o: 'SENAI São Paulo',
@@ -578,6 +596,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'pesq',
           p: '2023 — 2024',
           r: 'Lecturer — Digital Journalism & Communication',
           o: 'FAPCOM — Faculdade Paulus de Comunicação',
@@ -591,6 +610,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'prod',
           p: '2023 — 2024',
           r: 'Data Product Manager',
           o: 'Cortex',
@@ -605,6 +625,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'prod',
           p: '2022 — 2023',
           r: 'Senior Product Manager — Content & Digital Media',
           o: 'Vivo (Telefónica Brasil) · Terra portal',
@@ -619,6 +640,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2021 — 2022',
           r: 'Executive Editor — Technology, Science & Health',
           o: 'CNN Brasil',
@@ -633,6 +655,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2020 — 2021',
           r: 'Editor-in-Chief — Technology & Digital Culture',
           o: 'Gizmodo Brasil',
@@ -648,6 +671,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'pesq',
           p: '2019 — 2021',
           r: 'Lecturer — Digital Journalism & Communication',
           o: 'Centro Universitário FMU | FIAM-FAAM',
@@ -662,6 +686,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2018 — 2020',
           r: 'Special Reporter',
           o: 'UOL — Universo Online',
@@ -675,6 +700,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2017 — 2018',
           r: 'Communications Analyst',
           o: 'SumUp',
@@ -691,6 +717,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2016 — 2017',
           r: 'SEO Manager / Assistant Editor',
           o: 'Green Park Content',
@@ -707,6 +734,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2015 — 2016',
           r: 'Reporter',
           o: 'Nexo Jornal',
@@ -721,6 +749,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2014 — 2015',
           r: 'Reporter',
           o: 'Projeto Draft',
@@ -735,6 +764,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2013 — 2014',
           r: 'Editor',
           o: 'Startupi',
@@ -749,6 +779,7 @@ export const ui: Record<Lang, Dict> = {
           ],
         },
         {
+          a: 'cont',
           p: '2012 — 2013',
           r: 'Staff Writer',
           o: 'Olhar Digital',
@@ -889,6 +920,11 @@ export const tagDisplay: Record<Lang, Record<string, string>> = {
     academia: 'academia',
     palestra: 'palestra',
     pessoal: 'pessoal',
+    artigo: 'artigo',
+    'capítulo': 'capítulo',
+    livro: 'livro',
+    tese: 'tese',
+    'dissertação': 'dissertação',
   },
   en: {
     ensaio: 'essay',
@@ -899,6 +935,11 @@ export const tagDisplay: Record<Lang, Record<string, string>> = {
     academia: 'academia',
     palestra: 'talk',
     pessoal: 'personal',
+    artigo: 'article',
+    'capítulo': 'chapter',
+    livro: 'book',
+    tese: 'thesis',
+    'dissertação': 'dissertation',
   },
 };
 

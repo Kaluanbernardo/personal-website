@@ -20,3 +20,8 @@ export const scholarProfiles = [
   { label: 'academia.edu', href: 'https://academia.edu/' },
   { label: 'Google Scholar', href: 'https://scholar.google.com/' },
 ];
+
+/* Foto da home. A moldura fica vazia enquanto isto for
+   null; para usar uma foto, aponte para um arquivo em public/, por
+   exemplo '/img/portrait-home.jpg'. */
+export const homePortrait: string | null = null;

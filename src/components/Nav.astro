@@ -30,6 +30,7 @@ const linkFor = (key: SectionKey) => {
 const items = primaryNavOrder.map((key) => ({
   k: sections[key].number,
   key,
+  color: sections[key].accent,
   active: active === key,
 }));
 const navLabel = lang === 'en' ? 'Primary navigation' : 'Navegação principal';
@@ -60,7 +61,7 @@ const closeLabel = lang === 'en' ? 'Close navigation' : 'Fechar navegação';
 
   <nav id="primary-navigation" class="site-nav" aria-label={navLabel}>
     {items.map((it) => (
-      <a class={it.active ? 'active' : ''} href={linkFor(it.key)} aria-current={it.active ? 'page' : undefined}>
+      <a class={it.active ? 'active' : ''} href={linkFor(it.key)} aria-current={it.active ? 'page' : undefined} style={`--sec-c:${it.color}`}>
         <span class="num">{it.k}</span>{t.nav[it.key]}
       </a>
     ))}

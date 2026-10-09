@@ -1,0 +1,63 @@
+---
+/* Cabeçalho único de página. Antes cada página inventava o seu: bloco
+   chapado no Sobre, primeira palavra colorida no Contato, título liso
+   nas outras, e uma linha de cima que às vezes era arquivo, às vezes
+   comando, às vezes URL. Agora a gramática é uma só:
+     fita  — número + nome do menu, na cor da seção (informa)
+     nota  — a piada de terminal, em segundo plano (voz)
+     título — livre para provocar, com o glifo da seção piscando */
+import { ui, type Lang } from '../i18n/ui';
+import { sections, type SectionKey } from '../lib/sections';
+import Glyph from './Glyph.astro';
+
+interface Props {
+  section: SectionKey;
+  lang: Lang;
+  note?: string;
+}
+const { section, lang, note } = Astro.props;
+const s = sections[section];
+const name = ui[lang].nav[section];
+---
+
+<header class="page-head">
+  <div class="ph-kicker">
+    <span class="tape">{s.number} / {name}</span>
+    {note && <span class="ph-note">{note}</span>}
+  </div>
+  <h1 class="ed-bungee ph-title">
+    <slot /><Glyph name={s.glyph} class="ed-blink ph-glyph" />
+  </h1>
+  <slot name="after" />
+</header>
+
+<style>
+  .page-head { padding-top: 6px; margin-bottom: 36px; }
+  .ph-kicker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .ph-note {
+    font-family: var(--mono);
+    font-size: var(--t-meta);
+    color: var(--fg-3);
+  }
+  .ph-title {
+    font-size: var(--t-display);
+    margin: 0;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+  }
+  .ph-title :global(.ph-glyph) {
+    width: 0.46em;
+    height: 0.46em;
+    margin-left: 0.22em;
+    color: var(--accent);
+    vertical-align: 0.12em;
+  }
+</style>

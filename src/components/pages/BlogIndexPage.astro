@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import { ui, type Lang, formatDate, tagDisplay } from '../../i18n/ui';
 import { link } from '../../lib/links';
-import { sections } from '../../lib/sections';
+import PageHead from '../PageHead.astro';
 
 interface Props {
   lang: Lang;
@@ -20,19 +20,25 @@ const prefix = lang === 'en' ? '/en' : '';
 const minLabel = 'min';
 const postHref = (slug: string) => link(`${prefix}/blog/${slug}`);
 
-const tagOrder: string[] = ['produto', 'jornalismo', 'academia', 'leitura', 'notas'];
-const tagByFilter: Record<string, string | null> = {};
-t.blog.filters.forEach((label, i) => {
-  tagByFilter[label] = i === 0 ? null : tagOrder[i - 1] ?? null;
-});
+/* Filtros saem das tags que os posts usam de fato, com contagem. A
+   lista antiga era fixa no código: 3 dos 5 botões davam zero, e o post
+   em destaque (#ensaio) sumia ao clicar em qualquer um deles. */
+const en = lang === 'en';
+const tagOrder: string[] = ['ensaio', 'produto', 'jornalismo', 'academia', 'leitura', 'notas'];
+const tagCounts = new Map<string, number>();
+posts.forEach((p) => tagCounts.set(p.data.tag, (tagCounts.get(p.data.tag) ?? 0) + 1));
+const filters = [
+  { tag: '', label: en ? 'all' : 'todos', n: posts.length },
+  ...tagOrder
+    .filter((k) => tagCounts.has(k))
+    .map((k) => ({ tag: k, label: tagDisplay[lang][k] ?? k, n: tagCounts.get(k) ?? 0 })),
+];
 
-const eyebrow = `${sections.blog.number} / *.MD`;
-const sidebarKickerNL = '** NEWSLETTER **';
-const featuredKicker = lang === 'en' ? '** FEATURED POST **' : '** POST EM DESTAQUE **';
+const featuredKicker = en ? 'Featured' : 'Em destaque';
 
 /* arquivo derivado dos posts reais — a lista antiga era fixa no código
    e mostrava contagens que não batiam com o conteúdo publicado */
-const archiveHeading = lang === 'en' ? 'ARCHIVE' : 'ARQUIVO';
+const archiveHeading = en ? 'Archive' : 'Arquivo';
 const archiveCounts = new Map<string, number>();
 posts.forEach((p) => {
   const d = p.data.pubDate;
@@ -52,46 +58,45 @@ const archiveItems = [...archiveCounts.entries()]
   });
 ---
 
-<header class="head">
-  <div class="kicker ed-kicker">{eyebrow}</div>
-  <h1 class="ed-bungee headline">BLOG <span class="ed-blink mark mark-vio" aria-hidden="true">■</span></h1>
-</header>
+<PageHead section="blog" lang={lang} note="*.md">Blog</PageHead>
 
-<div class="filters" role="group" aria-label={lang === 'en' ? 'Filter posts' : 'Filtrar posts'}>
-  {t.blog.filters.map((label, i) => (
+<div class="filters" role="group" aria-label={en ? 'Filter posts' : 'Filtrar posts'}>
+  {filters.map((f) => (
     <button
       type="button"
-      class={`ed-tag filter-btn ${i === 0 ? 'is-active' : ''}`}
-      data-tag={tagByFilter[label] ?? ''}
-      aria-pressed={i === 0 ? 'true' : 'false'}
+      class={`ed-tag filter-btn ${f.tag === '' ? 'is-active' : ''}`}
+      data-tag={f.tag}
+      aria-pressed={f.tag === '' ? 'true' : 'false'}
       aria-controls="post-list"
     >
-      #{label}
+      #{f.label}<span class="n">{f.n}</span>
     </button>
   ))}
-  <span class="filter-count" data-count aria-live="polite">{t.ux.filterCount(posts.length, posts.length)}</span>
+  <span class="sr-only" data-count aria-live="polite"></span>
 </div>
 
 <div class="blog-grid">
-  <main class="posts" id="post-list">
+  <div class="posts" id="post-list">
     {featured && (
       <a class="featured" href={postHref(featured.id)} data-tag={featured.data.tag} data-month={monthKey(featured.data.pubDate)}>
         <div class="ft-kicker">{featuredKicker}</div>
         <h2 class="ed-bungee ft-title">{featured.data.title}</h2>
         <p class="ft-desc">{featured.data.description}</p>
         <div class="ft-meta">
-          {formatDate(featured.data.pubDate, lang).toUpperCase()} · {featured.data.readingTime} {minLabel} · #{tagDisplay[lang][featured.data.tag] ?? featured.data.tag}
+          {formatDate(featured.data.pubDate, lang)} · {featured.data.readingTime} {minLabel} · #{tagDisplay[lang][featured.data.tag] ?? featured.data.tag}
         </div>
       </a>
     )}
 
     {rest.map((p) => (
       <a class="post-row" href={postHref(p.id)} data-tag={p.data.tag} data-month={monthKey(p.data.pubDate)}>
-        <span class="rdate">{formatDate(p.data.pubDate, lang).toUpperCase()}</span>
-        <h3 class="ed-bungee rtitle">{p.data.title}</h3>
-        <span class="rtag">#{tagDisplay[lang][p.data.tag] ?? p.data.tag}</span>
-        <span class="rmins">{p.data.readingTime} {minLabel}</span>
-        <span class="rarr">→</span>
+        <span class="rdate">{formatDate(p.data.pubDate, lang)}</span>
+        <div class="rbody">
+          <h3 class="ed-bungee rtitle">{p.data.title}</h3>
+          <p class="rdesc">{p.data.description}</p>
+        </div>
+        <span class="rmeta">#{tagDisplay[lang][p.data.tag] ?? p.data.tag} · {p.data.readingTime} {minLabel}</span>
+        <span class="rarr" aria-hidden="true">→</span>
       </a>
     ))}
 
@@ -100,13 +105,13 @@ const archiveItems = [...archiveCounts.entries()]
       <p class="es-body">{t.ux.emptyBody}</p>
       <button type="button" class="ed-btn" data-clear>{t.ux.clearFilter}</button>
     </div>
-  </main>
+  </div>
 
   <aside class="aside">
     <div class="newsletter">
-      <div class="nl-kicker">{sidebarKickerNL}</div>
+      <div class="label">Newsletter</div>
       <h3 class="ed-bungee nl-title">
-        {lang === 'en' ? <>IN YOUR<br />INBOX.</> : <>NO E-MAIL.<br />SEM SPAM.</>}
+        {en ? <>In your<br />inbox.</> : <>No e-mail.<br />Sem spam.</>}
       </h3>
       <p class="nl-copy">{t.blog.newsletterCopy}</p>
       <form
@@ -115,7 +120,7 @@ const archiveItems = [...archiveCounts.entries()]
         method="get"
         target="_blank"
       >
-        <label class="nl-label" for="nl-email">{t.blog.newsletterPlaceholder}</label>
+        <label class="sr-only" for="nl-email">{t.blog.newsletterPlaceholder}</label>
         <input
           class="ed-input nl-input"
           id="nl-email"
@@ -125,13 +130,13 @@ const archiveItems = [...archiveCounts.entries()]
           autocomplete="email"
           placeholder={t.blog.newsletterPlaceholder}
         />
-        <button class="ed-btn vio nl-submit" type="submit">SUBSCRIBE →</button>
+        <button class="ed-btn primary nl-submit" type="submit">{en ? 'Subscribe →' : 'Assinar →'}</button>
       </form>
     </div>
 
     {archiveItems.length > 0 && (
       <div class="archive" role="group" aria-label={archiveHeading}>
-        <div class="arch-kicker">{archiveHeading}</div>
+        <div class="label muted">{archiveHeading}</div>
         {archiveItems.map((m) => (
           <button
             type="button"
@@ -184,8 +189,8 @@ const archiveItems = [...archiveCounts.entries()]
 
     if (countEl) {
       countEl.textContent = shown === total
-        ? (isEn ? `${total} items` : `${total} itens`)
-        : (isEn ? `${shown} of ${total}` : `${shown} de ${total}`);
+        ? (isEn ? `${total} posts` : `${total} posts`)
+        : (isEn ? `${shown} of ${total} posts` : `${shown} de ${total} posts`);
     }
     if (emptyEl) emptyEl.hidden = shown !== 0;
 
@@ -224,57 +229,37 @@ const archiveItems = [...archiveCounts.entries()]
 </script>
 
 <style>
-  .head { padding-top: 6px; margin-bottom: 22px; }
-  .kicker { margin-bottom: 10px; }
-  .headline {
-    font-size: clamp(44px, 8vw, 76px);
-    margin: 0;
-    line-height: 0.9;
-    letter-spacing: -0.04em;
-    text-transform: uppercase;
-  }
-
-  .filters {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-  }
-
   .blog-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 260px;
-    gap: 48px;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 56px;
     align-items: flex-start;
   }
 
   /* Bloco chapado com sombra dura. Fundo violeta com texto PRETO:
      preto sobre --vio dá 5,2:1 e passa em qualquer tamanho, enquanto
-     o branco dava 3,4:1 e sumia no texto pequeno. A sombra sai em
-     off-white porque a página não usa mais amarelo. */
+     o branco dava 3,4:1 e sumia no texto pequeno. */
   .featured {
     display: block;
-    background: var(--vio);
+    background: var(--accent);
     color: #000;
-    padding: 18px 22px;
+    padding: 22px 26px;
     border: var(--loud) solid #000;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
     box-shadow: 8px 8px 0 var(--fg);
-    cursor: pointer;
+    transition: transform 0.08s linear, box-shadow 0.08s linear;
   }
-  .featured:hover { background: var(--vio); color: #000; transform: translate(-2px, -2px); box-shadow: 10px 10px 0 var(--fg); }
-  .featured { transition: transform 0.08s linear, box-shadow 0.08s linear; }
+  .featured:hover { color: #000; transform: translate(-2px, -2px); box-shadow: 10px 10px 0 var(--fg); }
   .ft-kicker {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: var(--t-meta);
     font-weight: 700;
-    letter-spacing: 0.2em;
+    letter-spacing: var(--track);
     text-transform: uppercase;
-    color: #000;
     margin-bottom: 12px;
   }
   .ft-title {
-    font-size: clamp(26px, 3.4vw, 34px);
+    font-size: clamp(26px, 3.2vw, 34px);
     margin: 0 0 12px;
     line-height: 1.05;
     text-transform: uppercase;
@@ -282,57 +267,61 @@ const archiveItems = [...archiveCounts.entries()]
   }
   .ft-desc {
     font-family: var(--serif);
-    font-size: 17px;
+    font-size: var(--t-read);
     line-height: 1.5;
-    margin: 0 0 14px;
-    max-width: 56ch;
+    margin: 0 0 16px;
+    max-width: 52ch;
   }
   .ft-meta {
     font-family: var(--mono);
     font-size: var(--t-meta);
-    letter-spacing: 0.08em;
+    letter-spacing: var(--track);
     text-transform: uppercase;
   }
 
   .post-row {
     display: grid;
-    grid-template-columns: 88px minmax(0, 1fr) 100px 56px 20px;
-    gap: 16px;
-    padding: 18px 0;
+    grid-template-columns: 76px minmax(0, 1fr) auto 20px;
+    gap: 18px;
+    padding: 20px 0;
     border-bottom: var(--hair) solid var(--fg);
     align-items: baseline;
+    color: var(--fg);
     transition: padding-left 0.12s linear;
   }
-  .post-row:hover { padding-left: 10px; }
+  .post-row:hover { padding-left: 10px; color: var(--fg); }
   .post-row:hover .rtitle,
   .post-row:hover .rarr { color: var(--accent); }
   .rdate {
     font-family: var(--mono);
     font-size: var(--t-meta);
-    letter-spacing: 0.08em;
+    letter-spacing: var(--track);
     text-transform: uppercase;
     color: var(--fg-3);
   }
   .rtitle {
-    font-size: 19px;
+    font-size: var(--t-item);
     margin: 0;
     text-transform: uppercase;
     letter-spacing: -0.02em;
-    line-height: 1.15;
+    line-height: 1.12;
   }
-  .rtag {
+  .rdesc {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.45;
+    color: var(--fg-2);
+    margin: 6px 0 0;
+    max-width: 56ch;
+  }
+  .rmeta {
     font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.1em;
+    font-size: var(--t-meta);
+    letter-spacing: var(--track);
     color: var(--fg-3);
     text-transform: uppercase;
     text-align: right;
-  }
-  .rmins {
-    font-family: var(--mono);
-    font-size: var(--t-meta);
-    color: var(--fg-3);
-    text-align: right;
+    white-space: nowrap;
   }
   .rarr {
     color: var(--fg-3);
@@ -341,64 +330,38 @@ const archiveItems = [...archiveCounts.entries()]
     transition: color 0.12s ease;
   }
 
-  .aside { display: flex; flex-direction: column; gap: 28px; }
+  .aside { display: flex; flex-direction: column; gap: 32px; }
 
   .newsletter {
-    border: var(--loud) solid var(--vio);
-    padding: 16px 18px;
-    background: #000;
-    color: var(--vio);
-  }
-  .nl-kicker {
-    font-family: var(--mono);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    color: var(--vio);
-    margin-bottom: 10px;
+    border: var(--loud) solid var(--accent);
+    padding: 18px 20px 20px;
   }
   .nl-title {
-    font-size: 22px;
-    margin: 0 0 8px;
-    line-height: 0.95;
+    font-size: var(--t-item);
+    margin: 10px 0 10px;
+    line-height: 1;
     text-transform: uppercase;
-    color: var(--vio);
+    color: var(--accent);
   }
   .nl-copy {
     font-family: var(--mono);
-    font-size: 11px;
-    line-height: 1.5;
-    color: #fff;
-    margin: 0 0 12px;
+    font-size: var(--t-ui);
+    line-height: 1.55;
+    color: var(--fg);
+    margin: 0 0 14px;
   }
   .nl-form { display: flex; flex-direction: column; gap: 8px; }
-  /* rótulo real para leitor de tela; o placeholder sozinho some ao digitar */
-  .nl-label {
-    position: absolute;
-    width: 1px; height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-  }
-  .nl-input { width: 100%; font-size: 11px; color: var(--vio); border-color: var(--vio); }
-  .nl-input::placeholder { color: var(--vio); opacity: 0.7; }
-  .nl-submit { justify-content: center; font-size: 12px; }
+  .nl-input { border-color: var(--accent); }
+  .nl-submit { justify-content: center; }
 
   .archive { display: flex; flex-direction: column; }
-  .arch-kicker {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--fg-3);
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
+  .archive .label { margin-bottom: 8px; }
   .arch-row {
     font-family: var(--mono);
-    font-size: 12px;
-    padding: 6px 0;
+    font-size: var(--t-ui);
+    padding: 8px 0;
     border: none;
-    border-bottom: var(--hair) dashed var(--fg);
+    border-bottom: var(--hair) dashed var(--fg-3);
     display: flex;
     justify-content: space-between;
     gap: 10px;
@@ -411,22 +374,25 @@ const archiveItems = [...archiveCounts.entries()]
   .arch-row:hover { background: var(--zap); color: var(--zap-ink); }
   .arch-row:hover .arch-n { color: #000; }
   .arch-row.is-active {
-    background: var(--vio);
+    background: var(--accent);
     color: #000;
-    border-bottom-color: var(--vio);
+    border-bottom-color: var(--accent);
     padding-left: 6px;
     padding-right: 6px;
   }
   .arch-row.is-active .arch-n { color: #000; }
-  .arch-row .arch-n { color: var(--vio); }
+  .arch-row .arch-n { color: var(--accent); }
 
   @media (max-width: 900px) {
-    .blog-grid { grid-template-columns: 1fr; gap: 36px; }
+    .blog-grid { grid-template-columns: 1fr; gap: 40px; }
+    .aside { max-width: 480px; }
     .post-row {
-      grid-template-columns: 72px minmax(0, 1fr) 20px;
-      gap: 10px;
+      grid-template-columns: minmax(0, 1fr) 20px;
+      gap: 6px 12px;
     }
-    .rtag, .rmins { display: none; }
-    .ft-title { font-size: 24px; }
+    .rdate { grid-column: 1 / -1; }
+    .rbody { grid-column: 1; }
+    .rarr { grid-column: 2; grid-row: 2; }
+    .rmeta { grid-column: 1 / -1; text-align: left; }
   }
 </style>

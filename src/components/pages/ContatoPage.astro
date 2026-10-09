@@ -1,36 +1,30 @@
 ---
 import { ui, type Lang } from '../../i18n/ui';
+import { socials } from '../../lib/social';
+import PageHead from '../PageHead.astro';
+
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 const t = ui[lang];
 
-const eyebrow = '06 / ECHO $EMAIL';
-const directLabel = lang === 'en' ? 'OR DIRECT:' : 'OU DIRETO:';
-
-const socialColors = ['var(--ylw)', 'var(--cyan)', 'var(--acid)', 'var(--vio)'];
-
-const helloLine1 = lang === 'en' ? "LET'S" : 'FALA';
-const helloLine2 = lang === 'en' ? 'TALK' : 'COMIGO';
-
-import { socials } from '../../lib/social';
+const directLabel = lang === 'en' ? 'Channels' : 'Canais';
 const socialLinks: Record<string, string | null> = Object.fromEntries(
   socials.map((s) => [s.label, s.href]),
 );
 ---
 
 <div class="contato">
-  <div class="kicker ed-kicker">{eyebrow}</div>
-  <h1 class="ed-bungee headline">
-    <span class="t-hot">{helloLine1}</span> <span>{helloLine2}</span> <span class="ed-blink mark mark-hot" aria-hidden="true">✦</span>
-  </h1>
+  <PageHead section="contato" lang={lang} note="echo $EMAIL">
+    {lang === 'en' ? "Let's talk" : 'Fala comigo'}
+  </PageHead>
   <p class="intro">{t.contato.intro}</p>
 
-  <div class="direct-kicker">{directLabel}</div>
+  <div class="label muted direct-kicker">{directLabel}</div>
   <div class="cards">
-    <div class="card" style="--er-c: var(--hot)">
-      <span class="c-name">E-MAIL</span>
+    <div class="card">
+      <span class="label">E-mail</span>
       <a class="c-handle c-mail" href={`mailto:${t.contato.email}`}>{t.contato.email}</a>
       <button
         class="c-copy"
@@ -40,7 +34,7 @@ const socialLinks: Record<string, string | null> = Object.fromEntries(
         data-done={t.ux.copied}
       >{t.ux.copy}</button>
     </div>
-    {t.contato.socials.map((s, i) => {
+    {t.contato.socials.map((s) => {
       const href = socialLinks[s.n] ?? null;
       const Card = href ? 'a' : 'div';
       return (
@@ -49,9 +43,8 @@ const socialLinks: Record<string, string | null> = Object.fromEntries(
           href={href ?? undefined}
           target={href ? '_blank' : undefined}
           rel={href ? 'noreferrer noopener' : undefined}
-          style={`--er-c:${socialColors[i % socialColors.length]}`}
         >
-          <span class="c-name">{s.n.toUpperCase()}</span>
+          <span class="label">{s.n}</span>
           <span class="c-handle">{s.h}</span>
           <span class="c-arr" aria-hidden="true">{href ? '↗' : ''}</span>
         </Card>
@@ -78,34 +71,16 @@ const socialLinks: Record<string, string | null> = Object.fromEntries(
 </script>
 
 <style>
-  .contato { padding-top: 6px; }
-
-  .kicker { margin-bottom: 12px; }
-  .headline {
-    font-size: clamp(52px, 11vw, 128px);
-    margin: 0 0 24px;
-    line-height: 0.88;
-    letter-spacing: -0.05em;
-    text-transform: uppercase;
-  }
-  .headline .t-hot { color: var(--accent); }
   .intro {
     font-family: var(--mono);
     font-size: 18px;
     line-height: 1.6;
     color: var(--fg);
-    margin: 0 0 40px;
-    max-width: 62ch;
+    margin: -8px 0 44px;
+    max-width: 52ch;
   }
 
-  .direct-kicker {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--fg-3);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
+  .direct-kicker { margin-bottom: 10px; }
   .cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -115,54 +90,44 @@ const socialLinks: Record<string, string | null> = Object.fromEntries(
   .card {
     display: grid;
     grid-template-rows: auto 1fr auto;
-    gap: 8px;
+    gap: 10px;
     padding: 22px 22px 18px;
     border: var(--edge) solid var(--fg);
     border-left: none;
     color: var(--fg);
-    min-height: 200px;
+    min-height: 190px;
   }
   .card:first-child { border-left: var(--edge) solid var(--fg); }
-  .card:hover { background: var(--er-c); color: #000; }
+  a.card:hover { background: var(--accent); color: var(--accent-ink); }
+  a.card:hover .label, a.card:hover .c-arr { color: var(--accent-ink); }
   .card.is-static { cursor: default; }
-  .card.is-static:hover { background: transparent; color: var(--fg); }
-  .card.is-static:hover .c-name { color: var(--er-c); }
-  .card:hover .c-name, .card:hover .c-arr { color: #000; }
-  .c-name {
-    font-family: var(--mono);
-    font-size: var(--t-meta);
-    letter-spacing: 0.18em;
-    color: var(--er-c, var(--hot));
-  }
   .c-handle {
     font-family: var(--display);
-    font-size: 21px;
+    font-size: var(--t-item);
     line-height: 1.05;
     align-self: end;
     word-break: break-word;
   }
   .c-arr {
     font-size: 22px;
-    color: var(--er-c, var(--hot));
+    color: var(--accent);
     justify-self: end;
   }
-  .c-mail { text-decoration: none; }
-  .c-mail:hover { color: var(--er-c); }
+  .c-mail:hover { color: var(--accent); }
   /* copiar o endereço sem ter que selecionar à mão */
   .c-copy {
     justify-self: end;
     font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.12em;
+    font-size: var(--t-meta);
+    letter-spacing: var(--track);
     text-transform: uppercase;
     background: transparent;
-    color: var(--er-c, var(--hot));
+    color: var(--accent);
     border: var(--hair) solid currentColor;
-    padding: 4px 8px;
+    padding: 4px 9px;
     cursor: pointer;
   }
-  .c-copy:hover { background: var(--ylw); color: #000; border-color: #000; }
-  .card:hover .c-copy { color: #000; border-color: #000; }
+  .c-copy:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 
   @media (max-width: 900px) {
     .cards { grid-template-columns: 1fr; }

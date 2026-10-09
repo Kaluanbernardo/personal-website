@@ -1,55 +1,52 @@
 ---
 import { getCollection } from 'astro:content';
 import { ui, type Lang, tagDisplay } from '../../i18n/ui';
-import { sections } from '../../lib/sections';
+import { link } from '../../lib/links';
+import PageHead from '../PageHead.astro';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 const t = ui[lang];
+const en = lang === 'en';
 
+/* A descrição de cada projeto já existia no corpo do arquivo .mdoc e
+   nunca aparecia; o campo thumb existia no schema e nunca era lido.
+   Sem thumb, a moldura 4:3 fica reservada para a imagem. */
 const projects = (await getCollection('projects', ({ data }) => data.lang === lang))
-  .map((p) => p.data)
+  .map((p) => ({ ...p.data, desc: (p.body ?? '').trim() }))
   .sort((a, b) => b.year - a.year);
 
+/* filtros saem das categorias que existem de fato, com contagem —
+   nenhum botão leva a uma lista vazia */
 const kindOrder: string[] = ['jornalismo', 'produto', 'academia', 'palestra', 'pessoal'];
-const kindByFilter: Record<string, string | null> = {};
-t.projetos.filters.forEach((label, i) => {
-  kindByFilter[label] = i === 0 ? null : kindOrder[i - 1] ?? null;
-});
-
-const eyebrow = `${sections.projetos.number} / ./OUTPUT/*`;
-const kindColor: Record<string, string> = {
-  jornalismo: 'var(--hot)',
-  produto: 'var(--cyan)',
-  academia: 'var(--acid)',
-  palestra: 'var(--vio)',
-  pessoal: 'var(--ylw)',
-};
+const kindCounts = new Map<string, number>();
+projects.forEach((p) => kindCounts.set(p.kind, (kindCounts.get(p.kind) ?? 0) + 1));
+const filters = [
+  { kind: '', label: en ? 'all' : 'todos', n: projects.length },
+  ...kindOrder
+    .filter((k) => kindCounts.has(k))
+    .map((k) => ({ kind: k, label: tagDisplay[lang][k] ?? k, n: kindCounts.get(k) ?? 0 })),
+];
 ---
+<PageHead section="projetos" lang={lang} note="./output/*">
+  {t.projetos.title}
+</PageHead>
 
-<header class="head">
-  <div class="kicker ed-kicker">{eyebrow}</div>
-  <h1 class="ed-bungee headline">
-    {t.projetos.title.toUpperCase()} <span class="ed-blink mark mark-orng" aria-hidden="true">▼</span>
-  </h1>
-  <div class="sub">{t.projetos.sub}</div>
-</header>
-
-<div class="filters" role="group" aria-label={lang === 'en' ? 'Filter projects' : 'Filtrar projetos'}>
-  {t.projetos.filters.map((label, i) => (
+<div class="filters" role="group" aria-label={en ? 'Filter projects' : 'Filtrar projetos'}>
+  {filters.map((f) => (
     <button
       type="button"
-      class={`ed-tag filter-btn ${i === 0 ? 'is-active' : ''}`}
-      data-kind={kindByFilter[label] ?? ''}
-      aria-pressed={i === 0 ? 'true' : 'false'}
+      class={`ed-tag filter-btn ${f.kind === '' ? 'is-active' : ''}`}
+      data-kind={f.kind}
+      aria-pressed={f.kind === '' ? 'true' : 'false'}
       aria-controls="project-grid"
     >
-      #{label}
+      #{f.label}<span class="n">{f.n}</span>
     </button>
   ))}
-  <span class="filter-count" data-count aria-live="polite">{t.ux.filterCount(projects.length, projects.length)}</span>
+  <span class="sr-only" data-count aria-live="polite"></span>
 </div>
 
 <div id="project-grid" class="grid">
@@ -61,16 +58,21 @@ const kindColor: Record<string, string> = {
     <article
       class="cell"
       data-kind={p.kind}
-      style={`--card-c:${kindColor[p.kind] ?? 'var(--fg)'};--rot:${i % 2 === 0 ? '0.4deg' : '-0.4deg'}`}
+      style={`--rot:${i % 2 === 0 ? '0.4deg' : '-0.4deg'}`}
     >
       <Card class:list={['card', !p.url && 'is-static']} href={p.url} target={p.url ? '_blank' : undefined} rel={p.url ? 'noreferrer noopener' : undefined}>
         <div class="thumb ed-imgframe">
+          {p.thumb && <img src={link(p.thumb)} alt="" loading="lazy" />}
           <div class="ph">thumb · 4×3</div>
         </div>
         <div class="card-body">
-          <span class="card-tag">#{tagDisplay[lang][p.kind] ?? p.kind}</span>
-          <h3 class="ed-bungee card-title">{p.title}</h3>
-          <div class="card-place">{p.place}{p.url ? ' →' : ''}</div>
+          <span class="label">#{tagDisplay[lang][p.kind] ?? p.kind}</span>
+          <h2 class="ed-bungee card-title">{p.title}</h2>
+          {p.desc && <p class="card-desc">{p.desc}</p>}
+          <div class="card-place">
+            <span>{p.place}</span>
+            {p.url && <span class="card-arr" aria-hidden="true">↗</span>}
+          </div>
         </div>
       </Card>
     </article>
@@ -91,7 +93,7 @@ const kindColor: Record<string, string> = {
   const emptyEl = document.querySelector<HTMLElement>('[data-empty]');
   const clearBtn = document.querySelector<HTMLButtonElement>('[data-clear]');
   const total = cells.length;
-  const fmt = countEl?.textContent?.includes('of') ? 'en' : 'pt';
+  const fmt = document.documentElement.lang === 'en' ? 'en' : 'pt';
 
   function apply(kind: string, push: boolean) {
     let shown = 0;
@@ -133,84 +135,70 @@ const kindColor: Record<string, string> = {
 </script>
 
 <style>
-  .head { padding-top: 6px; margin-bottom: 22px; }
-  .kicker { margin-bottom: 10px; }
-  .headline {
-    font-size: clamp(44px, 8vw, 76px);
-    margin: 0 0 10px;
-    line-height: 0.9;
-    letter-spacing: -0.04em;
-    text-transform: uppercase;
-  }
-  .sub {
-    font-family: var(--mono);
-    font-size: var(--t-meta);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--fg-3);
-  }
-
-  .filters {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-  }
-
   .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 24px;
+    align-items: start;
   }
-  /* inclinação de colagem: recurso de fanzine, volta */
+  /* inclinação de colagem: recurso de fanzine */
   .cell { transform: rotate(var(--rot, 0deg)); }
   .card {
     display: block;
     border: var(--edge) solid var(--fg);
-    background: transparent;
-    cursor: pointer;
-    color: inherit;
+    background: var(--bg);
+    color: var(--fg);
+    transition: transform 0.08s linear, box-shadow 0.08s linear;
   }
-  .card:hover { background: var(--bg-2); color: inherit; }
+  a.card:hover {
+    color: var(--fg);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--accent);
+  }
+  a.card:hover .card-title { color: var(--accent); }
   .card.is-static { cursor: default; }
-  .card.is-static:hover { background: transparent; }
   .thumb {
     aspect-ratio: 4/3;
     border-bottom: var(--edge) solid var(--fg);
-    color: var(--card-c);
+    color: var(--accent);
   }
-  .card-body { padding: 12px 14px; }
-  .card-tag {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    background: var(--card-c);
-    color: #000;
-    border: var(--hair) solid #000;
-    padding: 2px 6px;
-    margin-bottom: 8px;
+  .card-body {
+    padding: 16px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
   .card-title {
-    font-size: 20px;
-    margin: 4px 0;
-    line-height: 1.05;
+    font-size: var(--t-item);
+    margin: 0;
+    line-height: 1.08;
     text-transform: uppercase;
     letter-spacing: -0.02em;
   }
-  .card-place {
+  .card-desc {
     font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    opacity: 0.7;
+    font-size: var(--t-ui);
+    line-height: 1.6;
+    color: var(--fg-2);
+    margin: 0;
   }
+  .card-place {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 4px;
+    font-family: var(--mono);
+    font-size: var(--t-meta);
+    letter-spacing: var(--track);
+    text-transform: uppercase;
+    color: var(--fg-3);
+  }
+  .card-arr { color: var(--accent); font-size: 14px; }
 
   @media (max-width: 1080px) and (min-width: 721px) {
     .grid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 720px) {
-    .grid { grid-template-columns: 1fr; gap: 16px; }
+    .grid { grid-template-columns: 1fr; gap: 18px; }
   }
 </style>

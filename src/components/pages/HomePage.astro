@@ -36,6 +36,7 @@ type Card = {
   roles: { p: string; r: string; o: string }[];
   pick?: { kind: string; title: string; sub: string; href: string };
   more: { label: string; href: string };
+  brands: string[];
 };
 const projPick = (kind: string, kindLabel: string) => {
   const p = firstProject(kind);
@@ -52,6 +53,7 @@ const cards: Card[] = [
     roles: jobs.filter((j) => j.a === 'prod').slice(0, 3),
     pick: projPick('produto', en ? 'Project' : 'Projeto'),
     more: { label: en ? 'Product career' : 'Trajetória em produto', href: link(`${prefix}/cv?area=prod`) },
+    brands: ['SENAI-SP', 'Cortex', 'Terra'],
   },
   {
     a: 'cont',
@@ -60,6 +62,7 @@ const cards: Card[] = [
     roles: jobs.filter((j) => j.a === 'cont').slice(0, 3),
     pick: projPick('jornalismo', en ? 'Reporting' : 'Reportagem'),
     more: { label: en ? 'Content career' : 'Trajetória em conteúdo', href: link(`${prefix}/cv?area=cont`) },
+    brands: ['CNN Brasil', 'Gizmodo', 'UOL'],
   },
   {
     a: 'pesq',
@@ -68,8 +71,14 @@ const cards: Card[] = [
     roles: [doutorado, ...jobs.filter((j) => j.a === 'pesq').slice(0, 2)],
     pick: pubs[0] ? { kind: en ? 'Paper' : 'Paper', title: pubs[0].data.title, sub: pubs[0].data.venue, href: link(`${prefix}/publicacoes`) } : undefined,
     more: { label: en ? 'Academic publications' : 'Publicações acadêmicas', href: link(`${prefix}/publicacoes`) },
+    brands: ['ESPM', 'FAPCOM', 'FMU'],
   },
 ];
+/* rótulo da alça diz o que tem dentro, em vez de um "ver" genérico */
+const openLabel = (c: Card) => en
+  ? `See ${c.roles.length} roles${c.pick ? ' + highlight' : ''}`
+  : `Ver ${c.roles.length} experiências${c.pick ? ' + destaque' : ''}`;
+const closeLabel = en ? 'Close' : 'Recolher';
 const period = (p: string) => p.replace(/\s—\s(atual|present)$/, ' →').replace(/\s—\s/, '–');
 
 const heroTitle = (t.brand || '').split(' ');
@@ -139,15 +148,19 @@ const pdfHref = link(en ? '/cv-en.pdf' : '/cv-pt.pdf');
         <Glyph name={frentes[c.a].glyph} class="front-glyph" />
       </div>
       <p class="front-sum">{c.sum}</p>
+      <ul class="front-brands" aria-label={en ? 'Where' : 'Onde'}>
+        {c.brands.map((b) => <li>{b}</li>)}
+      </ul>
       <button
         class="front-toggle"
         type="button"
         aria-expanded="false"
         aria-controls={`front-${c.a}`}
-        data-open={`${en ? 'See' : 'Ver'} ${frentes[c.a].nome[lang].toLowerCase()}`}
-        data-close={en ? 'Close' : 'Recolher'}
+        data-front={c.a}
+        data-open={openLabel(c)}
+        data-close={closeLabel}
       >
-        <span class="ft-label">{en ? 'See' : 'Ver'} {frentes[c.a].nome[lang].toLowerCase()}</span><span class="ft-plus" aria-hidden="true">+</span>
+        <span class="ft-label">{openLabel(c)}</span><span class="ft-arrow" aria-hidden="true">↓</span>
       </button>
       <div class="front-detail" id={`front-${c.a}`} hidden>
         <div class="front-stat"><b class="ed-bungee">{c.stat[0]}</b><span>{c.stat[1]}</span></div>
@@ -190,18 +203,51 @@ const pdfHref = link(en ? '/cv-en.pdf' : '/cv-pt.pdf');
 </section>
 
 <script>
-  /* frentes recolhidas: o botão abre e fecha o detalhe */
-  document.querySelectorAll<HTMLButtonElement>('.front-toggle').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const open = btn.getAttribute('aria-expanded') !== 'true';
-      const detail = document.getElementById(btn.getAttribute('aria-controls') ?? '');
-      if (detail) detail.hidden = !open;
-      btn.setAttribute('aria-expanded', String(open));
-      btn.closest('.front')?.classList.toggle('is-open', open);
-      const label = btn.querySelector('.ft-label');
-      if (label) label.textContent = open ? btn.dataset.close ?? '' : btn.dataset.open ?? '';
+  /* Frentes recolhidas. Quase ninguém abria: só um botão pequeno e
+     vazado era clicável e ele não dizia o que havia dentro. Agora a
+     caixa inteira abre, a alça diz o conteúdo ("ver 3 experiências +
+     destaque"), as marcas aparecem já fechadas e a seta dá um aceno
+     quando as caixas entram na tela. */
+  const fronts = document.querySelector<HTMLElement>('.fronts');
+  const toggles = document.querySelectorAll<HTMLButtonElement>('.front-toggle');
+
+  function setOpen(btn: HTMLButtonElement, open: boolean) {
+    const detail = document.getElementById(btn.getAttribute('aria-controls') ?? '');
+    if (detail) detail.hidden = !open;
+    btn.setAttribute('aria-expanded', String(open));
+    btn.closest('.front')?.classList.toggle('is-open', open);
+    const label = btn.querySelector('.ft-label');
+    if (label) label.textContent = open ? btn.dataset.close ?? '' : btn.dataset.open ?? '';
+    const arrow = btn.querySelector('.ft-arrow');
+    if (arrow) arrow.textContent = open ? '↑' : '↓';
+    if (open) {
+      /* mede se a mudança funcionou, quando o GA estiver ligado */
+      (window as unknown as { gtag?: (...a: unknown[]) => void }).gtag?.('event', 'front_open', { front: btn.dataset.front });
+    }
+  }
+
+  toggles.forEach((btn) => {
+    btn.addEventListener('click', () => setOpen(btn, btn.getAttribute('aria-expanded') !== 'true'));
+    /* a caixa fechada inteira é área de clique; links e o próprio botão
+       seguem com o comportamento deles */
+    const card = btn.closest<HTMLElement>('.front');
+    card?.addEventListener('click', (ev) => {
+      if (card.classList.contains('is-open')) return;
+      if ((ev.target as HTMLElement).closest('a, button')) return;
+      setOpen(btn, true);
     });
   });
+
+  /* aceno único quando as caixas aparecem na tela */
+  if (fronts && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        fronts.classList.add('nudge');
+        io.disconnect();
+      }
+    }, { threshold: 0.6 });
+    io.observe(fronts);
+  }
 </script>
 
 <style>
@@ -292,7 +338,8 @@ const pdfHref = link(en ? '/cv-en.pdf' : '/cv-pt.pdf');
     display: flex;
     flex-direction: column;
     gap: 16px;
-    padding: 22px 22px 24px;
+    padding: 22px 22px 0;
+    transition: background 0.12s linear;
     border-left: var(--loud) solid var(--fg);
     min-width: 0;
   }
@@ -314,27 +361,67 @@ const pdfHref = link(en ? '/cv-en.pdf' : '/cv-pt.pdf');
     color: var(--fg-2);
     margin: 0;
   }
-  .front-toggle {
-    align-self: flex-start;
-    margin-top: auto;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    border: var(--edge) solid var(--fc);
-    background: transparent;
-    color: var(--fc);
-    padding: 7px 12px;
+  .front:not(.is-open) { cursor: pointer; }
+  .front:not(.is-open):hover { background: var(--bg-2); }
+  .front:not(.is-open):hover .ft-arrow { transform: translateY(3px); }
+
+  /* marcas: já fechada, a caixa diz por onde você passou */
+  .front-brands {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .front-brands li {
     font-family: var(--mono);
     font-size: var(--t-meta);
     letter-spacing: var(--track);
     text-transform: uppercase;
+    color: var(--fg);
+    border: var(--hair) solid var(--fg-3);
+    padding: 3px 8px;
+  }
+
+  /* alça: barra cheia na cor da frente, colada no pé da caixa */
+  .front-toggle {
+    order: 10;
+    margin: auto -22px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: none;
+    border-top: var(--loud) solid #000;
+    background: var(--fc);
+    color: #000;
+    padding: 12px 22px;
+    font-family: var(--mono);
+    font-size: var(--t-ui);
+    font-weight: 700;
+    letter-spacing: var(--track);
+    text-transform: uppercase;
+    text-align: left;
     cursor: pointer;
   }
-  .ft-plus { font-family: var(--display); font-size: 16px; line-height: 1; transition: transform 0.18s ease; }
-  .front-toggle:hover,
-  .front.is-open .front-toggle { background: var(--fc); color: #000; }
-  .front.is-open .ft-plus { transform: rotate(45deg); }
-  .front-detail { display: flex; flex-direction: column; gap: 16px; }
+  .ft-arrow {
+    font-family: var(--display);
+    font-size: 20px;
+    line-height: 1;
+    transition: transform 0.15s ease;
+  }
+  .front-toggle:hover .ft-arrow { transform: translateY(3px); }
+  .front.is-open .front-toggle { background: #000; color: var(--fc); border-top-color: var(--fc); }
+  .front.is-open .front-toggle:hover .ft-arrow { transform: translateY(-3px); }
+  .fronts.nudge .front:not(.is-open) .ft-arrow { animation: ft-nudge 0.7s ease-in-out 3; }
+  .fronts.nudge .front:nth-child(2) .ft-arrow { animation-delay: 0.15s; }
+  .fronts.nudge .front:nth-child(3) .ft-arrow { animation-delay: 0.3s; }
+  @keyframes ft-nudge {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+  .front-detail { display: flex; flex-direction: column; gap: 16px; padding-bottom: 4px; }
 
   .front-stat { background: var(--fc); color: #000; padding: 12px 14px; display: flex; align-items: baseline; gap: 12px; }
   .front-stat b { font-weight: 400; font-size: 36px; line-height: 1; }
@@ -439,6 +526,7 @@ const pdfHref = link(en ? '/cv-en.pdf' : '/cv-pt.pdf');
   }
   @media (max-width: 720px) {
     .hero-intro { font-size: var(--t-body); }
+    .front-toggle { font-size: var(--t-meta); }
     .hf-posts a { flex-direction: column; gap: 2px; }
   }
 </style>

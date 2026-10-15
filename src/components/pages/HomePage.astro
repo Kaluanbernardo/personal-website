@@ -145,7 +145,15 @@ const pdfHref = link(en ? '/cv-en.pdf' : '/cv-pt.pdf');
     <article class="front" style={`--fc:${frentes[c.a].color}`}>
       <div class="front-h">
         <h2 class="ed-bungee">{frentes[c.a].nome[lang]}</h2>
-        <Glyph name={frentes[c.a].glyph} class="front-glyph" />
+        <button
+          class="front-icon"
+          type="button"
+          aria-controls={`front-${c.a}`}
+          aria-expanded="false"
+          aria-label={`${en ? 'Expand or collapse' : 'Expandir ou recolher'} ${frentes[c.a].nome[lang]}`}
+        >
+          <Glyph name={frentes[c.a].glyph} class="front-glyph" />
+        </button>
       </div>
       <p class="front-sum">{c.sum}</p>
       <ul class="front-brands" aria-label={en ? 'Where' : 'Onde'}>
@@ -176,7 +184,9 @@ const pdfHref = link(en ? '/cv-en.pdf' : '/cv-pt.pdf');
             <span class="fp-sub">{c.pick.sub}</span>
           </a>
         )}
-        <a class="front-more" href={c.more.href}>{c.more.label} →</a>
+        <a class="front-more" href={c.more.href}>
+          <span>{en ? 'See more' : 'Veja mais'} · {c.more.label}</span><span class="fm-arrow" aria-hidden="true">→</span>
+        </a>
       </div>
     </article>
   ))}
@@ -215,7 +225,9 @@ const pdfHref = link(en ? '/cv-en.pdf' : '/cv-pt.pdf');
     const detail = document.getElementById(btn.getAttribute('aria-controls') ?? '');
     if (detail) detail.hidden = !open;
     btn.setAttribute('aria-expanded', String(open));
-    btn.closest('.front')?.classList.toggle('is-open', open);
+    const card = btn.closest('.front');
+    card?.classList.toggle('is-open', open);
+    card?.querySelector('.front-icon')?.setAttribute('aria-expanded', String(open));
     const label = btn.querySelector('.ft-label');
     if (label) label.textContent = open ? btn.dataset.close ?? '' : btn.dataset.open ?? '';
     const arrow = btn.querySelector('.ft-arrow');
@@ -231,6 +243,10 @@ const pdfHref = link(en ? '/cv-en.pdf' : '/cv-pt.pdf');
     /* a caixa fechada inteira é área de clique; links e o próprio botão
        seguem com o comportamento deles */
     const card = btn.closest<HTMLElement>('.front');
+    /* o glifo da frente também abre e fecha */
+    card?.querySelector<HTMLButtonElement>('.front-icon')?.addEventListener('click', () => {
+      setOpen(btn, btn.getAttribute('aria-expanded') !== 'true');
+    });
     card?.addEventListener('click', (ev) => {
       if (card.classList.contains('is-open')) return;
       if ((ev.target as HTMLElement).closest('a, button')) return;
@@ -353,6 +369,17 @@ const pdfHref = link(en ? '/cv-en.pdf' : '/cv-pt.pdf');
     color: var(--fc);
     margin: 0;
   }
+  .front-icon {
+    display: inline-flex;
+    padding: 6px;
+    margin: -6px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: transform 0.18s ease;
+  }
+  .front-icon:hover { transform: scale(1.15); }
+  .front.is-open .front-icon { transform: rotate(180deg); }
   .front :global(.front-glyph) { width: 26px; height: 26px; color: var(--fc); }
   .front-sum {
     font-family: var(--serif);
@@ -421,7 +448,7 @@ const pdfHref = link(en ? '/cv-en.pdf' : '/cv-pt.pdf');
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(6px); }
   }
-  .front-detail { display: flex; flex-direction: column; gap: 16px; padding-bottom: 4px; }
+  .front-detail { display: flex; flex-direction: column; gap: 16px; }
 
   .front-stat { background: var(--fc); color: #000; padding: 12px 14px; display: flex; align-items: baseline; gap: 12px; }
   .front-stat b { font-weight: 400; font-size: 36px; line-height: 1; }
@@ -459,15 +486,26 @@ const pdfHref = link(en ? '/cv-en.pdf' : '/cv-pt.pdf');
   .front-pick:hover { color: var(--fg); box-shadow: 6px 6px 0 var(--fc); }
   .fp-title { font-size: 18px; line-height: 1.1; text-transform: uppercase; letter-spacing: -0.02em; }
   .fp-sub { font-family: var(--mono); font-size: 13px; color: var(--fg-2); }
+  /* "veja mais": bloco cheio, irmão da alça, levando para a página completa */
   .front-more {
-    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 4px -22px 0;
+    padding: 12px 22px;
+    background: var(--fc);
+    color: #000;
+    border-top: var(--loud) solid #000;
     font-family: var(--mono);
-    font-size: var(--t-meta);
+    font-size: var(--t-ui);
+    font-weight: 700;
     letter-spacing: var(--track);
     text-transform: uppercase;
-    color: var(--fc);
   }
-  .front-more:hover { background: var(--fc); color: #000; }
+  .front-more:hover { color: #000; }
+  .fm-arrow { font-family: var(--display); font-size: 20px; line-height: 1; transition: transform 0.15s ease; }
+  .front-more:hover .fm-arrow { transform: translateX(4px); }
 
   /* ---------- blog + contato ---------- */
   .home-foot {
@@ -526,7 +564,7 @@ const pdfHref = link(en ? '/cv-en.pdf' : '/cv-pt.pdf');
   }
   @media (max-width: 720px) {
     .hero-intro { font-size: var(--t-body); }
-    .front-toggle { font-size: var(--t-meta); }
+    .front-toggle, .front-more { font-size: var(--t-meta); }
     .hf-posts a { flex-direction: column; gap: 2px; }
   }
 </style>

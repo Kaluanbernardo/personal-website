@@ -364,6 +364,7 @@ button.ed-tag:hover { background: var(--zap); color: var(--zap-ink); border-colo
   color: inherit;
   cursor: pointer;
   text-decoration: none;
+  white-space: nowrap;
   position: relative;
   transition: transform 0.08s linear, box-shadow 0.08s linear;
 }
